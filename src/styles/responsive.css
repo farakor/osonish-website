@@ -1,0 +1,40 @@
+/* 
+  Адаптивные утилиты и медиа-запросы
+  Используйте эти классы для consistent responsive дизайна
+*/
+
+/* Container sizes */
+.container-sm { @apply max-w-screen-sm; }
+.container-md { @apply max-w-screen-md; }
+.container-lg { @apply max-w-screen-lg; }
+.container-xl { @apply max-w-screen-xl; }
+.container-2xl { @apply max-w-screen-2xl; }
+
+/* Spacing utilities */
+.section-padding { @apply py-12 md:py-16 lg:py-24; }
+.section-padding-sm { @apply py-8 md:py-12 lg:py-16; }
+
+/* Typography responsive */
+.heading-1 { @apply text-3xl md:text-4xl lg:text-5xl font-bold; }
+.heading-2 { @apply text-2xl md:text-3xl lg:text-4xl font-bold; }
+.heading-3 { @apply text-xl md:text-2xl lg:text-3xl font-semibold; }
+.heading-4 { @apply text-lg md:text-xl lg:text-2xl font-semibold; }
+
+/* Grid responsive */
+.grid-responsive-1 { @apply grid grid-cols-1; }
+.grid-responsive-2 { @apply grid grid-cols-1 md:grid-cols-2; }
+.grid-responsive-3 { @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3; }
+.grid-responsive-4 { @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4; }
+
+/* Common patterns */
+.sidebar-layout { @apply grid grid-cols-1 lg:grid-cols-4 gap-6; }
+.sidebar { @apply lg:col-span-1; }
+.main-content { @apply lg:col-span-3; }
+
+/* Mobile menu */
+.mobile-menu-button { @apply md:hidden; }
+.desktop-menu { @apply hidden md:flex; }
+
+/* Touch targets (минимум 44x44px для мобильных) */
+.touch-target { @apply min-h-[44px] min-w-[44px]; }
+

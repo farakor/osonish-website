@@ -1,0 +1,104 @@
+import { NextRequest, NextResponse } from 'next/server';
+import { createClient } from '@/lib/supabase/server';
+import { cookies } from 'next/headers';
+
+// Используем dev версию только если явно не указан FORCE_PRODUCTION_SMS
+const isDev = process.env.NODE_ENV === 'development' && process.env.FORCE_PRODUCTION_SMS !== 'true';
+const smsService = isDev 
+  ? require('@/lib/services/smsService.dev')
+  : require('@/lib/services/smsService');
+
+export async function POST(request: NextRequest) {
+  try {
+    const { phone, code } = await request.json();
+    console.log('🔐 [verify-otp] Получен запрос:', { phone, code });
+
+    if (!phone || !code) {
+      console.log('❌ [verify-otp] Отсутствует телефон или код');
+      return NextResponse.json(
+        { success: false, error: 'Phone and code are required' },
+        { status: 400 }
+      );
+    }
+
+    console.log('🔍 [verify-otp] Вызываем smsService.verifyOTP...');
+    const result = await smsService.verifyOTP(phone, code);
+    console.log('📊 [verify-otp] Результат verifyOTP:', result);
+
+    if (result.success) {
+      // Проверяем, существует ли пользователь
+      const supabase = await createClient();
+      const formattedPhone = phone.replace(/\D/g, '');
+      
+      // Ищем пользователя как с +, так и без +
+      const { data: existingUser } = await supabase
+        .from('users')
+        .select('id')
+        .or(`phone.eq.${formattedPhone},phone.eq.+${formattedPhone}`)
+        .single();
+
+      if (existingUser) {
+        // Существующий пользователь - создаем сессию и логиним
+        console.log('✅ [verify-otp] Существующий пользователь, создаем сессию:', existingUser.id);
+        
+      const { data: sessionData, error: sessionError } = await supabase
+        .from('user_sessions')
+        .insert({
+            user_id: existingUser.id,
+            expires_at: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+        })
+        .select()
+        .single();
+
+      if (sessionError) {
+        console.error('❌ [verify-otp] Session creation error:', sessionError);
+        return NextResponse.json(
+          { success: false, error: 'Failed to create session' },
+          { status: 500 }
+        );
+      }
+
+      const cookieStore = await cookies();
+      cookieStore.set('session_token', sessionData.id, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
+          maxAge: 30 * 24 * 60 * 60,
+        path: '/',
+      });
+
+      console.log('✅ [verify-otp] Авторизация завершена успешно');
+      return NextResponse.json({ 
+        success: true,
+          isNewUser: false,
+          userId: existingUser.id,
+        });
+      } else {
+        // Новый пользователь - требуется регистрация
+        console.log('🆕 [verify-otp] Новый пользователь, требуется регистрация');
+        
+        // Удаляем использованный OTP
+        await supabase.from('otp_codes').delete().eq('phone', formattedPhone);
+        
+        return NextResponse.json({ 
+          success: true,
+          isNewUser: true,
+          phone: formattedPhone,
+      });
+      }
+    } else {
+      console.log('❌ [verify-otp] Верификация не удалась:', result.error);
+      return NextResponse.json(
+        { success: false, error: result.error },
+        { status: 400 }
+      );
+    }
+  } catch (error) {
+    console.error('❌ [verify-otp] Критическая ошибка:', error);
+    return NextResponse.json(
+      { success: false, error: 'Internal server error' },
+      { status: 500 }
+    );
+  }
+}
+

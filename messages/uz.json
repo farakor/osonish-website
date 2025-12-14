@@ -1,0 +1,138 @@
+{
+  "auth": {
+    "title": "Osonish'ga kirish",
+    "description": "Barcha imkoniyatlarga kirish uchun hisobingizga kiring",
+    "enterPhone": "Kirish uchun telefon raqamini kiriting",
+    "enterOtp": "Tasdiqlash kodini kiriting",
+    "phoneLabel": "Telefon raqami",
+    "otpLabel": "Tasdiqlash kodi",
+    "otpSentTo": "Kod raqamga yuborildi",
+    "sendOtp": "Kodni yuborish",
+    "sending": "Yuborilmoqda...",
+    "verify": "Tasdiqlash",
+    "verifying": "Tekshirilmoqda...",
+    "resendOtp": "Kodni qayta yuborish",
+    "changePhone": "Raqamni o'zgartirish",
+    "errors": {
+      "sendOtpFailed": "Kodni yuborib bo'lmadi",
+      "verifyOtpFailed": "Noto'g'ri tasdiqlash kodi",
+      "networkError": "Tarmoq xatosi. Keyinroq urinib ko'ring"
+    }
+  },
+  "dashboard": {
+    "title": "Shaxsiy kabinet",
+    "welcome": "Xush kelibsiz",
+    "customer": {
+      "title": "Buyurtmachi kabineti",
+      "myOrders": "Mening buyurtmalarim",
+      "createOrder": "Buyurtma yaratish",
+      "activeOrders": "Faol buyurtmalar",
+      "completedOrders": "Tugallangan buyurtmalar",
+      "responses": "Javoblar"
+    },
+    "worker": {
+      "title": "Ijrochi kabineti",
+      "myResponses": "Mening javoblarim",
+      "findOrders": "Buyurtmalarni topish",
+      "portfolio": "Portfolio",
+      "reviews": "Sharhlar",
+      "balance": "Balans"
+    },
+    "profile": {
+      "title": "Profil",
+      "edit": "Tahrirlash",
+      "photo": "Rasm",
+      "name": "Ism",
+      "phone": "Telefon",
+      "email": "Email",
+      "city": "Shahar",
+      "about": "O'zim haqimda",
+      "specializations": "Mutaxassisliklar",
+      "experience": "Ish tajribasi",
+      "education": "Ta'lim",
+      "save": "Saqlash"
+    },
+    "logout": "Chiqish"
+  },
+  "employmentTypes": {
+    "full_time": "To'liq bandlik",
+    "part_time": "Qisman bandlik",
+    "project": "Loyiha ishi",
+    "internship": "Amaliyot",
+    "Полная занятость": "To'liq bandlik",
+    "Частичная занятость": "Qisman bandlik",
+    "Проектная работа": "Loyiha ishi",
+    "Стажировка": "Amaliyot"
+  },
+  "workFormats": {
+    "on_site": "Ofis",
+    "remote": "Masofaviy",
+    "hybrid": "Gibrid",
+    "Офис": "Ofis",
+    "Удаленно": "Masofaviy",
+    "Гибрид": "Gibrid"
+  },
+  "experienceLevels": {
+    "no_experience": "Tajribasiz",
+    "1_to_3_years": "1-3 yil",
+    "3_to_6_years": "3-6 yil",
+    "6_plus_years": "6+ yil",
+    "Без опыта": "Tajribasiz",
+    "1-3 года": "1-3 yil",
+    "3+ года": "3-6 yil",
+    "3-6 лет": "3-6 yil",
+    "5+ лет": "6+ yil",
+    "6+ лет": "6+ yil"
+  },
+  "workSchedules": {
+    "full_day": "To'liq kun",
+    "8_to_20": "8:00 - 20:00",
+    "flexible": "Moslashuvchan jadval",
+    "shift": "Smenali ish",
+    "Полный день": "To'liq kun",
+    "8:00 - 20:00": "8:00 - 20:00",
+    "Гибкий график": "Moslashuvchan jadval",
+    "Сменный график": "Smenali ish"
+  },
+  "salaryPeriods": {
+    "month": "oyiga",
+    "hour": "soatiga",
+    "day": "kunga",
+    "week": "haftaga",
+    "в месяц": "oyiga",
+    "в час": "soatiga",
+    "в день": "kunga",
+    "в неделю": "haftaga"
+  },
+  "languages": {
+    "russian": "Ruscha",
+    "uzbek": "O'zbekcha",
+    "english": "Inglizcha",
+    "kazakh": "Qozoqcha",
+    "turkish": "Turkcha",
+    "chinese": "Xitoycha",
+    "Русский": "Ruscha",
+    "Узбекский": "O'zbekcha",
+    "Английский": "Inglizcha",
+    "Казахский": "Qozoqcha",
+    "Турецкий": "Turkcha",
+    "Китайский": "Xitoycha"
+  },
+  "cities": {
+    "tashkent": "Toshkent",
+    "samarkand": "Samarqand",
+    "bukhara": "Buxoro",
+    "andijan": "Andijon",
+    "jizzakh": "Jizzax",
+    "karshi": "Qarshi",
+    "navoi": "Navoiy",
+    "namangan": "Namangan",
+    "termez": "Termiz",
+    "sirdarya": "Sirdaryo",
+    "chirchik": "Chirchiq",
+    "fergana": "Farg'ona",
+    "urgench": "Urganch",
+    "nukus": "No'kis",
+    "gulistan": "Guliston"
+  }
+}

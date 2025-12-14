@@ -1,0 +1,166 @@
+import Link from "next/link";
+import { Card, CardContent, CardFooter } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+  MapPin,
+  Calendar,
+  Users,
+  Eye,
+  MessageSquare,
+  Utensils,
+  Bus,
+} from "lucide-react";
+import type { Order } from "@/types";
+import { formatPrice, formatDate } from "@/lib/utils";
+import Image from "next/image";
+import { getSpecializationName, getSpecializationIconName } from "@/lib/specialization-utils";
+import { SpecializationIcon } from "@/components/ui/specialization-icon";
+
+interface OrderCardProps {
+  order: Order;
+}
+
+export function OrderCard({ order }: OrderCardProps) {
+  const statusColors = {
+    new: "bg-blue-100 text-blue-800",
+    response_received: "bg-purple-100 text-purple-800",
+    in_progress: "bg-yellow-100 text-yellow-800",
+    completed: "bg-green-100 text-green-800",
+    cancelled: "bg-gray-100 text-gray-800",
+    rejected: "bg-red-100 text-red-800",
+  };
+
+  const statusLabels = {
+    new: "Новый",
+    response_received: "Есть отклики",
+    in_progress: "В работе",
+    completed: "Завершен",
+    cancelled: "Отменен",
+    rejected: "Отклонен",
+  };
+
+  // Проверяем, был ли заказ создан менее 3 дней назад
+  const isNewOrder = () => {
+    if (!order.createdAt) return false;
+    const createdDate = new Date(order.createdAt);
+    const now = new Date();
+    const diffInMs = now.getTime() - createdDate.getTime();
+    const diffInDays = diffInMs / (1000 * 60 * 60 * 24);
+    return diffInDays < 3;
+  };
+
+  return (
+    <Card className="border border-[#DAE3EC] hover:border-blue-300 transition-all">
+      <CardContent className="p-6">
+        {/* Header */}
+        <div className="flex justify-between items-start mb-4">
+          <div className="flex-1">
+            <Link
+              href={`/orders/${order.id}`}
+              className="text-xl font-semibold hover:text-primary transition-colors line-clamp-2"
+            >
+              {order.title}
+            </Link>
+            <p className="text-sm text-muted-foreground mt-1 line-clamp-2">
+              {order.description}
+            </p>
+          </div>
+          <div className="ml-4 flex items-center gap-3">
+            {order.viewsCount !== undefined && order.viewsCount > 0 && (
+              <div className="flex items-center gap-1 text-sm text-muted-foreground">
+                <Eye className="h-4 w-4" />
+                <span>{order.viewsCount}</span>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Details */}
+        <div className="space-y-2 mb-4">
+          <div className="flex items-center text-sm text-muted-foreground">
+            <MapPin className="h-4 w-4 mr-2" />
+            <span>{order.location}</span>
+          </div>
+          <div className="flex items-center text-sm text-muted-foreground">
+            <Calendar className="h-4 w-4 mr-2" />
+            <span>{formatDate(order.serviceDate)}</span>
+          </div>
+          <div className="flex items-center text-sm">
+            <span className="text-xs font-bold mr-2 text-primary">UZS</span>
+            <span className="font-semibold text-primary">
+              {formatPrice(order.budget)}
+            </span>
+          </div>
+        </div>
+
+        {/* Tags */}
+        <div className="flex flex-wrap gap-2 mb-4">
+          {isNewOrder() && order.status === 'new' && (
+            <Badge 
+              className={`${statusColors[order.status]} h-auto py-1.5 cursor-default`}
+              style={{ 
+                backgroundColor: '#DBEAFE',
+                color: '#1E40AF'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = '#DBEAFE';
+              }}
+            >
+              {statusLabels[order.status]}
+            </Badge>
+          )}
+          {order.specializationId && (
+            <Badge 
+              variant="outline" 
+              className="flex items-center gap-1.5 h-auto py-1.5"
+            >
+              {getSpecializationIconName(order.specializationId) && (
+                <SpecializationIcon 
+                  iconName={getSpecializationIconName(order.specializationId)!} 
+                  size={16} 
+                />
+              )}
+              <span>{getSpecializationName(order.specializationId)}</span>
+            </Badge>
+          )}
+          {order.workersNeeded > 1 && (
+            <Badge variant="outline" className="h-auto py-1.5">
+              <Users className="h-3 w-3 mr-1" />
+              {order.workersNeeded} человек
+            </Badge>
+          )}
+          {order.mealIncluded && (
+            <Badge variant="outline" className="h-auto py-1.5">
+              <Utensils className="h-3 w-3 mr-1" />
+              Питание включено
+            </Badge>
+          )}
+          {order.transportPaid && (
+            <Badge variant="outline" className="h-auto py-1.5">
+              <Bus className="h-3 w-3 mr-1" />
+              Транспорт оплачивается
+            </Badge>
+          )}
+        </div>
+
+        {/* Stats */}
+        {order.applicantsCount > 0 && (
+          <div className="flex items-center gap-4 text-sm text-muted-foreground">
+            <div className="flex items-center">
+              <MessageSquare className="h-4 w-4 mr-1" />
+              <span>{order.applicantsCount} откликов</span>
+            </div>
+          </div>
+        )}
+      </CardContent>
+
+      <CardFooter className="p-6 pt-0">
+        <Button asChild className="w-full text-white">
+          <Link href={`/orders/${order.id}`}>Подробнее</Link>
+        </Button>
+      </CardFooter>
+    </Card>
+  );
+}
+
