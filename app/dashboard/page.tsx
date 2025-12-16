@@ -40,6 +40,7 @@ export default async function DashboardPage() {
 
   const isCustomer = user.role === 'customer';
   const isWorker = user.role === 'worker';
+  const isJobSeeker = user.worker_type === 'job_seeker';
 
   return (
     <div className="pt-24 pb-8">
@@ -61,7 +62,21 @@ export default async function DashboardPage() {
           </form>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          {isWorker && (
+            <Link href="/orders">
+              <Card className="border border-[#DAE3EC] hover:border-blue-400 transition-all cursor-pointer bg-primary text-white">
+                <CardHeader>
+                  <Briefcase className="h-8 w-8 mb-2" />
+                  <CardTitle>Найти заказы</CardTitle>
+                  <CardDescription className="text-white/80">
+                    Откликнуться на заказы
+                  </CardDescription>
+                </CardHeader>
+              </Card>
+            </Link>
+          )}
+
           <Link href="/dashboard/profile">
             <Card className="border border-[#DAE3EC] hover:border-blue-300 transition-all cursor-pointer">
               <CardHeader>
@@ -128,29 +143,19 @@ export default async function DashboardPage() {
                 </Card>
               </Link>
 
-              <Link href="/orders">
-                <Card className="border border-[#DAE3EC] hover:border-blue-400 transition-all cursor-pointer bg-primary text-white">
-                  <CardHeader>
-                    <Briefcase className="h-8 w-8 mb-2" />
-                    <CardTitle>Найти заказы</CardTitle>
-                    <CardDescription className="text-white/80">
-                      Откликнуться на заказы
-                    </CardDescription>
-                  </CardHeader>
-                </Card>
-              </Link>
-
-              <Link href="/dashboard/reviews">
-                <Card className="border border-[#DAE3EC] hover:border-blue-300 transition-all cursor-pointer">
-                  <CardHeader>
-                    <Star className="h-8 w-8 text-primary mb-2" />
-                    <CardTitle>Отзывы</CardTitle>
-                    <CardDescription>
-                      Просмотр отзывов
-                    </CardDescription>
-                  </CardHeader>
-                </Card>
-              </Link>
+              {!isJobSeeker && (
+                <Link href="/dashboard/reviews">
+                  <Card className="border border-[#DAE3EC] hover:border-blue-300 transition-all cursor-pointer">
+                    <CardHeader>
+                      <Star className="h-8 w-8 text-primary mb-2" />
+                      <CardTitle>Отзывы</CardTitle>
+                      <CardDescription>
+                        Просмотр отзывов
+                      </CardDescription>
+                    </CardHeader>
+                  </Card>
+                </Link>
+              )}
             </>
           )}
 
@@ -167,8 +172,8 @@ export default async function DashboardPage() {
           </Link>
         </div>
 
-        {/* Статистика - только для исполнителей */}
-        {isWorker && (
+        {/* Статистика - только для исполнителей (кроме соискателей) */}
+        {isWorker && !isJobSeeker && (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <Card>
               <CardContent className="pt-6">

@@ -407,12 +407,6 @@ export function VacancyDetailClient({ id, isAuthenticated = false, userRole }: V
                     <span className="text-muted-foreground">Опыт работы:</span>
                     <p className="font-medium">{experienceLevelLabels[vacancy.experienceLevel] || vacancy.experienceLevel}</p>
                   </div>
-                  <div>
-                    <span className="text-muted-foreground">
-                      Требуется специалистов:
-                    </span>
-                    <p className="font-medium">{vacancy.workersNeeded}</p>
-                  </div>
                 </div>
               </div>
 

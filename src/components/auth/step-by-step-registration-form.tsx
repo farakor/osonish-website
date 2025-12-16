@@ -51,6 +51,8 @@ export function StepByStepRegistrationForm({ phone, email, redirectTo }: StepByS
     // Professional specific fields
     aboutMe: '',
     workPhotos: [] as string[],
+    // Phone number for email registration
+    phoneNumber: '',
   });
 
   // Временные состояния для добавления образования
@@ -81,6 +83,11 @@ export function StepByStepRegistrationForm({ phone, email, redirectTo }: StepByS
   const getTotalSteps = () => {
     // Базовые шаги: фото, имя, дата, согласие, роль = 5
     let total = 5;
+    
+    // Добавляем шаг для номера телефона если регистрация через email
+    if (email && !phone) {
+      total += 1; // +1 шаг для ввода номера телефона (после даты рождения)
+    }
     
     // Для заказчика: + тип пользователя (физ/юр), + город = 7 шагов
     if (formData.role === 'customer') {
@@ -178,6 +185,12 @@ export function StepByStepRegistrationForm({ phone, email, redirectTo }: StepByS
     return numericValue.replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
   };
 
+  // Функция для валидации номера телефона
+  const validatePhoneNumber = (phone: string): boolean => {
+    const cleaned = phone.replace(/\D/g, '');
+    return cleaned.length === 12 && cleaned.startsWith('998');
+  };
+
   const handleNext = () => {
     setError('');
     if (!validateStep(currentStep)) {
@@ -195,6 +208,8 @@ export function StepByStepRegistrationForm({ phone, email, redirectTo }: StepByS
 
   const validateStep = (step: number): boolean => {
     const totalSteps = getTotalSteps();
+    // Offset для шагов если регистрация через email (добавляется шаг с номером телефона)
+    const stepOffset = (email && !phone) ? 1 : 0;
     
     // Шаг 1: Фото профиля (необязательно)
     if (step === 1) {
@@ -220,8 +235,21 @@ export function StepByStepRegistrationForm({ phone, email, redirectTo }: StepByS
       return true;
     }
     
-    // Шаг 4: Согласие с политикой
-    if (step === 4) {
+    // Шаг 4: Номер телефона (только для email регистрации)
+    if (stepOffset === 1 && step === 4) {
+      if (!formData.phoneNumber.trim()) {
+        setError('Введите номер телефона');
+        return false;
+      }
+      if (!validatePhoneNumber(formData.phoneNumber)) {
+        setError('Неверный формат номера телефона. Используйте +998XXXXXXXXX');
+        return false;
+      }
+      return true;
+    }
+    
+    // Шаг 4/5: Согласие с политикой
+    if (step === 4 + stepOffset) {
       if (!formData.privacyAccepted) {
         setError('Вы должны согласиться с политикой конфиденциальности.');
         return false;
@@ -229,8 +257,8 @@ export function StepByStepRegistrationForm({ phone, email, redirectTo }: StepByS
       return true;
     }
     
-    // Шаг 5: Выбор роли
-    if (step === 5) {
+    // Шаг 5/6: Выбор роли
+    if (step === 5 + stepOffset) {
       if (!formData.role) {
         setError('Пожалуйста, выберите вашу роль.');
         return false;
@@ -240,8 +268,8 @@ export function StepByStepRegistrationForm({ phone, email, redirectTo }: StepByS
     
     // Дальнейшие шаги зависят от роли
     if (formData.role === 'customer') {
-      // Шаг 6: Тип пользователя (физ/юр лицо)
-      if (step === 6) {
+      // Шаг 6/7: Тип пользователя (физ/юр лицо)
+      if (step === 6 + stepOffset) {
         if (!formData.userType) {
           setError('Пожалуйста, выберите тип пользователя.');
           return false;
@@ -253,8 +281,8 @@ export function StepByStepRegistrationForm({ phone, email, redirectTo }: StepByS
         }
         return true;
       }
-      // Шаг 7: Выбор города (для заказчика это последний шаг)
-      if (step === 7) {
+      // Шаг 7/8: Выбор города (для заказчика это последний шаг)
+      if (step === 7 + stepOffset) {
         if (!formData.cityId) {
           setError('Пожалуйста, выберите город.');
           return false;
@@ -262,8 +290,8 @@ export function StepByStepRegistrationForm({ phone, email, redirectTo }: StepByS
         return true;
       }
     } else if (formData.role === 'worker') {
-      // Шаг 6: Тип исполнителя
-      if (step === 6) {
+      // Шаг 6/7: Тип исполнителя
+      if (step === 6 + stepOffset) {
         if (!formData.workerType) {
           setError('Пожалуйста, выберите тип исполнителя.');
           return false;
@@ -273,32 +301,32 @@ export function StepByStepRegistrationForm({ phone, email, redirectTo }: StepByS
       
       // Для профессионала
       if (formData.workerType === 'professional') {
-        // Шаг 7: Специализации (для профессионала)
-        if (step === 7) {
+        // Шаг 7/8: Специализации (для профессионала)
+        if (step === 7 + stepOffset) {
           if (formData.specializations.length === 0) {
             setError('Пожалуйста, выберите хотя бы одну специализацию.');
             return false;
           }
           return true;
         }
-        // Шаг 8: О себе (для профессионала)
-        if (step === 8) {
+        // Шаг 8/9: О себе (для профессионала)
+        if (step === 8 + stepOffset) {
           if (formData.aboutMe.trim().length < 20) {
             setError('Пожалуйста, напишите о себе минимум 20 символов.');
             return false;
           }
           return true;
         }
-        // Шаг 9: Фото работ (для профессионала)
-        if (step === 9) {
+        // Шаг 9/10: Фото работ (для профессионала)
+        if (step === 9 + stepOffset) {
           if (formData.workPhotos.length < 1) {
             setError('Пожалуйста, добавьте минимум 1 фото ваших работ.');
             return false;
           }
           return true;
         }
-        // Шаг 10: Город (для профессионала это последний шаг)
-        if (step === 10) {
+        // Шаг 10/11: Город (для профессионала это последний шаг)
+        if (step === 10 + stepOffset) {
           if (!formData.cityId) {
             setError('Пожалуйста, выберите город.');
             return false;
@@ -309,8 +337,8 @@ export function StepByStepRegistrationForm({ phone, email, redirectTo }: StepByS
       
       // Для соискателя
       if (formData.workerType === 'job_seeker') {
-        // Шаг 7: Образование (необязательно, можно пропустить)
-        if (step === 7) {
+        // Шаг 7/8: Образование (необязательно, можно пропустить)
+        if (step === 7 + stepOffset) {
           // Автоматически добавляем заполненное образование перед переходом
           if (newEducation.institution.trim()) {
             handleAddEducation();
@@ -318,13 +346,13 @@ export function StepByStepRegistrationForm({ phone, email, redirectTo }: StepByS
           return true;
         }
         
-        // Шаг 8: Навыки (необязательно, можно пропустить)
-        if (step === 8) {
+        // Шаг 8/9: Навыки (необязательно, можно пропустить)
+        if (step === 8 + stepOffset) {
           return true;
         }
         
-        // Шаг 9: Опыт работы (необязательно, можно пропустить)
-        if (step === 9) {
+        // Шаг 9/10: Опыт работы (необязательно, можно пропустить)
+        if (step === 9 + stepOffset) {
           // Автоматически добавляем заполненный опыт перед переходом
           if (newWorkExp.company.trim() && newWorkExp.position.trim()) {
             handleAddWorkExperience();
@@ -332,13 +360,13 @@ export function StepByStepRegistrationForm({ phone, email, redirectTo }: StepByS
           return true;
         }
         
-        // Шаг 10: Дополнительная информация (необязательно, можно пропустить)
-        if (step === 10) {
+        // Шаг 10/11: Дополнительная информация (необязательно, можно пропустить)
+        if (step === 10 + stepOffset) {
           return true;
         }
         
-        // Шаг 11: Специализации (обязательно для соискателя)
-        if (step === 11) {
+        // Шаг 11/12: Специализации (обязательно для соискателя)
+        if (step === 11 + stepOffset) {
           if (formData.specializations.length === 0) {
             setError('Пожалуйста, выберите хотя бы одну специализацию.');
             return false;
@@ -346,8 +374,8 @@ export function StepByStepRegistrationForm({ phone, email, redirectTo }: StepByS
           return true;
         }
         
-        // Шаг 12: Город (для соискателя это последний шаг)
-        if (step === 12) {
+        // Шаг 12/13: Город (для соискателя это последний шаг)
+        if (step === 12 + stepOffset) {
           if (!formData.cityId) {
             setError('Пожалуйста, выберите город.');
             return false;
@@ -358,8 +386,8 @@ export function StepByStepRegistrationForm({ phone, email, redirectTo }: StepByS
       
       // Для работника на день и соискателя (без специализаций)
       if (formData.workerType === 'daily_worker') {
-        // Шаг 7: Город (для работника на день это последний шаг)
-        if (step === 7) {
+        // Шаг 7/8: Город (для работника на день это последний шаг)
+        if (step === 7 + stepOffset) {
           if (!formData.cityId) {
             setError('Пожалуйста, выберите город.');
             return false;
@@ -469,7 +497,7 @@ export function StepByStepRegistrationForm({ phone, email, redirectTo }: StepByS
     setLoading(true);
     try {
       const payload = {
-        phone: phone || undefined,
+        phone: phone || (email && formData.phoneNumber ? formData.phoneNumber : undefined),
         email: email || undefined,
         firstName: formData.firstName,
         lastName: formData.lastName,
@@ -527,12 +555,13 @@ export function StepByStepRegistrationForm({ phone, email, redirectTo }: StepByS
 
   const renderStep = () => {
     const totalSteps = getTotalSteps();
+    const stepOffset = (email && !phone) ? 1 : 0;
     
     // Определяем, на каком логическом шаге мы находимся
     let logicalStep = currentStep;
     
     // Для worker после выбора типа
-    if (formData.role === 'worker' && currentStep > 6) {
+    if (formData.role === 'worker' && currentStep > 6 + stepOffset) {
       if (formData.workerType === 'professional') {
         // Шаг 7 - специализации, шаг 8 - город
         logicalStep = currentStep;
@@ -553,62 +582,137 @@ export function StepByStepRegistrationForm({ phone, email, redirectTo }: StepByS
       case 3:
         return renderBirthDateStep();
       case 4:
-        return renderPrivacyStep();
-      case 5:
-        return renderRoleStep();
-      case 6:
-        if (formData.role === 'customer') {
-          return renderUserTypeStep();
+        if (stepOffset === 1) {
+          return renderPhoneNumberStep();
         } else {
-          return renderWorkerTypeStep();
+          return renderPrivacyStep();
+        }
+      case 5:
+        if (stepOffset === 1) {
+          return renderPrivacyStep();
+        } else {
+          return renderRoleStep();
+        }
+      case 6:
+        if (stepOffset === 1) {
+          return renderRoleStep();
+        } else {
+        if (formData.role === 'customer') {
+            return renderUserTypeStep();
+          } else {
+            return renderWorkerTypeStep();
+          }
         }
       case 7:
-        if (formData.role === 'customer') {
-          return renderCityStep();
-        } else if (formData.role === 'worker') {
-          if (formData.workerType === 'professional') {
-            return renderSpecializationsStep();
-          } else if (formData.workerType === 'job_seeker') {
-            return renderEducationStep();
+        if (stepOffset === 1) {
+          if (formData.role === 'customer') {
+            return renderUserTypeStep();
           } else {
+            return renderWorkerTypeStep();
+          }
+        } else {
+          if (formData.role === 'customer') {
             return renderCityStep();
+          } else if (formData.role === 'worker') {
+            if (formData.workerType === 'professional') {
+              return renderSpecializationsStep();
+            } else if (formData.workerType === 'job_seeker') {
+              return renderEducationStep();
+            } else {
+              return renderCityStep();
+            }
           }
         }
         break;
       case 8:
-        if (formData.role === 'worker') {
-          if (formData.workerType === 'professional') {
-            return renderAboutMeStep();
-          } else if (formData.workerType === 'job_seeker') {
-            return renderSkillsStep();
+        if (stepOffset === 1) {
+          if (formData.role === 'customer') {
+            return renderCityStep();
+          } else if (formData.role === 'worker') {
+            if (formData.workerType === 'professional') {
+              return renderSpecializationsStep();
+            } else if (formData.workerType === 'job_seeker') {
+              return renderEducationStep();
+            } else {
+              return renderCityStep();
+            }
+          }
+        } else {
+          if (formData.role === 'worker') {
+            if (formData.workerType === 'professional') {
+              return renderAboutMeStep();
+            } else if (formData.workerType === 'job_seeker') {
+              return renderSkillsStep();
+            }
           }
         }
         break;
       case 9:
-        if (formData.role === 'worker') {
-          if (formData.workerType === 'professional') {
-            return renderWorkPhotosStep();
-          } else if (formData.workerType === 'job_seeker') {
-            return renderWorkExperienceStep();
+        if (stepOffset === 1) {
+          if (formData.role === 'worker') {
+            if (formData.workerType === 'professional') {
+              return renderAboutMeStep();
+            } else if (formData.workerType === 'job_seeker') {
+              return renderSkillsStep();
+            }
+          }
+        } else {
+          if (formData.role === 'worker') {
+            if (formData.workerType === 'professional') {
+              return renderWorkPhotosStep();
+            } else if (formData.workerType === 'job_seeker') {
+              return renderWorkExperienceStep();
+            }
           }
         }
         break;
       case 10:
-        if (formData.role === 'worker') {
-          if (formData.workerType === 'professional') {
-            return renderCityStep();
-          } else if (formData.workerType === 'job_seeker') {
-            return renderAdditionalInfoStep();
+        if (stepOffset === 1) {
+          if (formData.role === 'worker') {
+            if (formData.workerType === 'professional') {
+              return renderWorkPhotosStep();
+            } else if (formData.workerType === 'job_seeker') {
+              return renderWorkExperienceStep();
+            }
+          }
+        } else {
+          if (formData.role === 'worker') {
+            if (formData.workerType === 'professional') {
+              return renderCityStep();
+            } else if (formData.workerType === 'job_seeker') {
+              return renderAdditionalInfoStep();
+            }
           }
         }
         break;
       case 11:
-        if (formData.role === 'worker' && formData.workerType === 'job_seeker') {
-          return renderSpecializationsStep();
+        if (stepOffset === 1) {
+          if (formData.role === 'worker') {
+            if (formData.workerType === 'professional') {
+              return renderCityStep();
+            } else if (formData.workerType === 'job_seeker') {
+              return renderAdditionalInfoStep();
+            }
+          }
+        } else {
+          if (formData.role === 'worker' && formData.workerType === 'job_seeker') {
+            return renderSpecializationsStep();
+          }
         }
         break;
       case 12:
-        if (formData.role === 'worker' && formData.workerType === 'job_seeker') {
+        if (stepOffset === 1) {
+          if (formData.role === 'worker' && formData.workerType === 'job_seeker') {
+            return renderSpecializationsStep();
+          }
+        } else {
+          if (formData.role === 'worker' && formData.workerType === 'job_seeker') {
+            return renderCityStep();
+          }
+        }
+        break;
+      case 13:
+        if (stepOffset === 1 && formData.role === 'worker' && formData.workerType === 'job_seeker') {
           return renderCityStep();
         }
         break;
@@ -708,6 +812,38 @@ export function StepByStepRegistrationForm({ phone, email, redirectTo }: StepByS
           className="mt-1"
         />
         <p className="text-sm text-gray-500 mt-1">Вам должно быть не менее 18 лет</p>
+      </div>
+    </div>
+  );
+
+  const renderPhoneNumberStep = () => (
+    <div className="space-y-6">
+      <div>
+        <h2 className="text-2xl font-bold mb-2">Номер телефона</h2>
+        <p className="text-gray-600">Введите номер для связи</p>
+      </div>
+
+      <div>
+        <Label htmlFor="phoneNumber">Номер телефона *</Label>
+        <Input
+          id="phoneNumber"
+          type="tel"
+          placeholder="+998"
+          value={formData.phoneNumber}
+          onChange={(e) => {
+            let value = e.target.value;
+            if (!value.startsWith('+998')) {
+              value = '+998';
+            }
+            const digits = value.slice(4).replace(/\D/g, '').slice(0, 9);
+            setFormData({ ...formData, phoneNumber: '+998' + digits });
+          }}
+          maxLength={13}
+          className="mt-1"
+        />
+        <p className="text-sm text-gray-500 mt-1">
+          Введите номер для связи (без SMS подтверждения)
+        </p>
       </div>
     </div>
   );

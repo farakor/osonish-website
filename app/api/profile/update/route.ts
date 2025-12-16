@@ -15,7 +15,6 @@ export async function POST(request: NextRequest) {
     }
 
     const updates = await request.json();
-    console.log('🔄 [profile/update] Обновление профиля:', { userId: user.id, updates });
 
     // Валидация данных
     if (updates.first_name && updates.first_name.trim().length < 2) {
@@ -61,8 +60,7 @@ export async function POST(request: NextRequest) {
         { status: 500 }
       );
     }
-
-    console.log('✅ [profile/update] Профиль успешно обновлен');
+    
     return NextResponse.json({ 
       success: true, 
       user: data 

@@ -20,6 +20,7 @@ interface UserMenuProps {
     first_name: string;
     last_name: string;
     profile_image?: string;
+    avatar_url?: string;
     role: string;
   };
 }
@@ -41,19 +42,23 @@ export function UserMenu({ user }: UserMenuProps) {
   };
 
   const initials = `${user.first_name[0]}${user.last_name[0]}`.toUpperCase();
+  
+  // Проверяем оба поля для аватара (avatar_url приоритетнее)
+  const avatarUrl = user.avatar_url || user.profile_image;
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" className="relative h-10 w-10 rounded-full p-0 overflow-hidden">
-          {user.profile_image ? (
+          {avatarUrl ? (
             <div className="h-10 w-10 rounded-full overflow-hidden">
               <Image
-                src={user.profile_image}
+                src={avatarUrl}
                 alt={`${user.first_name} ${user.last_name}`}
                 width={40}
                 height={40}
                 className="h-full w-full rounded-full object-cover"
+                key={avatarUrl} // Добавляем key для принудительного обновления
               />
             </div>
           ) : (

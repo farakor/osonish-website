@@ -5,6 +5,7 @@ export const employmentTypeLabels: Record<string, string> = {
   "full_time": "Полная занятость",
   "part_time": "Частичная занятость",
   "project": "Проектная работа",
+  "contract": "Работа по договору",
   "internship": "Стажировка",
   "temporary": "Временная работа",
   "Полная занятость": "Полная занятость",
@@ -29,6 +30,10 @@ export const workFormatLabels: Record<string, string> = {
 // Уровень опыта (Experience Level)
 export const experienceLevelLabels: Record<string, string> = {
   "no_experience": "Без опыта",
+  "less_than_1": "До 1 года",
+  "1_to_3": "От 1 до 3 лет",
+  "3_to_5": "От 3 до 5 лет",
+  "more_than_5": "Более 5 лет",
   "from_1_year": "От 1 года",
   "from_3_years": "От 3 лет",
   "from_5_years": "От 5 лет",

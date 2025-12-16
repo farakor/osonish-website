@@ -10,7 +10,7 @@ export default function LoginPage() {
   const searchParams = useSearchParams();
   const redirect = searchParams.get('redirect') || undefined;
   
-  const [authMethod, setAuthMethod] = useState<'phone' | 'email'>('email');
+  const [authMethod, setAuthMethod] = useState<'phone' | 'email'>('phone');
   
   return (
     <div className="min-h-[calc(100vh-80px)] flex items-center justify-center py-12 bg-gray-50">
