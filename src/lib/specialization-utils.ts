@@ -1,4 +1,5 @@
 import { SPECIALIZATIONS, PARENT_CATEGORIES, type SpecializationOption } from '@/constants/registration';
+import { translateCategory } from './category-translations';
 
 /**
  * Получает информацию о специализации по ID
@@ -24,11 +25,16 @@ export function getSpecializationInfo(specializationId: string | undefined | nul
 }
 
 /**
- * Получает имя специализации по ID
+ * Получает имя специализации по ID с поддержкой локализации
  */
-export function getSpecializationName(specializationId: string | undefined | null): string {
+export function getSpecializationName(specializationId: string | undefined | null, locale: string = 'ru'): string {
   const info = getSpecializationInfo(specializationId);
-  return info?.name || 'Не указано';
+  if (!info) {
+    return locale === 'uz' ? 'Ko\'rsatilmagan' : 'Не указано';
+  }
+  
+  // Используем translateCategory для перевода названия
+  return translateCategory(info.name, locale);
 }
 
 /**

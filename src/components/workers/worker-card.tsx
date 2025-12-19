@@ -14,19 +14,36 @@ import {
   Calendar,
 } from "lucide-react";
 import { UZBEKISTAN_CITIES } from "@/constants/registration";
+import { useTranslations, useLocale } from 'next-intl';
+import { translateCategory } from "@/lib/category-translations";
 
 interface WorkerCardProps {
   worker: WorkerProfile;
 }
 
 export function WorkerCard({ worker }: WorkerCardProps) {
+  const t = useTranslations('workers.card');
+  const tCities = useTranslations('cities');
+  const locale = useLocale();
+  
   const getInitials = (firstName: string, lastName: string) => {
     return `${firstName[0]}${lastName[0]}`.toUpperCase();
   };
   
   const getCityName = (cityId: string) => {
-    const city = UZBEKISTAN_CITIES.find(c => c.id === cityId);
-    return city?.name || cityId;
+    // Пытаемся получить перевод города
+    try {
+      return tCities(cityId);
+    } catch {
+      // Если перевода нет, ищем в константах
+      const city = UZBEKISTAN_CITIES.find(c => c.id === cityId);
+      return city?.name || cityId;
+    }
+  };
+
+  const getSpecializationName = (specialization: string) => {
+    // Пытаемся перевести специализацию
+    return translateCategory(specialization, locale);
   };
 
   const formatJoinDate = (dateString: string) => {
@@ -36,15 +53,18 @@ export function WorkerCard({ worker }: WorkerCardProps) {
     const months = now.getMonth() - date.getMonth();
     const totalMonths = years * 12 + months;
 
-    if (totalMonths < 1) return "Новичок";
-    if (totalMonths < 12) return `${totalMonths} мес. на платформе`;
-    return `${years} ${years === 1 ? "год" : years < 5 ? "года" : "лет"} на платформе`;
-  };
-
-  const workerTypeLabels = {
-    daily_worker: "Дневной работник",
-    professional: "Профессионал",
-    job_seeker: "Ищет работу",
+    if (totalMonths < 1) return t('newbie');
+    if (totalMonths < 12) return t('monthsOnPlatform', { count: totalMonths });
+    
+    // Для русского языка используем правильное склонение
+    if (locale === 'ru') {
+      if (years === 1) return t('yearsOnPlatform_one', { count: years });
+      if (years < 5) return t('yearsOnPlatform_few', { count: years });
+      return t('yearsOnPlatform_many', { count: years });
+    }
+    
+    // Для узбекского языка используем единую форму
+    return t('yearsOnPlatform', { count: years });
   };
 
   return (
@@ -67,7 +87,7 @@ export function WorkerCard({ worker }: WorkerCardProps) {
             </Link>
             {worker.specialization && (
               <p className="text-sm text-muted-foreground mt-1">
-                {worker.specialization}
+                {getSpecializationName(worker.specialization)}
               </p>
             )}
             {worker.city && (
@@ -93,7 +113,7 @@ export function WorkerCard({ worker }: WorkerCardProps) {
             </div>
             <div className="flex items-center gap-1 text-sm">
               <CheckCircle className="w-4 h-4 text-green-600" />
-              <span>{worker.completedJobs} заказов</span>
+              <span>{t('completedJobs', { count: worker.completedJobs })}</span>
             </div>
           </div>
         )}
@@ -101,7 +121,7 @@ export function WorkerCard({ worker }: WorkerCardProps) {
 
       <CardFooter className="p-6 pt-0">
         <Button asChild className="w-full text-white">
-          <Link href={`/profiles/${worker.id}`}>Посмотреть профиль</Link>
+          <Link href={`/profiles/${worker.id}`}>{t('viewProfile')}</Link>
         </Button>
       </CardFooter>
     </Card>

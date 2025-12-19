@@ -1,43 +1,44 @@
+"use client";
+
 import { CheckCircle, FileText, Users, Star } from "lucide-react";
 import { Container } from "../shared/container";
-
-const steps = [
-  {
-    icon: FileText,
-    title: "Создайте заказ",
-    description:
-      "Опишите вашу задачу, укажите бюджет и сроки выполнения работы",
-  },
-  {
-    icon: Users,
-    title: "Получайте отклики",
-    description:
-      "Исполнители откликнутся на ваш заказ, изучите их профили и отзывы",
-  },
-  {
-    icon: CheckCircle,
-    title: "Выберите исполнителя",
-    description:
-      "Выберите подходящего специалиста и начните работу над вашим проектом",
-  },
-  {
-    icon: Star,
-    title: "Оцените работу",
-    description:
-      "После завершения работы оставьте отзыв о качестве услуг",
-  },
-];
+import { useTranslations } from 'next-intl';
 
 export function HowItWorksSection() {
+  const t = useTranslations('landing.howItWorks');
+  
+  const steps = [
+    {
+      icon: FileText,
+      title: t('step1Title'),
+      description: t('step1Description'),
+    },
+    {
+      icon: Users,
+      title: t('step2Title'),
+      description: t('step2Description'),
+    },
+    {
+      icon: CheckCircle,
+      title: t('step3Title'),
+      description: t('step3Description'),
+    },
+    {
+      icon: Star,
+      title: t('step4Title'),
+      description: t('step4Description'),
+    },
+  ];
+
   return (
-    <section className="py-16 md:py-24 bg-white border-t border-gray-200">
+    <section id="how-it-works" className="py-16 md:py-24 bg-white border-t border-gray-200 scroll-mt-20">
       <Container>
         <div className="text-center mb-16">
           <h2 className="text-3xl md:text-4xl font-bold mb-4 text-gray-900">
-            Как это работает
+            {t('title')}
           </h2>
           <p className="text-lg md:text-xl text-gray-600 max-w-2xl mx-auto">
-            Простой процесс от создания заказа до его выполнения
+            {t('subtitle')}
           </p>
         </div>
 

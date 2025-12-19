@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "next/link";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -16,12 +18,16 @@ import { formatPrice, formatDate } from "@/lib/utils";
 import Image from "next/image";
 import { getSpecializationName, getSpecializationIconName } from "@/lib/specialization-utils";
 import { SpecializationIcon } from "@/components/ui/specialization-icon";
+import { useTranslations, useLocale } from 'next-intl';
 
 interface OrderCardProps {
   order: Order;
 }
 
 export function OrderCard({ order }: OrderCardProps) {
+  const t = useTranslations('orders.card');
+  const locale = useLocale();
+  
   const statusColors = {
     new: "bg-blue-100 text-blue-800",
     response_received: "bg-purple-100 text-purple-800",
@@ -31,13 +37,16 @@ export function OrderCard({ order }: OrderCardProps) {
     rejected: "bg-red-100 text-red-800",
   };
 
-  const statusLabels = {
-    new: "Новый",
-    response_received: "Есть отклики",
-    in_progress: "В работе",
-    completed: "Завершен",
-    cancelled: "Отменен",
-    rejected: "Отклонен",
+  const getStatusLabel = (status: string) => {
+    const statusMap: Record<string, string> = {
+      new: t('new'),
+      response_received: t('responseReceived'),
+      in_progress: t('inProgress'),
+      completed: t('completed'),
+      cancelled: t('cancelled'),
+      rejected: t('rejected'),
+    };
+    return statusMap[status] || status;
   };
 
   // Проверяем, был ли заказ создан менее 3 дней назад
@@ -84,7 +93,7 @@ export function OrderCard({ order }: OrderCardProps) {
           </div>
           <div className="flex items-center text-sm text-muted-foreground">
             <Calendar className="h-4 w-4 mr-2" />
-            <span>{formatDate(order.serviceDate)}</span>
+            <span>{formatDate(order.serviceDate, locale)}</span>
           </div>
           <div className="flex items-center text-sm">
             <span className="text-xs font-bold mr-2 text-primary">UZS</span>
@@ -107,7 +116,7 @@ export function OrderCard({ order }: OrderCardProps) {
                 e.currentTarget.style.backgroundColor = '#DBEAFE';
               }}
             >
-              {statusLabels[order.status]}
+              {getStatusLabel(order.status)}
             </Badge>
           )}
           {order.specializationId && (
@@ -121,25 +130,25 @@ export function OrderCard({ order }: OrderCardProps) {
                   size={16} 
                 />
               )}
-              <span>{getSpecializationName(order.specializationId)}</span>
+              <span>{getSpecializationName(order.specializationId, locale)}</span>
             </Badge>
           )}
           {order.workersNeeded > 1 && (
             <Badge variant="outline" className="h-auto py-1.5">
               <Users className="h-3 w-3 mr-1" />
-              {order.workersNeeded} человек
+              {t('people', { count: order.workersNeeded })}
             </Badge>
           )}
           {order.mealIncluded && (
             <Badge variant="outline" className="h-auto py-1.5">
               <Utensils className="h-3 w-3 mr-1" />
-              Питание включено
+              {t('mealIncluded')}
             </Badge>
           )}
           {order.transportPaid && (
             <Badge variant="outline" className="h-auto py-1.5">
               <Bus className="h-3 w-3 mr-1" />
-              Транспорт оплачивается
+              {t('transportPaid')}
             </Badge>
           )}
         </div>
@@ -149,7 +158,7 @@ export function OrderCard({ order }: OrderCardProps) {
           <div className="flex items-center gap-4 text-sm text-muted-foreground">
             <div className="flex items-center">
               <MessageSquare className="h-4 w-4 mr-1" />
-              <span>{order.applicantsCount} откликов</span>
+              <span>{t('responses', { count: order.applicantsCount })}</span>
             </div>
           </div>
         )}
@@ -157,7 +166,7 @@ export function OrderCard({ order }: OrderCardProps) {
 
       <CardFooter className="p-6 pt-0">
         <Button asChild className="w-full text-white">
-          <Link href={`/orders/${order.id}`}>Подробнее</Link>
+          <Link href={`/orders/${order.id}`}>{t('viewDetails')}</Link>
         </Button>
       </CardFooter>
     </Card>

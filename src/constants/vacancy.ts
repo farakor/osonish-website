@@ -1,21 +1,21 @@
 // Константы для полей вакансии
 
-// Уровни опыта
+// Уровни опыта - используем те же ключи что и в мобильном
 export const EXPERIENCE_LEVELS = [
   { value: 'no_experience', label: 'Без опыта' },
-  { value: 'from_1_year', label: 'От 1 года' },
-  { value: 'from_3_years', label: 'От 3 лет' },
-  { value: 'from_5_years', label: 'От 5 лет' },
-  { value: 'from_10_years', label: 'От 10 лет' },
+  { value: 'less_than_1', label: 'До 1 года' },
+  { value: '1_to_3', label: '1-3 года' },
+  { value: '3_to_5', label: '3-5 лет' },
+  { value: 'more_than_5', label: 'Более 5 лет' },
 ] as const;
 
-// Типы занятости
+// Типы занятости - используем те же ключи что и в мобильном
 export const EMPLOYMENT_TYPES = [
   { value: 'full_time', label: 'Полная занятость' },
   { value: 'part_time', label: 'Частичная занятость' },
-  { value: 'project', label: 'Проектная работа' },
-  { value: 'internship', label: 'Стажировка' },
+  { value: 'contract', label: 'Работа по договору' },
   { value: 'temporary', label: 'Временная работа' },
+  { value: 'internship', label: 'Стажировка' },
 ] as const;
 
 // Форматы работы
@@ -40,10 +40,10 @@ export const SALARY_PERIODS = [
   { value: 'per_month', label: 'В месяц' },
 ] as const;
 
-// Типы зарплаты
+// Типы зарплаты - используем те же ключи что и в мобильном
 export const SALARY_TYPES = [
-  { value: 'before_tax', label: 'До вычета налогов' },
-  { value: 'after_tax', label: 'На руки' },
+  { value: 'gross', label: 'До вычета налогов' },
+  { value: 'net', label: 'На руки' },
 ] as const;
 
 // Частота выплат

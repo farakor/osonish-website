@@ -41,7 +41,7 @@ export function CustomDropdown({
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full mt-1 p-2 border rounded-md bg-white text-left flex items-center justify-between hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+        className="w-full mt-1 p-2 border rounded-md bg-white text-left flex items-center justify-between hover:border-gray-400 focus:outline-none focus:border-2 focus:border-[#679B00] transition-all"
       >
         <span className={selectedOption ? "text-gray-900" : "text-gray-500"}>
           {selectedOption ? selectedOption.label : placeholder}
@@ -85,6 +85,8 @@ export function CustomDropdown({
     </div>
   );
 }
+
+
 
 
 

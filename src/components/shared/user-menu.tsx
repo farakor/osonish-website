@@ -13,6 +13,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useTranslations } from "next-intl";
 
 interface UserMenuProps {
   user: {
@@ -27,6 +28,7 @@ interface UserMenuProps {
 
 export function UserMenu({ user }: UserMenuProps) {
   const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const t = useTranslations('userMenu');
 
   const handleLogout = async () => {
     setIsLoggingOut(true);
@@ -75,7 +77,7 @@ export function UserMenu({ user }: UserMenuProps) {
               {user.first_name} {user.last_name}
             </p>
             <p className="text-xs leading-none text-muted-foreground">
-              {user.role === 'worker' ? 'Исполнитель' : 'Заказчик'}
+              {user.role === 'worker' ? t('worker') : t('customer')}
             </p>
           </div>
         </DropdownMenuLabel>
@@ -83,19 +85,19 @@ export function UserMenu({ user }: UserMenuProps) {
         <DropdownMenuItem asChild>
           <Link href="/dashboard" className="cursor-pointer">
             <LayoutDashboard className="mr-2 h-4 w-4" />
-            <span>Дашборд</span>
+            <span>{t('dashboard')}</span>
           </Link>
         </DropdownMenuItem>
         <DropdownMenuItem asChild>
           <Link href="/dashboard/profile" className="cursor-pointer">
             <User className="mr-2 h-4 w-4" />
-            <span>Профиль</span>
+            <span>{t('profile')}</span>
           </Link>
         </DropdownMenuItem>
         <DropdownMenuItem asChild>
           <Link href="/dashboard/settings" className="cursor-pointer">
             <Settings className="mr-2 h-4 w-4" />
-            <span>Настройки</span>
+            <span>{t('settings')}</span>
           </Link>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
@@ -105,7 +107,7 @@ export function UserMenu({ user }: UserMenuProps) {
           className="cursor-pointer text-red-600 focus:text-red-600"
         >
           <LogOut className="mr-2 h-4 w-4" />
-          <span>{isLoggingOut ? 'Выход...' : 'Выйти'}</span>
+          <span>{isLoggingOut ? t('loggingOut') : t('logout')}</span>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

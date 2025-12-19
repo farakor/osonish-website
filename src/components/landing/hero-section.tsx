@@ -6,9 +6,12 @@ import { useState } from "react";
 import { Container } from "../shared/container";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { useTranslations } from 'next-intl';
 
 export function HeroSection() {
   const router = useRouter();
+  const t = useTranslations('landing.hero');
+  const tCommon = useTranslations('common');
   const [phone, setPhone] = useState("+998 ");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
@@ -22,7 +25,7 @@ export function HeroSection() {
     const formattedPhone = phone.replace(/\D/g, '');
     
     if (formattedPhone.length < 12) {
-      setError("Пожалуйста, введите корректный номер телефона");
+      setError(t('phoneError'));
       setIsSubmitting(false);
       return;
     }
@@ -41,10 +44,10 @@ export function HeroSection() {
         // Перенаправляем на страницу регистрации с номером телефона и шагом OTP
         router.push(`/auth/register?phone=${formattedPhone}&step=otp`);
       } else {
-        setError(data.error || 'Не удалось отправить код. Попробуйте снова');
+        setError(data.error || t('sendError'));
       }
     } catch (err) {
-      setError('Ошибка сети. Проверьте подключение к интернету');
+      setError(t('networkError'));
     } finally {
       setIsSubmitting(false);
     }
@@ -154,7 +157,7 @@ export function HeroSection() {
             <div className="relative z-10">
               {/* Title */}
               <h1 className="text-xl md:text-2xl lg:text-3xl font-bold tracking-tight mb-6 text-white leading-tight drop-shadow-lg">
-                Напишите телефон, чтобы работодатели могли предложить вам работу
+                {t('title')}
               </h1>
 
               {/* Phone Input Form */}
@@ -175,7 +178,7 @@ export function HeroSection() {
                     className="px-8 h-14 text-base font-medium shadow-2xl whitespace-nowrap bg-gradient-to-br from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 border border-white/30 text-white"
                     disabled={isSubmitting || phone.replace(/\D/g, '').length < 12}
                   >
-                    {isSubmitting ? "Загрузка..." : "Продолжить"}
+                    {isSubmitting ? tCommon('loading') : tCommon('continue')}
                   </Button>
                 </div>
                 {error && (
@@ -187,13 +190,13 @@ export function HeroSection() {
 
               {/* Privacy Policy */}
               <p className="text-sm text-white font-medium drop-shadow-lg">
-                Продолжая, вы принимаете{" "}
+                {t('privacyText')}{" "}
                 <a href="/terms" className="underline hover:text-white/80 font-semibold">
-                  соглашение
+                  {t('agreement')}
                 </a>{" "}
-                и{" "}
+                {t('and')}{" "}
                 <a href="/privacy" className="underline hover:text-white/80 font-semibold">
-                  политику конфиденциальности
+                  {t('privacyPolicy')}
                 </a>
               </p>
             </div>

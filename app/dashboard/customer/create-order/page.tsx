@@ -104,7 +104,7 @@ export default function CreateOrderPage() {
                       name="category"
                       value={formData.category}
                       onChange={handleChange}
-                      className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                      className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:border-2 focus-visible:border-[#679B00] transition-all"
                       required
                     >
                       <option value="">Выберите категорию</option>
@@ -151,7 +151,7 @@ export default function CreateOrderPage() {
                       name="city"
                       value={formData.city}
                       onChange={handleChange}
-                      className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                      className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:border-2 focus-visible:border-[#679B00] transition-all"
                       required
                     >
                       <option value="">Выберите город</option>

@@ -19,6 +19,7 @@ import {
   AlertDialogTitle, 
   AlertDialogTrigger 
 } from '@/components/ui/alert-dialog';
+import { useTranslations } from 'next-intl';
 
 interface User {
   id: string;
@@ -38,6 +39,7 @@ export function SettingsForm({ user }: SettingsFormProps) {
   const [language, setLanguage] = useState(user.preferred_language || 'ru');
   const [notifications, setNotifications] = useState(true);
   const [emailNotifications, setEmailNotifications] = useState(false);
+  const t = useTranslations('settings');
 
   const handleSaveSettings = async () => {
     setLoading(true);
@@ -56,14 +58,14 @@ export function SettingsForm({ user }: SettingsFormProps) {
 
       if (data.success) {
         console.log('✅ Настройки сохранены');
-        alert('Настройки успешно сохранены!');
+        alert(t('mainSettings.saveSuccess'));
         router.refresh();
       } else {
-        setError(data.error || 'Не удалось сохранить настройки');
+        setError(data.error || t('mainSettings.saveError'));
       }
     } catch (err) {
       console.error('Ошибка сохранения настроек:', err);
-      setError('Ошибка при сохранении настроек');
+      setError(t('mainSettings.generalError'));
     } finally {
       setLoading(false);
     }
@@ -76,10 +78,10 @@ export function SettingsForm({ user }: SettingsFormProps) {
     try {
       // TODO: Реализовать удаление аккаунта
       console.log('Удаление аккаунта...');
-      alert('Функция удаления аккаунта будет реализована позже');
+      alert(t('privacy.deleteNotImplemented'));
     } catch (err) {
       console.error('Ошибка удаления аккаунта:', err);
-      setError('Ошибка при удалении аккаунта');
+      setError(t('privacy.deleteError'));
     } finally {
       setLoading(false);
     }
@@ -90,8 +92,8 @@ export function SettingsForm({ user }: SettingsFormProps) {
       {/* Основные настройки */}
       <Card>
         <CardHeader>
-          <CardTitle>Основные настройки</CardTitle>
-          <CardDescription>Управление параметрами вашего аккаунта</CardDescription>
+          <CardTitle>{t('mainSettings.title')}</CardTitle>
+          <CardDescription>{t('mainSettings.description')}</CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
           {error && (
@@ -102,24 +104,24 @@ export function SettingsForm({ user }: SettingsFormProps) {
 
           {/* Язык */}
           <div className="space-y-2">
-            <Label htmlFor="language">Язык интерфейса</Label>
+            <Label htmlFor="language">{t('mainSettings.language')}</Label>
             <Select value={language} onValueChange={setLanguage}>
               <SelectTrigger id="language">
-                <SelectValue placeholder="Выберите язык" />
+                <SelectValue placeholder={t('mainSettings.selectLanguage')} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="ru">Русский</SelectItem>
-                <SelectItem value="uz">O'zbekcha</SelectItem>
-                <SelectItem value="en">English</SelectItem>
+                <SelectItem value="ru">{t('mainSettings.russian')}</SelectItem>
+                <SelectItem value="uz">{t('mainSettings.uzbek')}</SelectItem>
+                <SelectItem value="en">{t('mainSettings.english')}</SelectItem>
               </SelectContent>
             </Select>
           </div>
 
           {/* Роль */}
           <div className="space-y-2">
-            <Label>Роль</Label>
+            <Label>{t('mainSettings.role')}</Label>
             <div className="text-sm text-muted-foreground">
-              {user.role === 'customer' ? 'Заказчик' : 'Исполнитель'}
+              {user.role === 'customer' ? t('mainSettings.customer') : t('mainSettings.worker')}
             </div>
           </div>
 
@@ -127,10 +129,10 @@ export function SettingsForm({ user }: SettingsFormProps) {
             {loading ? (
               <>
                 <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                Сохранение...
+                {t('mainSettings.saving')}
               </>
             ) : (
-              'Сохранить настройки'
+              t('mainSettings.saveButton')
             )}
           </Button>
         </CardContent>
@@ -139,15 +141,15 @@ export function SettingsForm({ user }: SettingsFormProps) {
       {/* Уведомления */}
       <Card>
         <CardHeader>
-          <CardTitle>Уведомления</CardTitle>
-          <CardDescription>Настройте, какие уведомления вы хотите получать</CardDescription>
+          <CardTitle>{t('notifications.title')}</CardTitle>
+          <CardDescription>{t('notifications.description')}</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="flex items-center justify-between">
             <div className="space-y-0.5">
-              <Label>Push-уведомления</Label>
+              <Label>{t('notifications.push')}</Label>
               <div className="text-sm text-muted-foreground">
-                Получать уведомления о новых сообщениях и откликах
+                {t('notifications.pushDescription')}
               </div>
             </div>
             <Switch checked={notifications} onCheckedChange={setNotifications} />
@@ -155,9 +157,9 @@ export function SettingsForm({ user }: SettingsFormProps) {
 
           <div className="flex items-center justify-between">
             <div className="space-y-0.5">
-              <Label>Email-уведомления</Label>
+              <Label>{t('notifications.email')}</Label>
               <div className="text-sm text-muted-foreground">
-                Получать важные уведомления на почту
+                {t('notifications.emailDescription')}
               </div>
             </div>
             <Switch checked={emailNotifications} onCheckedChange={setEmailNotifications} />
@@ -168,12 +170,12 @@ export function SettingsForm({ user }: SettingsFormProps) {
       {/* Конфиденциальность */}
       <Card>
         <CardHeader>
-          <CardTitle>Конфиденциальность</CardTitle>
-          <CardDescription>Управление данными аккаунта</CardDescription>
+          <CardTitle>{t('privacy.title')}</CardTitle>
+          <CardDescription>{t('privacy.description')}</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="space-y-2">
-            <Label>Телефон</Label>
+            <Label>{t('privacy.phone')}</Label>
             <div className="text-sm text-muted-foreground">{user.phone}</div>
           </div>
 
@@ -182,27 +184,26 @@ export function SettingsForm({ user }: SettingsFormProps) {
               <AlertDialogTrigger asChild>
                 <Button variant="destructive" className="w-full">
                   <Trash2 className="h-4 w-4 mr-2" />
-                  Удалить аккаунт
+                  {t('privacy.deleteAccount')}
                 </Button>
               </AlertDialogTrigger>
               <AlertDialogContent>
                 <AlertDialogHeader>
                   <AlertDialogTitle className="flex items-center gap-2">
                     <AlertTriangle className="h-5 w-5 text-red-500" />
-                    Вы уверены?
+                    {t('privacy.deleteConfirmTitle')}
                   </AlertDialogTitle>
                   <AlertDialogDescription>
-                    Это действие нельзя отменить. Это приведет к безвозвратному удалению вашего
-                    аккаунта и всех связанных данных с наших серверов.
+                    {t('privacy.deleteConfirmDescription')}
                   </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
-                  <AlertDialogCancel>Отмена</AlertDialogCancel>
+                  <AlertDialogCancel>{t('privacy.cancelButton')}</AlertDialogCancel>
                   <AlertDialogAction
                     onClick={handleDeleteAccount}
                     className="bg-red-500 hover:bg-red-600"
                   >
-                    Удалить аккаунт
+                    {t('privacy.deleteButton')}
                   </AlertDialogAction>
                 </AlertDialogFooter>
               </AlertDialogContent>

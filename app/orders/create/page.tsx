@@ -2,20 +2,24 @@ import { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { getCurrentUser } from "@/lib/auth";
 import { CreateOrderClient } from "./page-client";
+import { getTranslations } from 'next-intl/server';
 
-export const metadata: Metadata = {
-  title: "Создать заказ - Osonish",
-  description:
-    "Создайте заказ на выполнение работ. Найдите профессионалов для решения ваших задач в Узбекистане.",
-  openGraph: {
-    title: "Создать заказ - Osonish",
-    description: "Разместите заказ и найдите исполнителей",
-  },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations('createOrder');
+  return {
+    title: `${t('title')} - Osonish`,
+    description: "Создайте заказ на выполнение работ. Найдите профессионалов для решения ваших задач в Узбекистане.",
+    openGraph: {
+      title: `${t('title')} - Osonish`,
+      description: "Разместите заказ и найдите исполнителей",
+    },
+  };
+}
 
 export default async function CreateOrderPage() {
   // Проверяем авторизацию
   const user = await getCurrentUser();
+  const t = await getTranslations('createOrder');
   
   if (!user) {
     // Если пользователь не авторизован, перенаправляем на страницу входа
@@ -46,7 +50,7 @@ export default async function CreateOrderPage() {
       {
         "@type": "ListItem",
         position: 3,
-        name: "Создать заказ",
+        name: t('title'),
         item: "https://osonish.uz/orders/create",
       },
     ],

@@ -4,6 +4,8 @@ import "./globals.css";
 import { Header } from "@/components/shared/header";
 import { Footer } from "@/components/shared/footer";
 import { ClientProviders } from "@/components/providers/client-providers";
+import { NextIntlClientProvider } from 'next-intl';
+import { getMessages, getLocale } from 'next-intl/server';
 
 const inter = Inter({
   subsets: ["latin", "cyrillic"],
@@ -58,21 +60,29 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // Получаем текущую локаль из next-intl
+  const locale = await getLocale();
+  
+  // Загружаем сообщения для текущей локали
+  const messages = await getMessages();
+
   return (
-    <html lang="ru" suppressHydrationWarning>
+    <html lang={locale} suppressHydrationWarning>
       <body className={`${inter.variable} font-sans antialiased`}>
-        <ClientProviders>
-          <div className="flex min-h-screen flex-col">
-            <Header />
-            <main className="flex-1">{children}</main>
-            <Footer />
-          </div>
-        </ClientProviders>
+        <NextIntlClientProvider messages={messages} locale={locale}>
+          <ClientProviders>
+            <div className="flex min-h-screen flex-col">
+              <Header />
+              <main className="flex-1">{children}</main>
+              <Footer />
+            </div>
+          </ClientProviders>
+        </NextIntlClientProvider>
       </body>
     </html>
   );

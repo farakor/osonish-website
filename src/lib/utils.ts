@@ -13,8 +13,22 @@ export function formatPrice(price: number): string {
   }).format(price);
 }
 
-export function formatDate(date: string | Date): string {
+export function formatDate(date: string | Date, locale: string = "ru-RU"): string {
   const dateObj = typeof date === "string" ? new Date(date) : date;
+  
+  // Для узбекского языка используем кастомное форматирование
+  if (locale === 'uz') {
+    const months = [
+      'yan', 'fev', 'mar', 'apr', 'may', 'iyun',
+      'iyul', 'avg', 'sen', 'okt', 'noy', 'dek'
+    ];
+    const day = dateObj.getDate();
+    const month = months[dateObj.getMonth()];
+    const year = dateObj.getFullYear();
+    return `${day} ${month}. ${year} y.`;
+  }
+  
+  // Для русского и других языков используем Intl
   return new Intl.DateTimeFormat("ru-RU", {
     day: "numeric",
     month: "short",

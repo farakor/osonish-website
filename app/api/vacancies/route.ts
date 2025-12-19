@@ -104,6 +104,7 @@ export async function GET(request: NextRequest) {
       salaryFrom: vacancy.salary_from,
       salaryTo: vacancy.salary_to,
       salaryPeriod: vacancy.salary_period,
+      salaryType: vacancy.salary_type,
       experienceLevel: vacancy.experience_level,
       skills: vacancy.skills || [],
       languages: vacancy.languages || [],

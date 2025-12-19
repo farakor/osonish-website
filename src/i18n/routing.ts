@@ -1,18 +1,19 @@
-import createMiddleware from 'next-intl/middleware';
+import { defineRouting } from 'next-intl/routing';
+import { createNavigation } from 'next-intl/navigation';
 
-export default createMiddleware({
+export const routing = defineRouting({
   // A list of all locales that are supported
   locales: ['ru', 'uz'],
 
   // Used when no locale matches
   defaultLocale: 'ru',
   
-  // Always use prefix (e.g. /ru, /uz)
-  localePrefix: 'as-needed'
+  // Always show locale prefix in URL
+  localePrefix: 'always'
 });
 
-export const config = {
-  // Match only internationalized pathnames
-  matcher: ['/', '/(ru|uz)/:path*']
-};
+// Lightweight wrappers around Next.js' navigation APIs
+// that will consider the routing configuration
+export const { Link, redirect, usePathname, useRouter } =
+  createNavigation(routing);
 

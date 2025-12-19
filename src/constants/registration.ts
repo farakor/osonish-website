@@ -16,6 +16,33 @@ export const UZBEKISTAN_CITIES = [
   { id: 'nukus', name: 'Нукус' },
 ] as const;
 
+// Названия городов на узбекском
+const CITY_NAMES_UZ: Record<string, string> = {
+  'tashkent': 'Toshkent',
+  'samarkand': 'Samarqand',
+  'bukhara': 'Buxoro',
+  'andijan': 'Andijon',
+  'jizzakh': 'Jizzax',
+  'karshi': 'Qarshi',
+  'navoi': 'Navoiy',
+  'namangan': 'Namangan',
+  'termez': 'Termiz',
+  'sirdarya': 'Sirdaryo',
+  'chirchik': 'Chirchiq',
+  'fergana': 'Farg\'ona',
+  'urgench': 'Urganch',
+  'nukus': 'Nukus',
+};
+
+// Получить название города с учетом локали
+export const getCityName = (cityId: string, locale: string = 'ru'): string => {
+  if (locale === 'uz' && CITY_NAMES_UZ[cityId]) {
+    return CITY_NAMES_UZ[cityId];
+  }
+  const city = UZBEKISTAN_CITIES.find(c => c.id === cityId);
+  return city ? city.name : cityId;
+};
+
 export const WORKER_TYPES = [
   {
     id: 'daily_worker',

@@ -3,14 +3,19 @@ import { redirect } from 'next/navigation';
 import { Container } from '@/components/shared/container';
 import { createClient } from '@/lib/supabase/server';
 import { ResponsesClient } from './page-client';
+import { getTranslations } from 'next-intl/server';
 
-export const metadata = {
-  title: 'Все отклики - Osonish',
-  description: 'Просмотр всех откликов на ваши заказы',
-};
+export async function generateMetadata() {
+  const t = await getTranslations('customerResponses');
+  return {
+    title: `${t('title')} - Osonish`,
+    description: t('description'),
+  };
+}
 
 export default async function AllResponsesPage() {
   const user = await getCurrentUser();
+  const t = await getTranslations('customerResponses');
   
   if (!user) {
     redirect('/auth/login');
@@ -153,9 +158,9 @@ export default async function AllResponsesPage() {
     <div className="pt-24 pb-8">
       <Container>
         <div className="mb-8">
-          <h1 className="text-3xl font-bold mb-2">Все отклики</h1>
+          <h1 className="text-3xl font-bold mb-2">{t('title')}</h1>
           <p className="text-muted-foreground">
-            Просмотр всех откликов на ваши заказы и вакансии
+            {t('description')}
           </p>
         </div>
 

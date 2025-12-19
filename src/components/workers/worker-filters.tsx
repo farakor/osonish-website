@@ -13,6 +13,7 @@ import {
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Filter, X } from "lucide-react";
+import { useTranslations } from 'next-intl';
 
 export interface WorkerFilterValues {
   search?: string;
@@ -57,6 +58,7 @@ export function WorkerFilters({
   onFilterChange,
   initialFilters = {},
 }: WorkerFiltersProps) {
+  const t = useTranslations('workers.filters');
   const [filters, setFilters] = useState<WorkerFilterValues>(initialFilters);
   const [showFilters, setShowFilters] = useState(false);
 
@@ -84,26 +86,26 @@ export function WorkerFilters({
           className="w-full"
         >
           <Filter className="h-4 w-4 mr-2" />
-          {showFilters ? "Скрыть фильтры" : "Показать фильтры"}
+          {showFilters ? t('hideFilters') : t('showFilters')}
         </Button>
       </div>
 
       {/* Filters Card */}
       <Card className={`${showFilters ? "block" : "hidden md:block"}`}>
         <CardHeader className="flex flex-row items-center justify-between">
-          <CardTitle className="text-lg">Фильтры</CardTitle>
+          <CardTitle className="text-lg">{t('title')}</CardTitle>
           <Button variant="ghost" size="sm" onClick={handleReset} className="border border-gray-300 hover:border-gray-400">
             <X className="h-4 w-4 mr-2" />
-            Очистить
+            {t('clear')}
           </Button>
         </CardHeader>
         <CardContent className="space-y-4">
           {/* Search */}
           <div>
-            <Label htmlFor="search">Поиск</Label>
+            <Label htmlFor="search">{t('search')}</Label>
             <Input
               id="search"
-              placeholder="Имя, специализация..."
+              placeholder={t('searchPlaceholder')}
               value={filters.search || ""}
               onChange={(e) => handleFilterChange("search", e.target.value)}
             />
@@ -111,13 +113,13 @@ export function WorkerFilters({
 
           {/* City */}
           <div>
-            <Label htmlFor="city">Город</Label>
+            <Label htmlFor="city">{t('city')}</Label>
             <Select
               value={filters.city || "all"}
               onValueChange={(value) => handleFilterChange("city", value === "all" ? undefined : value)}
             >
               <SelectTrigger id="city">
-                <SelectValue placeholder="Выберите город" />
+                <SelectValue placeholder={t('selectCity')} />
               </SelectTrigger>
               <SelectContent>
                 {cities.map((city) => (
@@ -125,7 +127,7 @@ export function WorkerFilters({
                     key={city}
                     value={city === "Все города" ? "all" : city}
                   >
-                    {city}
+                    {city === "Все города" ? t('allCities') : city}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -134,7 +136,7 @@ export function WorkerFilters({
 
           {/* Specialization */}
           <div>
-            <Label htmlFor="specialization">Специализация</Label>
+            <Label htmlFor="specialization">{t('specialization')}</Label>
             <Select
               value={filters.specialization || "all"}
               onValueChange={(value) =>
@@ -142,7 +144,7 @@ export function WorkerFilters({
               }
             >
               <SelectTrigger id="specialization">
-                <SelectValue placeholder="Выберите специализацию" />
+                <SelectValue placeholder={t('selectSpecialization')} />
               </SelectTrigger>
               <SelectContent>
                 {specializations.map((spec) => (
@@ -150,7 +152,7 @@ export function WorkerFilters({
                     key={spec}
                     value={spec === "Все специализации" ? "all" : spec}
                   >
-                    {spec}
+                    {spec === "Все специализации" ? t('allSpecializations') : spec}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -159,7 +161,7 @@ export function WorkerFilters({
 
           {/* Worker Type */}
           <div>
-            <Label htmlFor="workerType">Тип работника</Label>
+            <Label htmlFor="workerType">{t('workerType')}</Label>
             <Select
               value={filters.workerType || "all"}
               onValueChange={(value) =>
@@ -167,20 +169,20 @@ export function WorkerFilters({
               }
             >
               <SelectTrigger id="workerType">
-                <SelectValue placeholder="Выберите тип" />
+                <SelectValue placeholder={t('selectWorkerType')} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">Все типы</SelectItem>
-                <SelectItem value="professional">Профессионал</SelectItem>
-                <SelectItem value="daily_worker">Дневной работник</SelectItem>
-                <SelectItem value="job_seeker">Ищет работу</SelectItem>
+                <SelectItem value="all">{t('allTypes')}</SelectItem>
+                <SelectItem value="professional">{t('professional')}</SelectItem>
+                <SelectItem value="daily_worker">{t('dailyWorker')}</SelectItem>
+                <SelectItem value="job_seeker">{t('jobSeeker')}</SelectItem>
               </SelectContent>
             </Select>
           </div>
 
           {/* Min Rating */}
           <div>
-            <Label htmlFor="minRating">Минимальный рейтинг</Label>
+            <Label htmlFor="minRating">{t('minRating')}</Label>
             <Select
               value={filters.minRating?.toString() || "all"}
               onValueChange={(value) =>
@@ -188,10 +190,10 @@ export function WorkerFilters({
               }
             >
               <SelectTrigger id="minRating">
-                <SelectValue placeholder="Любой рейтинг" />
+                <SelectValue placeholder={t('anyRating')} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">Любой рейтинг</SelectItem>
+                <SelectItem value="all">{t('anyRating')}</SelectItem>
                 <SelectItem value="4.5">4.5+ ⭐</SelectItem>
                 <SelectItem value="4.0">4.0+ ⭐</SelectItem>
                 <SelectItem value="3.5">3.5+ ⭐</SelectItem>
@@ -203,7 +205,7 @@ export function WorkerFilters({
           {/* Buttons */}
           <div className="space-y-2 pt-4">
             <Button onClick={handleApply} className="w-full text-white">
-              Применить фильтры
+              {t('apply')}
             </Button>
           </div>
         </CardContent>

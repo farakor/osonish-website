@@ -8,18 +8,27 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Pencil, Loader2, Calendar, MapPin, X, Plus, Trash2, GraduationCap, Briefcase, Star, Award } from 'lucide-react';
+import { Pencil, Loader2, Calendar as CalendarIcon, MapPin, X, Plus, Trash2, GraduationCap, Briefcase, Star, Award } from 'lucide-react';
 import { UZBEKISTAN_CITIES } from '@/constants/registration';
 import { FEATURED_SPECIALIZATIONS, MORE_SPECIALIZATIONS } from '@/constants/specializations';
 import { SPECIALIZATIONS as ALL_SPECIALIZATIONS, getSpecializationById, getSpecializationIcon, type SpecializationOption } from '@/constants/specializations-full';
 import Image from 'next/image';
 import starIconSvg from '@/components/assets/star-rev-yellow.svg';
+import { format } from 'date-fns';
+import { ru } from 'date-fns/locale';
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover';
+import { Calendar } from '@/components/ui/calendar';
+import { useTranslations } from 'next-intl';
 
 interface Education {
   institution: string;
@@ -73,6 +82,7 @@ interface ProfileFormProps {
 export function ProfileForm({ user }: ProfileFormProps) {
   const router = useRouter();
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const t = useTranslations('profile');
   
   // Отладка: выводим информацию об аватаре
   console.log('👤 User avatar data:', {
@@ -91,8 +101,8 @@ export function ProfileForm({ user }: ProfileFormProps) {
   
   // Модальные окна
   const [showCityModal, setShowCityModal] = useState(false);
-  const [showDatePicker, setShowDatePicker] = useState(false);
   const [showSpecializationModal, setShowSpecializationModal] = useState(false);
+  const [datePickerOpen, setDatePickerOpen] = useState(false);
   
   // Парсим образование - может быть строкой или массивом
   const parseEducation = (): Education[] => {
@@ -123,6 +133,13 @@ export function ProfileForm({ user }: ProfileFormProps) {
     return [];
   };
   
+  // Функция для форматирования числа с пробелами
+  const formatNumberWithSpaces = (value: number | string | undefined): string => {
+    if (!value) return '';
+    const numString = value.toString().replace(/\D/g, '');
+    return numString.replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+  };
+  
   const [formData, setFormData] = useState({
     first_name: user.first_name || '',
     last_name: user.last_name || '',
@@ -134,7 +151,7 @@ export function ProfileForm({ user }: ProfileFormProps) {
     skills: Array.isArray(user.skills) ? user.skills : [],
     education: parseEducation(),
     work_experience: parseWorkExperience(), // Используем функцию парсинга
-    desired_salary: user.desired_salary ? user.desired_salary.toString() : '',
+    desired_salary: formatNumberWithSpaces(user.desired_salary),
     willing_to_relocate: user.willing_to_relocate || false,
     specializations: Array.isArray(user.specializations) ? user.specializations : [],
   });
@@ -302,13 +319,13 @@ export function ProfileForm({ user }: ProfileFormProps) {
 
     // Проверяем тип файла
     if (!file.type.startsWith('image/')) {
-      setError('Пожалуйста, выберите изображение');
+      setError(t('errorImage'));
       return;
     }
 
     // Проверяем размер (макс 5MB)
     if (file.size > 5 * 1024 * 1024) {
-      setError('Размер файла не должен превышать 5MB');
+      setError(t('errorFileSize'));
       return;
     }
 
@@ -397,9 +414,9 @@ export function ProfileForm({ user }: ProfileFormProps) {
       if (data.success) {
         // Обновляем страницу для получения актуальных данных
         router.refresh();
-        alert('Профиль успешно обновлен!');
+        alert(t('successMessage'));
       } else {
-        setError(data.error || 'Не удалось обновить профиль');
+        setError(data.error || t('error'));
       }
     } catch (err) {
       setError('Ошибка при обновлении профиля');
@@ -414,7 +431,7 @@ export function ProfileForm({ user }: ProfileFormProps) {
       <div className="lg:col-span-1">
         <Card>
           <CardHeader>
-            <CardTitle>Фото профиля</CardTitle>
+            <CardTitle>{t('photoCard')}</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="flex flex-col items-center">
@@ -459,12 +476,12 @@ export function ProfileForm({ user }: ProfileFormProps) {
                 {uploadingAvatar ? (
                   <>
                     <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                    Загрузка...
+                    {t('uploading')}
                   </>
                 ) : (
                   <>
                     <Pencil className="h-4 w-4 mr-2" />
-                    Изменить фото
+                    {t('changePhoto')}
                   </>
                 )}
               </Button>
@@ -472,20 +489,20 @@ export function ProfileForm({ user }: ProfileFormProps) {
 
             <div className="space-y-2 pt-4 border-t">
               <div>
-                <p className="text-sm text-muted-foreground">Телефон</p>
+                <p className="text-sm text-muted-foreground">{t('phone')}</p>
                 <p className="font-medium">{user.phone}</p>
               </div>
               <div>
-                <p className="text-sm text-muted-foreground">Роль</p>
+                <p className="text-sm text-muted-foreground">{t('role')}</p>
                 <p className="font-medium">
-                  {user.role === 'customer' ? 'Заказчик' : 'Исполнитель'}
+                  {user.role === 'customer' ? t('customer') : t('worker')}
                 </p>
               </div>
               <div>
-                <p className="text-sm text-muted-foreground">Рейтинг</p>
+                <p className="text-sm text-muted-foreground">{t('rating')}</p>
                 <p className="font-medium flex items-center gap-1">
                   <Image src={starIconSvg} alt="star" width={20} height={20} className="w-5 h-5" />
-                  {user.rating?.toFixed(1) || '0.0'} ({user.reviews_count || 0} отзывов)
+                  {user.rating?.toFixed(1) || '0.0'} ({user.reviews_count || 0} {t('reviewsCount')})
                 </p>
               </div>
             </div>
@@ -497,7 +514,7 @@ export function ProfileForm({ user }: ProfileFormProps) {
       <div className="lg:col-span-2">
         <Card>
           <CardHeader>
-            <CardTitle>Личные данные</CardTitle>
+            <CardTitle>{t('personalData')}</CardTitle>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-6">
@@ -509,31 +526,31 @@ export function ProfileForm({ user }: ProfileFormProps) {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="last_name">Фамилия *</Label>
+                  <Label htmlFor="last_name">{t('lastName')} <span className="text-red-500">{t('required')}</span></Label>
                   <Input
                     id="last_name"
                     name="last_name"
                     value={formData.last_name}
                     onChange={handleInputChange}
-                    placeholder="Ваша фамилия"
+                    placeholder={t('lastName')}
                     required
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="first_name">Имя *</Label>
+                  <Label htmlFor="first_name">{t('firstName')} <span className="text-red-500">{t('required')}</span></Label>
                   <Input
                     id="first_name"
                     name="first_name"
                     value={formData.first_name}
                     onChange={handleInputChange}
-                    placeholder="Ваше имя"
+                    placeholder={t('firstName')}
                     required
                   />
                 </div>
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
+                <Label htmlFor="email">{t('email')}</Label>
                 <Input
                   id="email"
                   name="email"
@@ -545,20 +562,39 @@ export function ProfileForm({ user }: ProfileFormProps) {
               </div>
 
               <div className="space-y-2">
-                <Label>Дата рождения</Label>
-                <Button
-                  type="button"
-                  variant="outline"
-                  className="w-full justify-start text-left font-normal"
-                  onClick={() => setShowDatePicker(true)}
-                >
-                  <Calendar className="mr-2 h-4 w-4" />
-                  {formData.birth_date ? formatDate(formData.birth_date) : 'Выберите дату'}
-                </Button>
+                <Label>{t('birthDate')}</Label>
+                <Popover open={datePickerOpen} onOpenChange={setDatePickerOpen}>
+                  <PopoverTrigger asChild>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      className="w-full justify-start text-left font-normal"
+                    >
+                      <CalendarIcon className="mr-2 h-4 w-4" />
+                      {formData.birth_date ? formatDate(formData.birth_date) : t('selectDate')}
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-0" align="start">
+                    <Calendar
+                      mode="single"
+                      selected={formData.birth_date ? new Date(formData.birth_date) : undefined}
+                      onSelect={(date) => {
+                        if (date) {
+                          setFormData({ ...formData, birth_date: format(date, 'yyyy-MM-dd') });
+                          setDatePickerOpen(false);
+                        }
+                      }}
+                      disabled={(date) =>
+                        date > new Date() || date < new Date('1950-01-01')
+                      }
+                      initialFocus
+                    />
+                  </PopoverContent>
+                </Popover>
               </div>
 
               <div className="space-y-2">
-                <Label>Город</Label>
+                <Label>{t('city')}</Label>
                 <Button
                   type="button"
                   variant="outline"
@@ -566,12 +602,12 @@ export function ProfileForm({ user }: ProfileFormProps) {
                   onClick={() => setShowCityModal(true)}
                 >
                   <MapPin className="mr-2 h-4 w-4" />
-                  {formData.city ? getCityName(formData.city) : 'Выберите город'}
+                  {formData.city ? getCityName(formData.city) : t('selectCity')}
                 </Button>
               </div>
 
               <div className="space-y-2">
-                <Label>Пол</Label>
+                <Label>{t('gender')}</Label>
                 <div className="grid grid-cols-2 gap-4">
                   <Button
                     type="button"
@@ -579,7 +615,7 @@ export function ProfileForm({ user }: ProfileFormProps) {
                     className="w-full"
                     onClick={() => setFormData({ ...formData, gender: 'male' })}
                   >
-                    Мужской
+                    {t('male')}
                   </Button>
                   <Button
                     type="button"
@@ -587,19 +623,19 @@ export function ProfileForm({ user }: ProfileFormProps) {
                     className="w-full"
                     onClick={() => setFormData({ ...formData, gender: 'female' })}
                   >
-                    Женский
+                    {t('female')}
                   </Button>
                 </div>
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="bio">О себе</Label>
+                <Label htmlFor="bio">{t('bio')}</Label>
                 <Textarea
                   id="bio"
                   name="bio"
                   value={formData.bio}
                   onChange={handleInputChange}
-                  placeholder="Расскажите о себе, своем опыте и профессиональных качествах..."
+                  placeholder={t('bioPlaceholder')}
                   rows={4}
                   maxLength={500}
                 />
@@ -625,9 +661,7 @@ export function ProfileForm({ user }: ProfileFormProps) {
                           name="desired_salary"
                           value={formData.desired_salary}
                           onChange={(e) => {
-                            const numbers = e.target.value.replace(/\D/g, '');
-                            const formatted = numbers.replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
-                            setFormData({ ...formData, desired_salary: formatted });
+                            setFormData({ ...formData, desired_salary: formatNumberWithSpaces(e.target.value) });
                           }}
                           placeholder="5 000 000"
                         />
@@ -908,10 +942,10 @@ export function ProfileForm({ user }: ProfileFormProps) {
                   {loading ? (
                     <>
                       <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                      Сохранение...
+                      {t('saving')}
                     </>
                   ) : (
-                    'Сохранить изменения'
+                    t('saveChanges')
                   )}
                 </Button>
                 <Button 
@@ -920,7 +954,7 @@ export function ProfileForm({ user }: ProfileFormProps) {
                   onClick={() => router.back()}
                   disabled={loading}
                 >
-                  Отмена
+                  {t('cancel')}
                 </Button>
               </div>
             </form>
@@ -932,7 +966,7 @@ export function ProfileForm({ user }: ProfileFormProps) {
       <Dialog open={showCityModal} onOpenChange={setShowCityModal}>
         <DialogContent className="max-w-md">
           <DialogHeader>
-            <DialogTitle>Выберите город</DialogTitle>
+            <DialogTitle>{t('cityModalTitle')}</DialogTitle>
           </DialogHeader>
           <div className="max-h-[400px] overflow-y-auto">
             <div className="space-y-1">
@@ -961,51 +995,15 @@ export function ProfileForm({ user }: ProfileFormProps) {
         </DialogContent>
       </Dialog>
 
-      {/* Модальное окно выбора даты рождения */}
-      <Dialog open={showDatePicker} onOpenChange={setShowDatePicker}>
-        <DialogContent className="max-w-md">
-          <DialogHeader>
-            <DialogTitle>Выберите дату рождения</DialogTitle>
-          </DialogHeader>
-          <div className="space-y-4">
-            <Input
-              type="date"
-              value={formData.birth_date}
-              onChange={(e) => {
-                setFormData({ ...formData, birth_date: e.target.value });
-                setShowDatePicker(false);
-              }}
-              max={new Date().toISOString().split('T')[0]}
-              min="1950-01-01"
-            />
-            <div className="flex justify-end gap-2">
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => setShowDatePicker(false)}
-              >
-                Отмена
-              </Button>
-              <Button
-                type="button"
-                onClick={() => setShowDatePicker(false)}
-              >
-                Готово
-              </Button>
-            </div>
-          </div>
-        </DialogContent>
-      </Dialog>
-
       {/* Модальное окно выбора специализаций */}
       <Dialog open={showSpecializationModal} onOpenChange={setShowSpecializationModal}>
         <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle>Выберите специализации</DialogTitle>
+            <DialogTitle>{t('specializationsModalTitle')}</DialogTitle>
           </DialogHeader>
           <div className="space-y-4">
             <p className="text-sm text-muted-foreground">
-              Выберите специализации, которые вас интересуют. Первая выбранная специализация станет основной.
+              {t('specializationsModalDesc')}
             </p>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-h-[500px] overflow-y-auto px-1">
               {allSpecializations.map((spec) => {
@@ -1040,13 +1038,13 @@ export function ProfileForm({ user }: ProfileFormProps) {
                 variant="outline"
                 onClick={() => setShowSpecializationModal(false)}
               >
-                Отмена
+                {t('cancel')}
               </Button>
               <Button
                 type="button"
                 onClick={() => setShowSpecializationModal(false)}
               >
-                Готово
+                {t('done')}
               </Button>
             </div>
           </div>

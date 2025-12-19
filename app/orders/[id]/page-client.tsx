@@ -28,6 +28,7 @@ import { getSpecializationName, getSpecializationIconName } from "@/lib/speciali
 import { SpecializationIcon } from "@/components/ui/specialization-icon";
 import TelegramIcon from "@/components/assets/Telegram.svg";
 import WhatsappIcon from "@/components/assets/Whatsapp.svg";
+import { useTranslations, useLocale } from 'next-intl';
 
 interface OrderDetailClientProps {
   id: string;
@@ -37,6 +38,9 @@ interface OrderDetailClientProps {
 
 export function OrderDetailClient({ id, isAuthenticated = false, userRole }: OrderDetailClientProps) {
   const router = useRouter();
+  const t = useTranslations('orderDetail');
+  const tOrders = useTranslations('orders.card');
+  const locale = useLocale();
   const [order, setOrder] = useState<Order | null>(null);
   const [loading, setLoading] = useState(true);
   const [applying, setApplying] = useState(false);
@@ -122,10 +126,10 @@ export function OrderDetailClient({ id, isAuthenticated = false, userRole }: Ord
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || "Не удалось отправить отклик");
+        throw new Error(data.error || t('applyError'));
       }
 
-      alert(data.message || "Ваш отклик успешно отправлен!");
+      alert(data.message || t('applySuccess'));
       
       // Обновляем состояние
       setHasApplied(true);
@@ -134,7 +138,7 @@ export function OrderDetailClient({ id, isAuthenticated = false, userRole }: Ord
       await fetchOrder();
     } catch (error: any) {
       console.error("Failed to apply:", error);
-      alert(error.message || "Произошла ошибка при отправке отклика");
+      alert(error.message || t('applyError'));
     } finally {
       setApplying(false);
     }
@@ -182,25 +186,42 @@ export function OrderDetailClient({ id, isAuthenticated = false, userRole }: Ord
 
   const handleShareTelegram = () => {
     const url = window.location.href;
-    const text = `${order?.title}\nБюджет: ${order?.budget ? formatPrice(order.budget) : 'По договоренности'}\n${order?.location}`;
+    const text = `${order?.title}\n${t('budget')}: ${order?.budget ? formatPrice(order.budget) : t('byAgreement')}\n${order?.location}`;
     const telegramUrl = `https://t.me/share/url?url=${encodeURIComponent(url)}&text=${encodeURIComponent(text)}`;
     window.open(telegramUrl, '_blank');
   };
 
   const handleShareWhatsApp = () => {
     const url = window.location.href;
-    const text = `${order?.title}\nБюджет: ${order?.budget ? formatPrice(order.budget) : 'По договоренности'}\n${order?.location}\n${url}`;
+    const text = `${order?.title}\n${t('budget')}: ${order?.budget ? formatPrice(order.budget) : t('byAgreement')}\n${order?.location}\n${url}`;
     const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(text)}`;
     window.open(whatsappUrl, '_blank');
   };
 
   const formatPrice = (price: number) => {
-    return new Intl.NumberFormat("ru-RU").format(price) + " сум";
+    if (locale === 'uz') {
+      // Для узбекского языка используем пробелы как разделитель тысяч
+      const formattedNumber = price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+      return formattedNumber + " sum";
+    }
+    return new Intl.NumberFormat('ru-RU').format(price) + " сум";
   };
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
-    return new Intl.DateTimeFormat("ru-RU", {
+    
+    if (locale === 'uz') {
+      const monthNamesUz = [
+        'yanvar', 'fevral', 'mart', 'aprel', 'may', 'iyun',
+        'iyul', 'avgust', 'sentabr', 'oktabr', 'noyabr', 'dekabr'
+      ];
+      const day = date.getDate();
+      const month = monthNamesUz[date.getMonth()];
+      const year = date.getFullYear();
+      return `${day} ${month} ${year}`;
+    }
+    
+    return new Intl.DateTimeFormat('ru-RU', {
       day: "numeric",
       month: "long",
       year: "numeric",
@@ -216,13 +237,22 @@ export function OrderDetailClient({ id, isAuthenticated = false, userRole }: Ord
     rejected: "bg-red-100 text-red-800",
   };
 
-  const statusLabels = {
-    new: "Новый",
-    response_received: "Есть отклики",
-    in_progress: "В работе",
-    completed: "Завершен",
-    cancelled: "Отменен",
-    rejected: "Отклонен",
+  const getStatusLabel = (status: string) => {
+    return tOrders(status as any);
+  };
+
+  const getPeopleLabel = (count: number) => {
+    if (locale === 'uz') {
+      return t('people');
+    }
+    // Для русского языка используем правильное склонение
+    if (count === 1) return t('people_one');
+    if (count >= 2 && count <= 4) return t('people_few');
+    return t('people_many');
+  };
+
+  const getOrderTypeLabel = (type: string) => {
+    return type === "daily" ? t('dailyWork') : t('vacancy');
   };
 
   // Проверяем, был ли заказ создан менее 3 дней назад
@@ -253,7 +283,7 @@ export function OrderDetailClient({ id, isAuthenticated = false, userRole }: Ord
           className="mt-6 mb-6 -ml-2 border border-gray-200 hover:border-gray-300"
         >
           <ArrowLeft className="w-4 h-4 mr-2" />
-          Назад к заказам
+          {t('backToOrders')}
         </Button>
 
         <div className="grid lg:grid-cols-3 gap-8">
@@ -268,7 +298,7 @@ export function OrderDetailClient({ id, isAuthenticated = false, userRole }: Ord
                     <div className="flex flex-wrap gap-2">
                       {isNewOrder(order) && order.status === 'new' && (
                         <Badge className={`${statusColors[order.status]} h-auto py-1.5`}>
-                          {statusLabels[order.status]}
+                          {getStatusLabel(order.status)}
                         </Badge>
                       )}
                       {order.specializationId && (
@@ -282,7 +312,7 @@ export function OrderDetailClient({ id, isAuthenticated = false, userRole }: Ord
                               size={16} 
                             />
                           )}
-                          <span>{getSpecializationName(order.specializationId)}</span>
+                          <span>{getSpecializationName(order.specializationId, locale)}</span>
                         </Badge>
                       )}
                     </div>
@@ -294,7 +324,7 @@ export function OrderDetailClient({ id, isAuthenticated = false, userRole }: Ord
                   <div className="flex items-center gap-2">
                     <span className="text-sm font-bold text-green-600">UZS</span>
                     <div>
-                      <p className="text-xs text-muted-foreground">Бюджет</p>
+                      <p className="text-xs text-muted-foreground">{t('budget')}</p>
                       <p className="font-semibold text-lg">
                         {formatPrice(order.budget)}
                       </p>
@@ -304,7 +334,7 @@ export function OrderDetailClient({ id, isAuthenticated = false, userRole }: Ord
                     <Calendar className="w-5 h-5 text-blue-600" />
                     <div>
                       <p className="text-xs text-muted-foreground">
-                        Дата начала
+                        {t('startDate')}
                       </p>
                       <p className="font-semibold">
                         {formatDate(order.serviceDate)}
@@ -315,7 +345,7 @@ export function OrderDetailClient({ id, isAuthenticated = false, userRole }: Ord
                     <MapPin className="w-5 h-5 text-red-600" />
                     <div>
                       <p className="text-xs text-muted-foreground">
-                        Местоположение
+                        {t('location')}
                       </p>
                       <p className="font-semibold">{order.location}</p>
                     </div>
@@ -324,11 +354,11 @@ export function OrderDetailClient({ id, isAuthenticated = false, userRole }: Ord
                     <Users className="w-5 h-5 text-purple-600" />
                     <div>
                       <p className="text-xs text-muted-foreground">
-                        Требуется
+                        {t('required')}
                       </p>
                       <p className="font-semibold">
                         {order.workersNeeded}{" "}
-                        {order.workersNeeded === 1 ? "человек" : "человека"}
+                        {getPeopleLabel(order.workersNeeded)}
                       </p>
                     </div>
                   </div>
@@ -339,13 +369,13 @@ export function OrderDetailClient({ id, isAuthenticated = false, userRole }: Ord
                   {order.mealIncluded && (
                     <div className="flex items-center gap-2 text-sm">
                       <Utensils className="w-4 h-4 text-green-600" />
-                      <span>Питание включено</span>
+                      <span>{t('mealIncluded')}</span>
                     </div>
                   )}
                   {order.transportPaid && (
                     <div className="flex items-center gap-2 text-sm">
                       <Bus className="w-4 h-4 text-blue-600" />
-                      <span>Транспорт оплачивается</span>
+                      <span>{t('transportPaid')}</span>
                     </div>
                   )}
                 </div>
@@ -354,18 +384,18 @@ export function OrderDetailClient({ id, isAuthenticated = false, userRole }: Ord
                 <div className="flex items-center gap-6 mt-6 pt-6 border-t text-sm text-muted-foreground">
                   <div className="flex items-center gap-2">
                     <MessageSquare className="w-4 h-4" />
-                    <span>{order.applicantsCount} откликов</span>
+                    <span>{t('responses', { count: order.applicantsCount })}</span>
                   </div>
                   {order.viewsCount !== undefined && (
                     <div className="flex items-center gap-2">
                       <Eye className="w-4 h-4" />
-                      <span>{order.viewsCount} просмотров</span>
+                      <span>{t('views', { count: order.viewsCount })}</span>
                     </div>
                   )}
                   <div className="flex items-center gap-2">
                     <Clock className="w-4 h-4" />
                     <span>
-                      Опубликовано {formatDate(order.createdAt)}
+                      {t('published', { date: formatDate(order.createdAt) })}
                     </span>
                   </div>
                 </div>
@@ -376,7 +406,7 @@ export function OrderDetailClient({ id, isAuthenticated = false, userRole }: Ord
             <Card>
               <CardContent className="p-6">
                 <h2 className="text-xl font-semibold mb-4">
-                  Описание заказа
+                  {t('orderDescription')}
                 </h2>
                 <p className="text-muted-foreground leading-relaxed whitespace-pre-line">
                   {order.description}
@@ -389,7 +419,7 @@ export function OrderDetailClient({ id, isAuthenticated = false, userRole }: Ord
               <Card>
                 <CardContent className="p-6">
                   <h2 className="text-xl font-semibold mb-4">
-                    Объем работ
+                    {t('workVolume')}
                   </h2>
                   <ul className="space-y-2">
                     {order.workDetails.map((detail, index) => (
@@ -407,7 +437,7 @@ export function OrderDetailClient({ id, isAuthenticated = false, userRole }: Ord
             {order.requirements && order.requirements.length > 0 && (
               <Card>
                 <CardContent className="p-6">
-                  <h2 className="text-xl font-semibold mb-4">Требования</h2>
+                  <h2 className="text-xl font-semibold mb-4">{t('requirements')}</h2>
                   <ul className="space-y-2">
                     {order.requirements.map((req, index) => (
                       <li key={index} className="flex items-start gap-2">
@@ -424,7 +454,7 @@ export function OrderDetailClient({ id, isAuthenticated = false, userRole }: Ord
             {order.photos && order.photos.length > 0 && (
               <Card>
                 <CardContent className="p-6">
-                  <h2 className="text-xl font-semibold mb-4">Фотографии</h2>
+                  <h2 className="text-xl font-semibold mb-4">{t('photos')}</h2>
                   <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                     {order.photos.map((photo, index) => (
                       <div
@@ -433,7 +463,7 @@ export function OrderDetailClient({ id, isAuthenticated = false, userRole }: Ord
                       >
                         <Image
                           src={photo}
-                          alt={`Фото ${index + 1}`}
+                          alt={t('photo', { number: index + 1 })}
                           width={300}
                           height={300}
                           className="w-full h-full object-cover hover:scale-105 transition-transform"
@@ -460,17 +490,17 @@ export function OrderDetailClient({ id, isAuthenticated = false, userRole }: Ord
                       className="w-full mb-4 text-white"
                     >
                       {checkingApplication 
-                        ? "Проверка..." 
+                        ? t('applyButtonChecking')
                         : hasApplied 
-                          ? "Отклик отправлен" 
+                          ? t('applyButtonSent')
                           : applying 
-                            ? "Отправка..." 
-                            : "Откликнуться на заказ"}
+                            ? t('applyButtonSending')
+                            : t('applyButton')}
                     </Button>
                     <p className="text-xs text-center text-muted-foreground">
                       {hasApplied 
-                        ? "Вы уже откликнулись на этот заказ"
-                        : "Нажимая кнопку, вы соглашаетесь с условиями использования"}
+                        ? t('alreadyApplied')
+                        : t('agreeToTerms')}
                     </p>
                   </CardContent>
                 </Card>
@@ -480,7 +510,7 @@ export function OrderDetailClient({ id, isAuthenticated = false, userRole }: Ord
               {order.customerName && (
                 <Card>
                   <CardContent className="p-6">
-                    <h3 className="font-semibold mb-4">Заказчик</h3>
+                    <h3 className="font-semibold mb-4">{t('customer')}</h3>
                     <div className="space-y-3">
                       <div className="flex items-center gap-3">
                         <User className="w-4 h-4 text-muted-foreground" />
@@ -496,7 +526,7 @@ export function OrderDetailClient({ id, isAuthenticated = false, userRole }: Ord
                               size="sm"
                             >
                               <Phone className="w-4 h-4 mr-2" />
-                              Показать номер
+                              {t('showPhone')}
                             </Button>
                           ) : (
                             <div className="flex items-center gap-3">
@@ -520,27 +550,25 @@ export function OrderDetailClient({ id, isAuthenticated = false, userRole }: Ord
               {/* Quick Info */}
               <Card>
                 <CardContent className="p-6">
-                  <h3 className="font-semibold mb-4">Быстрая информация</h3>
+                  <h3 className="font-semibold mb-4">{t('quickInfo')}</h3>
                   <div className="space-y-3 text-sm">
                     <div>
                       <span className="text-muted-foreground">
-                        Тип заказа:
+                        {t('orderType')}:
                       </span>
                       <p className="font-medium">
-                        {order.type === "daily"
-                          ? "Дневная работа"
-                          : "Вакансия"}
+                        {getOrderTypeLabel(order.type)}
                       </p>
                     </div>
                     <div>
-                      <span className="text-muted-foreground">Статус:</span>
+                      <span className="text-muted-foreground">{t('status')}:</span>
                       <p className="font-medium">
-                        {statusLabels[order.status]}
+                        {getStatusLabel(order.status)}
                       </p>
                     </div>
                     <div>
                       <span className="text-muted-foreground">
-                        Дата публикации:
+                        {t('publicationDate')}:
                       </span>
                       <p className="font-medium">
                         {formatDate(order.createdAt)}
@@ -553,7 +581,7 @@ export function OrderDetailClient({ id, isAuthenticated = false, userRole }: Ord
               {/* Share */}
               <Card>
                 <CardContent className="p-6">
-                  <h3 className="font-semibold mb-3">Поделиться</h3>
+                  <h3 className="font-semibold mb-3">{t('share')}</h3>
                   <div className="flex gap-2">
                     <Button 
                       onClick={handleShareTelegram}
@@ -562,7 +590,7 @@ export function OrderDetailClient({ id, isAuthenticated = false, userRole }: Ord
                       className="flex-1 border-[#0088cc] text-[#0088cc] hover:bg-[#0088cc] hover:text-white transition-colors"
                     >
                       <Image src={TelegramIcon} alt="Telegram" width={18} height={18} className="mr-2" />
-                      Telegram
+                      {t('shareOnTelegram')}
                     </Button>
                     <Button 
                       onClick={handleShareWhatsApp}
@@ -571,7 +599,7 @@ export function OrderDetailClient({ id, isAuthenticated = false, userRole }: Ord
                       className="flex-1 border-[#25D366] text-[#25D366] hover:bg-[#25D366] hover:text-white transition-colors"
                     >
                       <Image src={WhatsappIcon} alt="WhatsApp" width={18} height={18} className="mr-2" />
-                      WhatsApp
+                      {t('shareOnWhatsApp')}
                     </Button>
                   </div>
                 </CardContent>

@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { MessageSquare, Briefcase, FileText } from 'lucide-react';
 import { ResponseCard } from './response-card';
+import { useTranslations } from 'next-intl';
 
 interface Response {
   id: string;
@@ -40,6 +41,7 @@ interface ResponsesClientProps {
 
 export function ResponsesClient({ orderResponses, vacancyResponses }: ResponsesClientProps) {
   const [activeTab, setActiveTab] = useState<'orders' | 'vacancies'>('orders');
+  const t = useTranslations('customerResponses');
 
   // Статистика для заказов
   const ordersPendingCount = orderResponses.filter(r => r.status === 'pending').length;
@@ -71,7 +73,7 @@ export function ResponsesClient({ orderResponses, vacancyResponses }: ResponsesC
           }`}
         >
           <Briefcase className="w-4 h-4" />
-          Заказы
+          {t('tabs.orders')}
           {ordersTotalCount > 0 && (
             <span className={`ml-1 px-2 py-0.5 rounded-full text-xs font-semibold ${
               activeTab === 'orders' 
@@ -93,7 +95,7 @@ export function ResponsesClient({ orderResponses, vacancyResponses }: ResponsesC
           }`}
         >
           <FileText className="w-4 h-4" />
-          Вакансии
+          {t('tabs.vacancies')}
           {vacanciesTotalCount > 0 && (
             <span className={`ml-1 px-2 py-0.5 rounded-full text-xs font-semibold ${
               activeTab === 'vacancies' 
@@ -113,7 +115,7 @@ export function ResponsesClient({ orderResponses, vacancyResponses }: ResponsesC
             <div className="text-2xl font-bold text-primary mb-1">
               {currentTotalCount}
             </div>
-            <p className="text-sm text-muted-foreground">Всего откликов</p>
+            <p className="text-sm text-muted-foreground">{t('stats.totalResponses')}</p>
           </CardContent>
         </Card>
 
@@ -122,7 +124,7 @@ export function ResponsesClient({ orderResponses, vacancyResponses }: ResponsesC
             <div className="text-2xl font-bold text-blue-600 mb-1">
               {currentPendingCount}
             </div>
-            <p className="text-sm text-muted-foreground">Ожидают ответа</p>
+            <p className="text-sm text-muted-foreground">{t('stats.awaitingResponse')}</p>
           </CardContent>
         </Card>
 
@@ -131,7 +133,7 @@ export function ResponsesClient({ orderResponses, vacancyResponses }: ResponsesC
             <div className="text-2xl font-bold text-green-600 mb-1">
               {currentAcceptedCount}
             </div>
-            <p className="text-sm text-muted-foreground">Принято</p>
+            <p className="text-sm text-muted-foreground">{t('stats.accepted')}</p>
           </CardContent>
         </Card>
       </div>
@@ -142,17 +144,17 @@ export function ResponsesClient({ orderResponses, vacancyResponses }: ResponsesC
           <CardContent className="pt-6 text-center">
             <MessageSquare className="w-16 h-16 mx-auto text-muted-foreground mb-4" />
             <p className="text-muted-foreground mb-4 text-lg">
-              У вас пока нет откликов {activeTab === 'orders' ? 'на заказы' : 'на вакансии'}
+              {t('empty.noResponses')} {activeTab === 'orders' ? t('empty.onOrders') : t('empty.onVacancies')}
             </p>
             <p className="text-sm text-muted-foreground mb-4">
               {activeTab === 'orders' 
-                ? 'Когда исполнители начнут откликаться на ваши заказы, вы увидите их здесь'
-                : 'Когда соискатели начнут откликаться на ваши вакансии, вы увидите их здесь'
+                ? t('empty.ordersDescription')
+                : t('empty.vacanciesDescription')
               }
             </p>
             <Link href={activeTab === 'orders' ? '/dashboard/customer/create-order' : '/dashboard/customer/create-vacancy'}>
               <Button>
-                {activeTab === 'orders' ? 'Создать заказ' : 'Создать вакансию'}
+                {activeTab === 'orders' ? t('empty.createOrder') : t('empty.createVacancy')}
               </Button>
             </Link>
           </CardContent>

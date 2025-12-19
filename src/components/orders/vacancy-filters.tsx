@@ -11,6 +11,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
+import { useTranslations } from 'next-intl';
 
 export interface VacancyFilterValues {
   search?: string;
@@ -31,6 +32,10 @@ export function VacancyFilters({
   onFilterChange,
   initialFilters = {},
 }: VacancyFiltersProps) {
+  const t = useTranslations('vacancies.filters');
+  const tEmployment = useTranslations('employmentTypes');
+  const tWorkFormat = useTranslations('workFormats');
+  const tExperience = useTranslations('experienceLevels');
   const [filters, setFilters] = useState<VacancyFilterValues>(initialFilters);
 
   const handleFilterChange = (key: keyof VacancyFilterValues, value: any) => {
@@ -49,15 +54,15 @@ export function VacancyFilters({
 
   return (
     <div className="bg-card rounded-lg border p-6 sticky top-4">
-      <h2 className="text-lg font-semibold mb-4">Фильтры</h2>
+      <h2 className="text-lg font-semibold mb-4">{t('title')}</h2>
 
       <div className="space-y-4">
         {/* Search */}
         <div>
-          <Label htmlFor="search">Поиск</Label>
+          <Label htmlFor="search">{t('search')}</Label>
           <Input
             id="search"
-            placeholder="Должность, навыки..."
+            placeholder={t('searchPlaceholder')}
             value={filters.search || ""}
             onChange={(e) => handleFilterChange("search", e.target.value)}
           />
@@ -65,16 +70,16 @@ export function VacancyFilters({
 
         {/* City */}
         <div>
-          <Label htmlFor="city">Город</Label>
+          <Label htmlFor="city">{t('city')}</Label>
           <Select
             value={filters.city || "all"}
             onValueChange={(value) => handleFilterChange("city", value === "all" ? undefined : value)}
           >
             <SelectTrigger id="city">
-              <SelectValue placeholder="Выберите город" />
+              <SelectValue placeholder={t('selectCity')} />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">Все города</SelectItem>
+              <SelectItem value="all">{t('allCities')}</SelectItem>
               <SelectItem value="Ташкент">Ташкент</SelectItem>
               <SelectItem value="Самарканд">Самарканд</SelectItem>
               <SelectItem value="Бухара">Бухара</SelectItem>
@@ -87,7 +92,7 @@ export function VacancyFilters({
 
         {/* Employment Type */}
         <div>
-          <Label htmlFor="employmentType">Тип занятости</Label>
+          <Label htmlFor="employmentType">{t('employmentType')}</Label>
           <Select
             value={filters.employmentType || "all"}
             onValueChange={(value) =>
@@ -95,42 +100,40 @@ export function VacancyFilters({
             }
           >
             <SelectTrigger id="employmentType">
-              <SelectValue placeholder="Выберите тип" />
+              <SelectValue placeholder={t('selectEmploymentType')} />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">Все типы</SelectItem>
-              <SelectItem value="Полная занятость">Полная занятость</SelectItem>
-              <SelectItem value="Частичная занятость">
-                Частичная занятость
-              </SelectItem>
-              <SelectItem value="Проектная работа">Проектная работа</SelectItem>
-              <SelectItem value="Стажировка">Стажировка</SelectItem>
+              <SelectItem value="all">{t('allTypes')}</SelectItem>
+              <SelectItem value="Полная занятость">{tEmployment('full_time')}</SelectItem>
+              <SelectItem value="Частичная занятость">{tEmployment('part_time')}</SelectItem>
+              <SelectItem value="Проектная работа">{tEmployment('project')}</SelectItem>
+              <SelectItem value="Стажировка">{tEmployment('internship')}</SelectItem>
             </SelectContent>
           </Select>
         </div>
 
         {/* Work Format */}
         <div>
-          <Label htmlFor="workFormat">Формат работы</Label>
+          <Label htmlFor="workFormat">{t('workFormat')}</Label>
           <Select
             value={filters.workFormat || "all"}
             onValueChange={(value) => handleFilterChange("workFormat", value === "all" ? undefined : value)}
           >
             <SelectTrigger id="workFormat">
-              <SelectValue placeholder="Выберите формат" />
+              <SelectValue placeholder={t('selectWorkFormat')} />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">Все форматы</SelectItem>
-              <SelectItem value="Офис">Офис</SelectItem>
-              <SelectItem value="Удаленно">Удаленно</SelectItem>
-              <SelectItem value="Гибрид">Гибрид</SelectItem>
+              <SelectItem value="all">{t('allFormats')}</SelectItem>
+              <SelectItem value="Офис">{tWorkFormat('on_site')}</SelectItem>
+              <SelectItem value="Удаленно">{tWorkFormat('remote')}</SelectItem>
+              <SelectItem value="Гибрид">{tWorkFormat('hybrid')}</SelectItem>
             </SelectContent>
           </Select>
         </div>
 
         {/* Experience Level */}
         <div>
-          <Label htmlFor="experienceLevel">Опыт работы</Label>
+          <Label htmlFor="experienceLevel">{t('experienceLevel')}</Label>
           <Select
             value={filters.experienceLevel || "all"}
             onValueChange={(value) =>
@@ -138,25 +141,25 @@ export function VacancyFilters({
             }
           >
             <SelectTrigger id="experienceLevel">
-              <SelectValue placeholder="Выберите опыт" />
+              <SelectValue placeholder={t('selectExperienceLevel')} />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">Любой опыт</SelectItem>
-              <SelectItem value="Без опыта">Без опыта</SelectItem>
-              <SelectItem value="1-3 года">1-3 года</SelectItem>
-              <SelectItem value="3+ года">3+ года</SelectItem>
-              <SelectItem value="5+ лет">5+ лет</SelectItem>
+              <SelectItem value="all">{t('allExperience')}</SelectItem>
+              <SelectItem value="Без опыта">{tExperience('no_experience')}</SelectItem>
+              <SelectItem value="1-3 года">{tExperience('1_to_3')}</SelectItem>
+              <SelectItem value="3+ года">{tExperience('3_to_5')}</SelectItem>
+              <SelectItem value="5+ лет">{tExperience('more_than_5')}</SelectItem>
             </SelectContent>
           </Select>
         </div>
 
         {/* Salary Range */}
         <div>
-          <Label>Зарплата (млн сум)</Label>
+          <Label>{t('salary')}</Label>
           <div className="grid grid-cols-2 gap-2 mt-2">
             <Input
               type="number"
-              placeholder="От"
+              placeholder={t('salaryFrom')}
               value={filters.salaryFrom || ""}
               onChange={(e) =>
                 handleFilterChange(
@@ -167,7 +170,7 @@ export function VacancyFilters({
             />
             <Input
               type="number"
-              placeholder="До"
+              placeholder={t('salaryTo')}
               value={filters.salaryTo || ""}
               onChange={(e) =>
                 handleFilterChange(
@@ -182,14 +185,14 @@ export function VacancyFilters({
         {/* Buttons */}
         <div className="space-y-2 pt-4">
           <Button onClick={handleApply} className="w-full text-white">
-            Применить фильтры
+            {t('apply')}
           </Button>
           <Button
             onClick={handleReset}
             variant="outline"
             className="w-full"
           >
-            Сбросить
+            {t('reset')}
           </Button>
         </div>
       </div>

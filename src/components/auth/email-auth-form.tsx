@@ -327,7 +327,7 @@ export function EmailAuthForm({ redirectTo, mode = 'login' }: EmailAuthFormProps
                       onKeyDown={(e) => handleOtpKeyDown(index, e)}
                       onPaste={handleOtpPaste}
                       disabled={loading}
-                      className="w-12 h-14 text-center text-2xl font-semibold bg-white border-2 border-gray-300 rounded-lg focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-200 transition-all"
+                      className="w-12 h-14 text-center text-2xl font-semibold bg-white border-2 border-gray-300 rounded-lg focus:border-2 focus:border-[#679B00] focus:outline-none transition-all"
                     />
                   ))}
                 </div>

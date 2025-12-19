@@ -12,6 +12,7 @@ import Image from 'next/image';
 import { WORKER_TYPES, SPECIALIZATIONS, UZBEKISTAN_CITIES, WorkerType, Education, WorkExperience, POPULAR_SKILLS, PARENT_CATEGORIES, getSubcategoriesByParentId, getSpecializationById } from '@/constants/registration';
 import { SpecializationIcon } from '@/components/ui/specialization-icon';
 import { Checkbox } from '@/components/ui/checkbox';
+import { RegistrationProgressBar } from '@/components/ui/registration-progress-bar';
 
 interface StepByStepRegistrationFormProps {
   phone?: string;
@@ -770,7 +771,7 @@ export function StepByStepRegistrationForm({ phone, email, redirectTo }: StepByS
 
       <div className="space-y-4">
         <div>
-          <Label htmlFor="firstName">Имя *</Label>
+          <Label htmlFor="firstName">Имя <span className="text-red-500">*</span></Label>
           <Input
             id="firstName"
             value={formData.firstName}
@@ -781,7 +782,7 @@ export function StepByStepRegistrationForm({ phone, email, redirectTo }: StepByS
         </div>
 
         <div>
-          <Label htmlFor="lastName">Фамилия *</Label>
+          <Label htmlFor="lastName">Фамилия <span className="text-red-500">*</span></Label>
           <Input
             id="lastName"
             value={formData.lastName}
@@ -893,16 +894,16 @@ export function StepByStepRegistrationForm({ phone, email, redirectTo }: StepByS
         <div className="flex items-center space-x-2 border rounded-lg p-4 cursor-pointer hover:bg-gray-50">
           <RadioGroupItem value="customer" id="customer" />
           <label htmlFor="customer" className="flex-1 cursor-pointer">
-            <div className="font-semibold">Заказчик</div>
-            <div className="text-sm text-gray-600">Ищу исполнителей для работ</div>
+            <div className="font-semibold">Я ищу сотрудников</div>
+            <div className="text-sm text-gray-600">Ищу сотрудника или работника</div>
           </label>
         </div>
 
         <div className="flex items-center space-x-2 border rounded-lg p-4 cursor-pointer hover:bg-gray-50">
           <RadioGroupItem value="worker" id="worker" />
           <label htmlFor="worker" className="flex-1 cursor-pointer">
-            <div className="font-semibold">Исполнитель</div>
-            <div className="text-sm text-gray-600">Предлагаю свои услуги</div>
+            <div className="font-semibold">Я ищу работу</div>
+            <div className="text-sm text-gray-600">Предлагаю свои услуги и ищу вакансии</div>
           </label>
         </div>
       </RadioGroup>
@@ -1436,7 +1437,7 @@ export function StepByStepRegistrationForm({ phone, email, redirectTo }: StepByS
           value={formData.aboutMe}
           onChange={(e) => setFormData({ ...formData, aboutMe: e.target.value })}
           placeholder="Например: Я профессиональный сантехник с опытом работы более 5 лет. Выполняю все виды сантехнических работ качественно и в срок. Имею все необходимые инструменты."
-          className="mt-1 w-full min-h-[120px] px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+          className="mt-1 w-full min-h-[120px] px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-2 focus:border-[#679B00] resize-none transition-all"
           maxLength={500}
         />
         <p className="text-sm text-gray-500 mt-1 text-right">
@@ -1573,20 +1574,13 @@ export function StepByStepRegistrationForm({ phone, email, redirectTo }: StepByS
 
   return (
     <Card className="w-full max-w-2xl mx-auto">
-      {/* Progress Bar */}
-      <div className="w-full bg-gray-200 h-2 rounded-t-lg">
-        <div
-          className="bg-blue-600 h-2 rounded-t-lg transition-all duration-300"
-          style={{ width: `${progress}%` }}
-        />
-      </div>
-
       <CardContent className="p-6">
-        <div className="mb-6 text-center">
-          <p className="text-sm text-gray-600">
-            Шаг {currentStep} из {totalSteps}
-          </p>
-        </div>
+        {/* Progress Bar */}
+        <RegistrationProgressBar 
+          currentStep={currentStep}
+          totalSteps={totalSteps}
+          progress={progress}
+        />
 
         <form onSubmit={isLastStep ? handleSubmit : (e) => e.preventDefault()}>
           {renderStep()}

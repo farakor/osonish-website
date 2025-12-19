@@ -25,24 +25,43 @@ export async function GET(
       );
     }
 
-    // Получаем отзывы работника
+    // Получаем отзывы работника с информацией о заказчике
     const { data: reviewsData } = await supabase
       .from("reviews")
-      .select("*")
+      .select(`
+        *,
+        customer:customer_id (
+          first_name,
+          last_name
+        )
+      `)
       .eq("worker_id", id)
       .order("created_at", { ascending: false });
 
-    const reviews = (reviewsData || []).map((r: any) => ({
-      id: r.id,
-      orderId: r.order_id,
-      workerId: r.worker_id,
-      customerId: r.customer_id,
-      customerName: r.customer_name,
-      rating: r.rating,
-      comment: r.comment,
-      createdAt: r.created_at,
-      orderTitle: r.order_title,
-    }));
+    const reviews = (reviewsData || []).map((r: any) => {
+      // Пытаемся получить имя из разных источников
+      let customerName = "Аноним";
+      
+      if (r.customer_name) {
+        customerName = r.customer_name;
+      } else if (r.customer && r.customer.first_name && r.customer.last_name) {
+        customerName = `${r.customer.first_name} ${r.customer.last_name}`;
+      } else if (r.customer && r.customer.first_name) {
+        customerName = r.customer.first_name;
+      }
+      
+      return {
+        id: r.id,
+        orderId: r.order_id,
+        workerId: r.worker_id,
+        customerId: r.customer_id,
+        customerName,
+        rating: r.rating,
+        comment: r.comment,
+        createdAt: r.created_at,
+        orderTitle: r.order_title,
+      };
+    });
 
     // Вычисляем рейтинг
     const totalReviews = reviews.length;

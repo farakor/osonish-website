@@ -61,6 +61,7 @@ export async function GET(
       salaryFrom: data.salary_from,
       salaryTo: data.salary_to,
       salaryPeriod: data.salary_period,
+      salaryType: data.salary_type,
       experienceLevel: data.experience_level,
       skills: data.skills || [],
       languages: data.languages || [],

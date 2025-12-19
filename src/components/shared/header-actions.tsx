@@ -5,28 +5,37 @@ import { Button } from "@/components/ui/button";
 import { HelpCircle } from "lucide-react";
 import { UserMenu } from "./user-menu";
 import { CitySelector } from "./city-selector";
+import { LanguageSwitcher } from "./language-switcher";
+import { useTranslations } from 'next-intl';
 
 type HeaderActionsProps = {
   user: any | null; // Используем any для совместимости с типом из getCurrentUser
 };
 
 export function HeaderActions({ user }: HeaderActionsProps) {
+  const t = useTranslations('common');
+  
   return (
     <>
       {/* Desktop Actions */}
       <div className="hidden md:flex items-center space-x-2">
+        {/* Language Switcher */}
+        <LanguageSwitcher />
+        
         {/* City Selector */}
         <CitySelector />
 
         {/* Help Button */}
-        <Button 
-          variant="ghost" 
-          size="sm"
-          className="text-gray-600 hover:text-gray-900 rounded-full"
-        >
-          <HelpCircle className="h-4 w-4 mr-1" />
-          Помощь
-        </Button>
+        <Link href="/contact">
+          <Button 
+            variant="ghost" 
+            size="sm"
+            className="text-gray-600 hover:text-gray-900 rounded-full"
+          >
+            <HelpCircle className="h-4 w-4 mr-1" />
+            {t('help')}
+          </Button>
+        </Link>
 
         {user ? (
           // Показываем меню пользователя если авторизован
@@ -38,7 +47,7 @@ export function HeaderActions({ user }: HeaderActionsProps) {
                   variant="outline"
                   className="rounded-full border border-gray-900 text-gray-900 hover:bg-gray-50 font-medium text-sm"
                 >
-                  Создать заказ
+                  {t('createOrder')}
                 </Button>
               </Link>
             )}
@@ -50,7 +59,7 @@ export function HeaderActions({ user }: HeaderActionsProps) {
             <Button 
               className="rounded-full bg-primary hover:bg-primary/90 text-white font-medium px-5 text-sm"
             >
-              Войти
+              {t('login')}
             </Button>
           </Link>
         )}
@@ -66,7 +75,7 @@ export function HeaderActions({ user }: HeaderActionsProps) {
               size="sm"
               className="rounded-full bg-primary hover:bg-primary/90 text-white"
             >
-              Войти
+              {t('login')}
             </Button>
           </Link>
         )}

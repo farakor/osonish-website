@@ -1,9 +1,33 @@
 import { createClient } from '@/lib/supabase/server';
 import { cookies } from 'next/headers';
+import nodemailer from 'nodemailer';
 
 /**
- * Email Service для отправки OTP кодов
+ * Email Service для отправки OTP кодов и сообщений
  */
+
+// SMTP конфигурация
+const SMTP_HOST = process.env.SMTP_HOST;
+const SMTP_PORT = parseInt(process.env.SMTP_PORT || '587');
+const SMTP_USER = process.env.SMTP_USER;
+const SMTP_PASSWORD = process.env.SMTP_PASSWORD;
+const SMTP_FROM = process.env.SMTP_FROM || 'noreply@oson-ish.uz';
+
+// Создаем транспортер для nodemailer
+let transporter: nodemailer.Transporter | null = null;
+
+// Инициализируем транспортер только если SMTP настроен
+if (SMTP_HOST && SMTP_USER && SMTP_PASSWORD) {
+  transporter = nodemailer.createTransport({
+    host: SMTP_HOST,
+    port: SMTP_PORT,
+    secure: SMTP_PORT === 465, // true для 465, false для других портов
+    auth: {
+      user: SMTP_USER,
+      pass: SMTP_PASSWORD,
+    },
+  });
+}
 
 /**
  * Генерация 6-значного OTP кода
@@ -13,24 +37,74 @@ function generateOTP(): string {
 }
 
 /**
- * Отправка email через внешний сервис (например, через Supabase Functions или другой API)
- * Временно будем использовать console.log для разработки
+ * Отправка email через SMTP
  */
 async function sendEmail(to: string, subject: string, body: string): Promise<boolean> {
   try {
-    // TODO: Интегрировать реальный email сервис (SendGrid, AWS SES, Mailgun и т.д.)
-    // Пока что просто логируем для разработки
-    console.log('📧 EMAIL TO:', to);
-    console.log('📧 SUBJECT:', subject);
-    console.log('📧 BODY:', body);
-    console.log('📧 ====================');
-    
-    // Возвращаем true для разработки
-    // В продакшене здесь должна быть настоящая отправка email
+    // Проверяем, настроен ли SMTP
+    if (!transporter) {
+      console.warn('⚠️  SMTP не настроен. Email будет залогирован в консоль.');
+      console.log('📧 EMAIL TO:', to);
+      console.log('📧 SUBJECT:', subject);
+      console.log('📧 BODY:', body);
+      console.log('📧 ====================');
+      return true;
+    }
+
+    // Отправляем email через SMTP
+    const info = await transporter.sendMail({
+      from: `"Oson Ish" <${SMTP_FROM}>`,
+      to: to,
+      subject: subject,
+      text: body,
+      html: body.replace(/\n/g, '<br>'),
+    });
+
+    console.log('✅ Email отправлен:', info.messageId);
     return true;
   } catch (error) {
-    console.error('Error sending email:', error);
+    console.error('❌ Ошибка отправки email:', error);
     return false;
+  }
+}
+
+/**
+ * Отправка письма на info@oson-ish.uz (из контактной формы)
+ */
+export async function sendContactEmail(data: {
+  name: string;
+  phone: string;
+  subject: string;
+  message: string;
+}): Promise<{ success: boolean; error?: string }> {
+  try {
+    const emailBody = `
+Новое сообщение с формы обратной связи
+
+Имя: ${data.name}
+Телефон: ${data.phone}
+Тема: ${data.subject}
+Сообщение:
+${data.message}
+
+---
+Отправлено с формы контактов Oson Ish
+    `;
+
+    const emailSent = await sendEmail(
+      'info@oson-ish.uz',
+      `Новое сообщение: ${data.subject}`,
+      emailBody
+    );
+
+    if (!emailSent) {
+      return { success: false, error: 'Не удалось отправить сообщение' };
+    }
+
+    return { success: true };
+  } catch (error) {
+    console.error('Error in sendContactEmail:', error);
+    return { success: false, error: 'Внутренняя ошибка сервера' };
   }
 }
 

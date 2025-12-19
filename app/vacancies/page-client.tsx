@@ -10,8 +10,10 @@ import {
 import { PageLoader } from "@/components/shared/loading";
 import { Button } from "@/components/ui/button";
 import type { Order } from "@/types";
+import { useTranslations } from 'next-intl';
 
 export function VacanciesPageClient() {
+  const t = useTranslations('vacancies');
   const [vacancies, setVacancies] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
   const [filters, setFilters] = useState<VacancyFilterValues>({});
@@ -80,9 +82,9 @@ export function VacanciesPageClient() {
       <Container>
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl md:text-4xl font-bold mb-2">Вакансии</h1>
+          <h1 className="text-3xl md:text-4xl font-bold mb-2">{t('title')}</h1>
           <p className="text-lg text-muted-foreground">
-            Найдите работу мечты в Узбекистане
+            {t('subtitle')}
           </p>
         </div>
 
@@ -103,17 +105,17 @@ export function VacanciesPageClient() {
             ) : vacancies.length === 0 ? (
               <div className="text-center py-12">
                 <p className="text-lg text-muted-foreground">
-                  Вакансий не найдено
+                  {t('notFound')}
                 </p>
                 <p className="text-sm text-muted-foreground mt-2">
-                  Попробуйте изменить фильтры или создайте резюме
+                  {t('notFoundDescription')}
                 </p>
               </div>
             ) : (
               <>
                 {/* Results Count */}
                 <div className="mb-4 text-sm text-muted-foreground">
-                  Найдено вакансий: {vacancies.length}
+                  {t('resultsCount', { count: vacancies.length })}
                 </div>
 
                 {/* Vacancies Grid */}
@@ -127,7 +129,7 @@ export function VacanciesPageClient() {
                 {hasMore && (
                   <div className="mt-8 text-center">
                     <Button onClick={loadMore} disabled={loading} size="lg">
-                      {loading ? "Загрузка..." : "Показать еще"}
+                      {loading ? t('loading') : t('loadMore')}
                     </Button>
                   </div>
                 )}

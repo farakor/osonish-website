@@ -13,35 +13,53 @@ import {
   Building2,
   Clock,
 } from "lucide-react";
-import {
-  employmentTypeLabels,
-  workFormatLabels,
-  experienceLevelLabels,
-} from "@/constants/translations";
 import { getSpecializationName, getSpecializationIconName } from "@/lib/specialization-utils";
 import { SpecializationIcon } from "@/components/ui/specialization-icon";
+import { useTranslations, useLocale } from 'next-intl';
+import { getSkillLabel } from "@/constants/translations";
 
 interface VacancyCardProps {
   vacancy: Order;
 }
 
 export function VacancyCard({ vacancy }: VacancyCardProps) {
-  const formatSalary = (from?: number, to?: number, period?: string) => {
-    if (!from && !to) return "По договоренности";
+  const locale = useLocale();
+  const t = useTranslations('vacancies.card');
+  const tEmployment = useTranslations('employmentTypes');
+  const tWorkFormat = useTranslations('workFormats');
+  const tExperience = useTranslations('experienceLevels');
+  
+  const formatSalary = (from?: number, to?: number, period?: string, type?: string) => {
+    if (!from && !to) return t('byAgreement');
 
     const formatAmount = (amount: number) => {
-      return new Intl.NumberFormat("ru-RU").format(amount);
+      // Форматируем число с пробелами вместо запятых
+      return amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
     };
 
-    const periodText =
-      period === "month" ? "в месяц" : period === "hour" ? "в час" : "";
+    let periodText = "";
+    if (period === "month" || period === "per_month") {
+      periodText = t('perMonth');
+    } else if (period === "hour" || period === "per_hour") {
+      periodText = t('perHour');
+    } else if (period === "day" || period === "per_day") {
+      periodText = t('perDay');
+    }
+
+    // Получаем локализованный текст типа зарплаты
+    let typeText = "";
+    if (type === "gross" || type === "before_tax") {
+      typeText = ` (${t('grossSalary')})`;
+    } else if (type === "net" || type === "after_tax") {
+      typeText = ` (${t('netSalary')})`;
+    }
 
     if (from && to) {
-      return `${formatAmount(from)} - ${formatAmount(to)} сум ${periodText}`;
+      return `${formatAmount(from)} - ${formatAmount(to)}${periodText}${typeText}`;
     } else if (from) {
-      return `от ${formatAmount(from)} сум ${periodText}`;
+      return `${t('from')} ${formatAmount(from)}${periodText}${typeText}`;
     } else if (to) {
-      return `до ${formatAmount(to)} сум ${periodText}`;
+      return `${t('to')} ${formatAmount(to)}${periodText}${typeText}`;
     }
   };
 
@@ -51,11 +69,11 @@ export function VacancyCard({ vacancy }: VacancyCardProps) {
     const diffTime = Math.abs(now.getTime() - date.getTime());
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
-    if (diffDays === 0) return "Сегодня";
-    if (diffDays === 1) return "Вчера";
-    if (diffDays < 7) return `${diffDays} дней назад`;
+    if (diffDays === 0) return t('today');
+    if (diffDays === 1) return t('yesterday');
+    if (diffDays < 7) return t('daysAgo', { count: diffDays });
     
-    return new Intl.DateTimeFormat("ru-RU", {
+    return new Intl.DateTimeFormat(locale === 'uz' ? 'uz-UZ' : 'ru-RU', {
       day: "numeric",
       month: "short",
     }).format(date);
@@ -72,7 +90,7 @@ export function VacancyCard({ vacancy }: VacancyCardProps) {
             </h3>
             <div className="flex items-center gap-2 text-muted-foreground text-sm mb-1">
               <Building2 className="w-4 h-4" />
-              <span>{vacancy.companyName || "Компания"}</span>
+              <span>{vacancy.companyName || t('company')}</span>
             </div>
             {vacancy.specializationId && (
               <div className="flex items-center gap-2 text-muted-foreground text-sm">
@@ -82,12 +100,12 @@ export function VacancyCard({ vacancy }: VacancyCardProps) {
                     size={16}
                   />
                 )}
-                <span>{getSpecializationName(vacancy.specializationId)}</span>
+                <span>{getSpecializationName(vacancy.specializationId, locale)}</span>
               </div>
             )}
           </div>
           <Badge variant="secondary" className="bg-[#F3F4F6] text-primary hover:bg-[#F3F4F6]">
-            {employmentTypeLabels[vacancy.employmentType] || vacancy.employmentType}
+            {tEmployment(vacancy.employmentType)}
           </Badge>
         </div>
 
@@ -98,7 +116,8 @@ export function VacancyCard({ vacancy }: VacancyCardProps) {
             {formatSalary(
               vacancy.salaryFrom,
               vacancy.salaryTo,
-              vacancy.salaryPeriod
+              vacancy.salaryPeriod,
+              vacancy.salaryType
             )}
           </span>
         </div>
@@ -113,7 +132,7 @@ export function VacancyCard({ vacancy }: VacancyCardProps) {
           <div className="flex flex-wrap gap-2 mb-4">
             {vacancy.skills.slice(0, 5).map((skill, index) => (
               <Badge key={index} variant="outline" className="text-xs bg-[#F3F4F6] text-primary border-transparent hover:bg-[#F3F4F6]">
-                {skill}
+                {getSkillLabel(skill, locale)}
               </Badge>
             ))}
             {vacancy.skills.length > 5 && (
@@ -132,11 +151,13 @@ export function VacancyCard({ vacancy }: VacancyCardProps) {
           </div>
           <div className="flex items-center gap-2 text-muted-foreground">
             <Briefcase className="w-4 h-4" />
-            <span>{workFormatLabels[vacancy.workFormat] || vacancy.workFormat}</span>
+            <span>{vacancy.workFormat ? tWorkFormat(vacancy.workFormat) : '-'}</span>
           </div>
           <div className="flex items-center gap-2 text-muted-foreground">
             <Clock className="w-4 h-4" />
-            <span className="truncate">{experienceLevelLabels[vacancy.experienceLevel] || vacancy.experienceLevel}</span>
+            <span className="truncate">
+              {vacancy.experienceLevel ? tExperience(vacancy.experienceLevel) : tExperience('no_experience')}
+            </span>
           </div>
           <div className="flex items-center gap-2 text-muted-foreground">
             <Calendar className="w-4 h-4" />
@@ -157,7 +178,7 @@ export function VacancyCard({ vacancy }: VacancyCardProps) {
             </div>
           </div>
           <Button variant="default" size="sm" className="text-white">
-            Подробнее
+            {t('viewDetails')}
           </Button>
         </div>
       </div>

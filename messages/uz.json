@@ -1,4 +1,49 @@
 {
+  "common": {
+    "login": "Kirish",
+    "logout": "Chiqish",
+    "help": "Yordam",
+    "createOrder": "Buyurtma yaratish",
+    "loading": "Yuklanmoqda...",
+    "save": "Saqlash",
+    "cancel": "Bekor qilish",
+    "delete": "O'chirish",
+    "edit": "Tahrirlash",
+    "back": "Orqaga",
+    "next": "Keyingisi",
+    "search": "Qidirish",
+    "filter": "Filtr",
+    "selectCity": "Shaharni tanlang",
+    "continue": "Davom etish",
+    "currency": "sum",
+    "salaryFrom": "{amount} sum dan",
+    "salaryTo": "{amount} sum gacha",
+    "salaryRange": "{min} – {max} sum"
+  },
+  "userMenu": {
+    "worker": "Ijrochi",
+    "customer": "Buyurtmachi",
+    "dashboard": "Boshqaruv paneli",
+    "profile": "Profil",
+    "settings": "Sozlamalar",
+    "logout": "Chiqish",
+    "loggingOut": "Chiqilmoqda..."
+  },
+  "citySelector": {
+    "title": "Shaharni tanlang",
+    "detectLocation": "Mening joylashuvimni aniqlash",
+    "detecting": "Aniqlanmoqda...",
+    "searchPlaceholder": "Shaharni qidirish...",
+    "notFound": "Shahar topilmadi"
+  },
+  "navigation": {
+    "orders": "Buyurtmalar",
+    "vacancies": "Vakansiyalar",
+    "workers": "Ijrochilar",
+    "about": "Kompaniya haqida",
+    "contact": "Aloqa",
+    "home": "Bosh sahifa"
+  },
   "auth": {
     "title": "Osonish'ga kirish",
     "description": "Barcha imkoniyatlarga kirish uchun hisobingizga kiring",
@@ -21,21 +66,38 @@
   },
   "dashboard": {
     "title": "Shaxsiy kabinet",
-    "welcome": "Xush kelibsiz",
+    "welcome": "Xush kelibsiz, {name}!",
+    "user": "Foydalanuvchi",
+    "customerDashboard": "Buyurtmachi kabineti",
+    "workerDashboard": "Ijrochi kabineti",
+    "logout": "Chiqish",
+    "findOrders": "Buyurtmalarni topish",
+    "findOrdersDesc": "Buyurtmalarga murojaat qilish",
+    "profileCard": "Profil",
+    "profileDesc": "Shaxsiy ma'lumotlarni tahrirlash",
+    "myOrders": "Mening buyurtmalarim",
+    "myOrdersDesc": "Buyurtmalarni boshqarish",
+    "allResponses": "Barcha javoblar",
+    "allResponsesDesc": "Buyurtmalarga javoblarni ko'rish",
+    "createOrder": "Buyurtma yaratish",
+    "createOrderDesc": "Yangi buyurtma joylashtirish",
+    "myResponses": "Mening javoblarim",
+    "myResponsesDesc": "Javoblarni boshqarish",
+    "reviews": "Sharhlar",
+    "reviewsDesc": "Sharhlarni ko'rish",
+    "settingsCard": "Sozlamalar",
+    "settingsDesc": "Hisob sozlamalari",
+    "rating": "Reyting",
+    "reviewsCount": "Sharhlar",
+    "completedOrders": "Bajarilgan buyurtmalar",
     "customer": {
       "title": "Buyurtmachi kabineti",
-      "myOrders": "Mening buyurtmalarim",
-      "createOrder": "Buyurtma yaratish",
       "activeOrders": "Faol buyurtmalar",
-      "completedOrders": "Tugallangan buyurtmalar",
       "responses": "Javoblar"
     },
     "worker": {
       "title": "Ijrochi kabineti",
-      "myResponses": "Mening javoblarim",
-      "findOrders": "Buyurtmalarni topish",
       "portfolio": "Portfolio",
-      "reviews": "Sharhlar",
       "balance": "Balans"
     },
     "profile": {
@@ -51,14 +113,131 @@
       "experience": "Ish tajribasi",
       "education": "Ta'lim",
       "save": "Saqlash"
-    },
-    "logout": "Chiqish"
+    }
+  },
+  "profile": {
+    "title": "Mening profilim",
+    "photoCard": "Profil rasmi",
+    "changePhoto": "Rasmni o'zgartirish",
+    "uploading": "Yuklanmoqda...",
+    "phone": "Telefon",
+    "role": "Rol",
+    "customer": "Buyurtmachi",
+    "worker": "Ijrochi",
+    "rating": "Reyting",
+    "reviewsCount": "sharh",
+    "personalData": "Shaxsiy ma'lumotlar",
+    "lastName": "Familiya",
+    "firstName": "Ism",
+    "email": "Email",
+    "birthDate": "Tug'ilgan sana",
+    "selectDate": "Sanani tanlang",
+    "city": "Shahar",
+    "selectCity": "Shaharni tanlang",
+    "gender": "Jins",
+    "male": "Erkak",
+    "female": "Ayol",
+    "bio": "O'zim haqimda",
+    "bioPlaceholder": "O'zingiz, tajribangiz va professional fazilatlaringiz haqida gapirib bering...",
+    "bioLength": "{current} / {max}",
+    "jobPreferences": "Ish bo'yicha istaklarim",
+    "desiredSalary": "Istagan maosh (sum)",
+    "salaryPlaceholder": "5 000 000",
+    "willingToRelocate": "Ko'chishga tayyor",
+    "education": "Ta'lim",
+    "add": "Qo'shish",
+    "institutionPlaceholder": "O'quv muassasasi nomi",
+    "degreePlaceholder": "Daraja/mutaxassislik",
+    "yearStartPlaceholder": "Boshlanish yili",
+    "yearEndPlaceholder": "Tugash yili",
+    "delete": "O'chirish",
+    "workExperience": "Ish tajribasi",
+    "companyPlaceholder": "Kompaniya nomi",
+    "positionPlaceholder": "Lavozim",
+    "descriptionPlaceholder": "Majburiyatlarning tavsifi (ixtiyoriy)",
+    "skills": "Ko'nikmalar",
+    "skillPlaceholder": "Ko'nikmani kiriting",
+    "skillsHint": "Ega bo'lgan ko'nikmalaringizni qo'shing",
+    "specializations": "Mutaxassisliklar",
+    "specializationsHint": "Sizni qiziqtirgan mutaxassisliklarni tanlang. Mutaxassislikni asosiy qilish uchun bosing (belgilangan",
+    "specializationsModalTitle": "Mutaxassisliklarni tanlang",
+    "specializationsModalDesc": "Sizni qiziqtirgan mutaxassisliklarni tanlang. Birinchi tanlangan mutaxassislik asosiy bo'ladi.",
+    "saveChanges": "O'zgarishlarni saqlash",
+    "saving": "Saqlanmoqda...",
+    "cancel": "Bekor qilish",
+    "cityModalTitle": "Shaharni tanlang",
+    "done": "Tayyor",
+    "errorImage": "Iltimos, rasmni tanlang",
+    "errorFileSize": "Fayl hajmi 5MB dan oshmasligi kerak",
+    "successMessage": "Profil muvaffaqiyatli yangilandi!",
+    "required": "*"
+  },
+  "customerOrders": {
+    "title": "Mening buyurtmalarim",
+    "description": "Buyurtmalarni boshqarish",
+    "createNewOrder": "Yangi buyurtma yaratish",
+    "noOrders": "Hozircha buyurtmalaringiz yo'q",
+    "createFirstOrder": "Birinchi buyurtmani yaratish",
+    "view": "Ko'rish",
+    "responses": "Javoblar",
+    "responsesCount": "javob",
+    "currency": "so'm",
+    "statuses": {
+      "open": "Ochiq",
+      "in_progress": "Jarayonda",
+      "completed": "Yakunlangan",
+      "cancelled": "Bekor qilingan",
+      "new": "Yangi",
+      "response_received": "Javoblar olingan"
+    }
+  },
+  "createOrder": {
+    "title": "Buyurtma yaratish",
+    "step": "Qadam",
+    "of": "dan",
+    "orderType": "Buyurtma turi",
+    "daily": "Bir martalik ish",
+    "vacancy": "Vakansiya",
+    "orderTitle": "Buyurtma nomi",
+    "orderTitlePlaceholder": "Masalan: Santexnik kerak",
+    "description": "Ishlar tavsifi",
+    "descriptionPlaceholder": "Nima qilish kerakligini tasvirlab bering...",
+    "location": "Ishlarni bajarish manzili",
+    "locationPlaceholder": "Masalan: Toshkent, Amir Temur ko'chasi 1",
+    "budget": "Byudjet (so'm)",
+    "workersNeeded": "Ijrochilar soni",
+    "serviceDate": "Ishlarni bajarish sanasi",
+    "additionalConditions": "Qo'shimcha shartlar",
+    "transportPaid": "Yo'l haqi to'lanadi",
+    "mealIncluded": "Ovqat kiritilgan",
+    "mealPaid": "Ovqat to'lanadi",
+    "back": "Orqaga",
+    "next": "Keyingisi",
+    "create": "Buyurtma yaratish",
+    "creating": "Yaratilmoqda...",
+    "success": "Buyurtma muvaffaqiyatli yaratildi",
+    "required": "majburiy",
+    "characters": "belgi",
+    "errors": {
+      "titleRequired": "Buyurtma nomini kiriting",
+      "titleTooLong": "Nom 70 belgidan oshmasligi kerak",
+      "descriptionRequired": "Buyurtma tavsifini kiriting",
+      "descriptionTooLong": "Tavsif 500 belgidan oshmasligi kerak",
+      "locationRequired": "Ishlarni bajarish manzilini ko'rsating",
+      "budgetRequired": "To'g'ri byudjetni ko'rsating",
+      "workersRequired": "Ijrochilar sonini ko'rsating",
+      "dateRequired": "Ishlarni bajarish sanasini tanlang",
+      "datePast": "Sana o'tmishda bo'lishi mumkin emas",
+      "createFailed": "Buyurtma yaratib bo'lmadi",
+      "networkError": "Buyurtma yaratishda xatolik yuz berdi"
+    }
   },
   "employmentTypes": {
     "full_time": "To'liq bandlik",
     "part_time": "Qisman bandlik",
     "project": "Loyiha ishi",
     "contract": "Shartnoma asosida",
+    "temporary": "Vaqtinchalik ish",
     "internship": "Amaliyot",
     "Полная занятость": "To'liq bandlik",
     "Частичная занятость": "Qisman bandlik",
@@ -66,6 +245,7 @@
     "Стажировка": "Amaliyot"
   },
   "workFormats": {
+    "office": "Ofis",
     "on_site": "Ofis",
     "remote": "Masofaviy",
     "hybrid": "Gibrid",
@@ -76,18 +256,13 @@
   "experienceLevels": {
     "no_experience": "Tajribasiz",
     "less_than_1": "1 yilgacha",
-    "1_to_3": "1 yildan 3 yilgacha",
-    "3_to_5": "3 yildan 5 yilgacha",
+    "1_to_3": "1-3 yil",
+    "3_to_5": "3-5 yil",
     "more_than_5": "5 yildan ortiq",
-    "1_to_3_years": "1-3 yil",
-    "3_to_6_years": "3-6 yil",
-    "6_plus_years": "6+ yil",
-    "Без опыта": "Tajribasiz",
-    "1-3 года": "1-3 yil",
-    "3+ года": "3-6 yil",
-    "3-6 лет": "3-6 yil",
-    "5+ лет": "6+ yil",
-    "6+ лет": "6+ yil"
+    "from_1_year": "1 yildan",
+    "from_3_years": "3 yildan",
+    "from_5_years": "5 yildan",
+    "from_10_years": "10 yildan"
   },
   "workSchedules": {
     "full_day": "To'liq kun",
@@ -139,5 +314,631 @@
     "urgench": "Urganch",
     "nukus": "No'kis",
     "gulistan": "Guliston"
+  },
+  "landing": {
+    "hero": {
+      "title": "Orzuingizdagi ishni yoki ideal ijrochini toping",
+      "subtitle": "Shahringizdagi ishni topish yoki professionallarni yollashning tez va qulay usuli",
+      "phonePlaceholder": "Telefon raqamini kiriting",
+      "getStarted": "Boshlash",
+      "phoneError": "Iltimos, to'g'ri telefon raqamini kiriting",
+      "sendError": "Kodni yuborib bo'lmadi. Qayta urinib ko'ring",
+      "networkError": "Tarmoq xatosi. Internet aloqasini tekshiring",
+      "privacyText": "Davom etish orqali siz qabul qilasiz",
+      "agreement": "shartnoma",
+      "and": "va",
+      "privacyPolicy": "maxfiylik siyosati"
+    },
+    "featured": {
+      "title": "Ish qidirish",
+      "searchPlaceholder": "Kasb, lavozim yoki kompaniya",
+      "searchButton": "Qidirish",
+      "findEmployee": "Men xodim qidiryapman",
+      "noVacancies": "Hozircha faol vakansiyalar yo'q",
+      "checkLater": "Keyinroq tekshiring yoki o'z buyurtmangizni yarating"
+    },
+    "howItWorks": {
+      "title": "Bu qanday ishlaydi",
+      "subtitle": "Buyurtma yaratishdan uni bajarishgacha oddiy jarayon",
+      "step1Title": "Buyurtma yarating",
+      "step1Description": "Vazifangizni tasvirlab bering, byudjet va bajarish muddatini ko'rsating",
+      "step2Title": "Javoblarni oling",
+      "step2Description": "Ijrochilar buyurtmangizga javob berishadi, ularning profillari va sharhlarini o'rganing",
+      "step3Title": "Ijrochini tanlang",
+      "step3Description": "Mos mutaxassisni tanlang va loyihangiz ustida ishlashni boshlang",
+      "step4Title": "Ishni baholang",
+      "step4Description": "Ish tugagandan so'ng xizmat sifati haqida sharh qoldiring"
+    },
+    "downloadApp": {
+      "badge": "Ilovani yuklab oling",
+      "title": "Oson Ish cho'ntagingizda",
+      "description": "Bir necha klik bilan ish yoki ijrochilarni toping. Buyurtmalarni boshqaring, mijozlar bilan muloqot qiling va ishlang — hammasi bitta ilovada!",
+      "feature1": "Tez qidiruv",
+      "feature1Description": "Bir necha soniyada ish toping",
+      "feature2": "Xavfsiz bitimlar",
+      "feature2Description": "Reytinglar va sharhlar tizimi",
+      "feature3": "Tekshirilgan profillar",
+      "feature3Description": "Ishonchli odamlar bilan ishlang",
+      "availableIn": "Mavjud",
+      "googlePlay": "Google Play",
+      "downloadFrom": "Yuklab olish",
+      "appStore": "App Store"
+    },
+    "cta": {
+      "title": "Boshlashga tayyormisiz?",
+      "description": "Osonish orqali ish topgan yoki professionallarni yollagan minglab foydalanuvchilarga qo'shiling",
+      "createOrder": "Buyurtma yaratish",
+      "register": "Ro'yxatdan o'tish"
+    }
+  },
+  "footer": {
+    "description": "O'zbekistonda ish va ijrochilarni qidirish platformasi",
+    "forEmployers": "Ish beruvchilar uchun",
+    "postJob": "Buyurtma/vakansiya joylashtirish",
+    "findWorker": "Ijrochi topish",
+    "howItWorks": "Qanday ishlaydi",
+    "forWorkers": "Ishchilar uchun",
+    "findWork": "Ish topish",
+    "vacancies": "Vakansiyalar",
+    "createResume": "Rezyume yaratish",
+    "support": "Yordam",
+    "aboutUs": "Biz haqimizda",
+    "contact": "Aloqa",
+    "privacyPolicy": "Maxfiylik siyosati",
+    "termsOfService": "Foydalanish shartlari",
+    "copyright": "© {year} Oson Ish. Barcha huquqlar himoyalangan.",
+    "downloadApp": "Ilovani yuklab olish",
+    "instagram": "Instagram",
+    "telegram": "Telegram"
+  },
+  "orders": {
+    "title": "Buyurtmalar va vakansiyalar",
+    "subtitle": "Mos ishni toping yoki professionallarni yollang",
+    "notFound": "Buyurtmalar topilmadi",
+    "notFoundDescription": "Filtrlarni o'zgartiring yoki o'z buyurtmangizni yarating",
+    "resultsCount": "Topilgan buyurtmalar: {count}",
+    "loadMore": "Yana ko'rsatish",
+    "loading": "Yuklanmoqda...",
+    "filters": {
+      "title": "Filtrlar",
+      "clear": "Tozalash",
+      "showFilters": "Filtrlarni ko'rsatish",
+      "hideFilters": "Filtrlarni yashirish",
+      "search": "Qidiruv",
+      "searchPlaceholder": "Kalit so'zlarni kiriting...",
+      "city": "Shahar",
+      "allCities": "Barcha shaharlar",
+      "category": "Kategoriya",
+      "allCategories": "Barcha kategoriyalar",
+      "budget": "Byudjet (sum)",
+      "budgetFrom": "Dan",
+      "budgetTo": "Gacha",
+      "type": "Turi",
+      "all": "Hammasi",
+      "daily": "Kunlik",
+      "vacancy": "Vakansiya"
+    },
+    "card": {
+      "new": "Yangi",
+      "responseReceived": "Javoblar bor",
+      "inProgress": "Jarayonda",
+      "completed": "Yakunlandi",
+      "cancelled": "Bekor qilindi",
+      "rejected": "Rad etildi",
+      "budget": "Byudjet",
+      "location": "Manzil",
+      "date": "Sana",
+      "deadline": "Muddat",
+      "workersNeeded": "Kerak",
+      "worker": "{count} ishchi",
+      "people": "{count} kishi",
+      "mealIncluded": "Ovqat kiritilgan",
+      "transportPaid": "Transport to'lanadi",
+      "responses": "{count} javob",
+      "viewDetails": "Batafsil",
+      "respond": "Javob berish"
+    }
+  },
+  "vacancies": {
+    "title": "Vakansiyalar",
+    "subtitle": "O'zbekistonda orzuingizdagi ishni toping",
+    "notFound": "Vakansiyalar topilmadi",
+    "notFoundDescription": "Filtrlarni o'zgartiring yoki rezyume yarating",
+    "resultsCount": "Topilgan vakansiyalar: {count}",
+    "loadMore": "Yana ko'rsatish",
+    "loading": "Yuklanmoqda...",
+    "filters": {
+      "title": "Filtrlar",
+      "search": "Qidiruv",
+      "searchPlaceholder": "Lavozim, ko'nikmalar...",
+      "city": "Shahar",
+      "selectCity": "Shaharni tanlang",
+      "allCities": "Barcha shaharlar",
+      "employmentType": "Bandlik turi",
+      "selectEmploymentType": "Turini tanlang",
+      "allTypes": "Barcha turlar",
+      "workFormat": "Ish formati",
+      "selectWorkFormat": "Formatni tanlang",
+      "allFormats": "Barcha formatlar",
+      "experienceLevel": "Ish tajribasi",
+      "selectExperienceLevel": "Tajribani tanlang",
+      "allExperience": "Har qanday tajriba",
+      "salary": "Maosh (sum)",
+      "salaryFrom": "Dan",
+      "salaryTo": "Gacha",
+      "apply": "Qo'llash",
+      "reset": "Tozalash"
+    },
+    "card": {
+      "company": "Kompaniya",
+      "byAgreement": "Kelishilgan holda",
+      "perMonth": "oyiga",
+      "perHour": "soatiga",
+      "perDay": "kunga",
+      "from": "dan",
+      "to": "gacha",
+      "today": "Bugun",
+      "yesterday": "Kecha",
+      "daysAgo": "{count} kun oldin",
+      "views": "ko'rildi",
+      "responses": "javob",
+      "viewDetails": "Batafsil",
+      "grossSalary": "Soliq chiqarilgunga qadar",
+      "netSalary": "Qo'lga"
+    },
+    "detail": {
+      "backToVacancies": "Vakansiyalarga qaytish",
+      "description": "Vakansiya tavsifi",
+      "requirements": "Talablar",
+      "responsibilities": "Majburiyatlar",
+      "benefits": "Sharoitlar va imtiyozlar",
+      "keySkills": "Asosiy ko'nikmalar",
+      "languages": "Tillar",
+      "aboutCompany": "Kompaniya haqida",
+      "additionalInfo": "Qo'shimcha",
+      "workFormat": "Ish formati:",
+      "experience": "Ish tajribasi:",
+      "share": "Ulashish",
+      "apply": "Javob berish",
+      "applying": "Yuborilmoqda...",
+      "applied": "Javob yuborildi",
+      "checking": "Tekshirilmoqda...",
+      "alreadyApplied": "Siz ushbu vakansiyaga allaqachon javob yuborgansiz",
+      "agreeToTerms": "Tugmani bosish orqali siz foydalanish shartlariga rozilik bildirasiz",
+      "applicantsCount": "{count} javob",
+      "viewsCount": "{count} ko'rildi",
+      "byAgreement": "Kelishilgan holda",
+      "perMonth": "oyiga",
+      "perHour": "soatiga",
+      "perDay": "kunga",
+      "salaryFrom": "dan",
+      "salaryTo": "gacha"
+    }
+  },
+  "workers": {
+    "title": "Ishchilar va mutaxassislar",
+    "subtitle": "Vazifalaringiz uchun tekshirilgan ijrochilarni toping",
+    "notFound": "Ishchilar topilmadi",
+    "notFoundDescription": "Filtrlarni o'zgartirib ko'ring",
+    "resultsCount": "Topilgan mutaxassislar: {count}",
+    "loadMore": "Yana ko'rsatish",
+    "loading": "Yuklanmoqda...",
+    "filters": {
+      "title": "Filtrlar",
+      "clear": "Tozalash",
+      "showFilters": "Filtrlarni ko'rsatish",
+      "hideFilters": "Filtrlarni yashirish",
+      "search": "Qidiruv",
+      "searchPlaceholder": "Ism, mutaxassislik...",
+      "city": "Shahar",
+      "selectCity": "Shaharni tanlang",
+      "allCities": "Barcha shaharlar",
+      "specialization": "Mutaxassislik",
+      "selectSpecialization": "Mutaxassislikni tanlang",
+      "allSpecializations": "Barcha mutaxassisliklar",
+      "workerType": "Ishchi turi",
+      "selectWorkerType": "Turini tanlang",
+      "allTypes": "Barcha turlar",
+      "professional": "Professional",
+      "dailyWorker": "Kunlik ishchi",
+      "jobSeeker": "Ish qidirmoqda",
+      "minRating": "Minimal reyting",
+      "anyRating": "Har qanday reyting",
+      "apply": "Qo'llash"
+    },
+    "card": {
+      "newbie": "Yangi",
+      "monthsOnPlatform": "{count} oy platformada",
+      "yearsOnPlatform": "{count} yil platformada",
+      "completedJobs": "{count} ta buyurtma",
+      "reviews": "sharh",
+      "viewProfile": "Profilni ko'rish"
+    }
+  },
+  "about": {
+    "title": "Kompaniya haqida",
+    "description": "Oson Ish — O'zbekistonda ish va ijrochilarni qidirish platformasi. Tez, ishonchli, qulay.",
+    "hero": {
+      "title": "Kompaniya haqida",
+      "brandName": "Oson Ish",
+      "description": "O'zbekistonda ish va ijrochilarni qidirish bo'yicha yetakchi platforma. Biz mijozlar tez professional topishi va ijrochilar foydali buyurtmalar va doimiy ish topishi uchun zamonaviy texnologiyalarni yaratamiz."
+    },
+    "stats": {
+      "title": "Oson Ish — bu",
+      "activeOrders": "faol buyurtma va vakansiyalar",
+      "verifiedWorkers": "tekshirilgan ijrochilar",
+      "registeredUsers": "ro'yxatdan o'tgan foydalanuvchilar",
+      "completedOrders": "muvaffaqiyatli tugallangan buyurtmalar",
+      "monthlyVisitors": "oylik tashrif buyuruvchilar",
+      "serviceCategories": "xizmat kategoriyalari"
+    },
+    "mission": {
+      "title": "Bizning missiyamiz",
+      "paragraph1": "Biz har bir inson munosib ishga loyiq va har bir biznes malakali mutaxassislarga loyiq deb hisoblaymiz. Bizning maqsadimiz — ish qidirish va yollash jarayonini oddiy, tez va samarali qilish.",
+      "paragraph2": "Oson Ish platformasi butun O'zbekiston bo'ylab minglab mijozlar va ijrochilarni birlashtiradi. Biz barcha foydalanuvchilar uchun eng yaxshi xizmatni taqdim etish uchun texnologiyalarimizni doimiy ravishda takomillashtiramiz.",
+      "forCustomers": "Mijozlar uchun",
+      "forCustomersBenefit1": "Tekshirilgan ijrochilarni tez qidirish",
+      "forCustomersBenefit2": "Buyurtmalarni qulay boshqarish",
+      "forCustomersBenefit3": "Sharhlar va reytinglar tizimi",
+      "forWorkers": "Ijrochilar uchun",
+      "forWorkersBenefit1": "Minglab buyurtmalarga kirish",
+      "forWorkersBenefit2": "Professional portfolio yaratish",
+      "forWorkersBenefit3": "Obro' va daromadni oshirish"
+    },
+    "contact": {
+      "title": "Yagona qo'llab-quvvatlash telefoni",
+      "phone": "+998 91 648-00-70",
+      "email": "info@oson-ish.uz",
+      "website": "oson-ish.uz"
+    },
+    "partners": {
+      "title": "Biz hamkorlik qilamiz",
+      "partner1": "Samarqand hokimiyati",
+      "partner2": "O'zbekiston universitetlari va Bandlik vazirligi",
+      "partner3": "IT Park Uzbekistan"
+    },
+    "values": {
+      "title": "Bizning qadriyatlarimiz",
+      "speed": "Tezlik",
+      "speedDescription": "Bir zumda qidirish va buyurtmalarga tez javoblar",
+      "reliability": "Ishonchlilik",
+      "reliabilityDescription": "Tekshirilgan ijrochilar va xavfsiz bitimlar",
+      "growth": "O'sish",
+      "growthDescription": "Platforma va imkoniyatlarni doimiy rivojlantirish"
+    },
+    "cta": {
+      "title": "Bugun Oson Ish'ga qo'shiling!",
+      "subtitle": "Orzuingizdagi ishni toping yoki eng yaxshi mutaxassislarni yollang",
+      "startWorking": "Ishni boshlash",
+      "viewOrders": "Buyurtmalarni ko'rish"
+    }
+  },
+  "orderDetail": {
+    "backToOrders": "Buyurtmalarga qaytish",
+    "budget": "Byudjet",
+    "startDate": "Boshlanish sanasi",
+    "location": "Manzil",
+    "required": "Kerak",
+    "people": "kishi",
+    "mealIncluded": "Ovqat kiritilgan",
+    "transportPaid": "Transport to'lanadi",
+    "responses": "{count} javob",
+    "views": "{count} ko'rishlar",
+    "published": "{date} da e'lon qilingan",
+    "orderDescription": "Buyurtma tavsifi",
+    "workVolume": "Ish hajmi",
+    "requirements": "Talablar",
+    "photos": "Rasmlar",
+    "photo": "Rasm {number}",
+    "applyButton": "Buyurtmaga javob berish",
+    "applyButtonSending": "Yuborilmoqda...",
+    "applyButtonSent": "Javob yuborildi",
+    "applyButtonChecking": "Tekshirilmoqda...",
+    "alreadyApplied": "Siz allaqachon bu buyurtmaga javob bergansiz",
+    "agreeToTerms": "Tugmani bosish orqali siz foydalanish shartlariga rozilik bildirasiz",
+    "applySuccess": "Javobingiz muvaffaqiyatli yuborildi!",
+    "applyError": "Javob yuborishda xatolik yuz berdi",
+    "customer": "Mijoz",
+    "showPhone": "Raqamni ko'rsatish",
+    "quickInfo": "Tezkor ma'lumot",
+    "orderType": "Buyurtma turi",
+    "dailyWork": "Kunlik ish",
+    "vacancy": "Vakansiya",
+    "status": "Holat",
+    "publicationDate": "E'lon qilingan sana",
+    "share": "Ulashish",
+    "shareOnTelegram": "Telegram",
+    "shareOnWhatsApp": "WhatsApp"
+  },
+  "customerResponses": {
+    "title": "Barcha javoblar",
+    "description": "Buyurtmalar va vakansiyalaringizga kelgan barcha javoblarni ko'rish",
+    "tabs": {
+      "orders": "Buyurtmalar",
+      "vacancies": "Vakansiyalar"
+    },
+    "stats": {
+      "totalResponses": "Jami javoblar",
+      "awaitingResponse": "Javob kutilmoqda",
+      "accepted": "Qabul qilingan"
+    },
+    "empty": {
+      "noResponses": "Sizda hali javoblar yo'q",
+      "onOrders": "buyurtmalarga",
+      "onVacancies": "vakansiyalarga",
+      "ordersDescription": "Ijrochilar buyurtmalaringizga javob berishni boshlaganlarida, ularni shu yerda ko'rasiz",
+      "vacanciesDescription": "Nomzodlar vakansiyalaringizga javob berishni boshlaganlarida, ularni shu yerda ko'rasiz",
+      "createOrder": "Buyurtma yaratish",
+      "createVacancy": "Vakansiya yaratish"
+    },
+    "card": {
+      "order": "Buyurtma",
+      "vacancy": "Vakansiya",
+      "currency": "so'm",
+      "acceptButton": "Qabul qilish",
+      "rejectButton": "Rad etish",
+      "callButton": "Qo'ng'iroq qilish",
+      "profileButton": "Profil",
+      "confirmAccept": "Javobni qabul qilishga ishonchingiz komilmi",
+      "confirmReject": "Javobni rad etishga ishonchingiz komilmi",
+      "errorUpdate": "Javob holatini yangilab bo'lmadi",
+      "errorGeneral": "Holatni yangilashda xatolik yuz berdi"
+    },
+    "statuses": {
+      "pending": "Ko'rib chiqilmoqda",
+      "accepted": "Qabul qilingan",
+      "rejected": "Rad etilgan",
+      "completed": "Yakunlangan"
+    }
+  },
+  "settings": {
+    "title": "Sozlamalar",
+    "mainSettings": {
+      "title": "Asosiy sozlamalar",
+      "description": "Hisobingiz parametrlarini boshqarish",
+      "language": "Interfeys tili",
+      "selectLanguage": "Tilni tanlang",
+      "russian": "Русский",
+      "uzbek": "O'zbekcha",
+      "english": "English",
+      "role": "Rol",
+      "customer": "Mijoz",
+      "worker": "Ijrochi",
+      "saveButton": "Sozlamalarni saqlash",
+      "saving": "Saqlanmoqda...",
+      "saveSuccess": "Sozlamalar muvaffaqiyatli saqlandi!",
+      "saveError": "Sozlamalarni saqlab bo'lmadi",
+      "generalError": "Sozlamalarni saqlashda xatolik yuz berdi"
+    },
+    "notifications": {
+      "title": "Bildirishnomalar",
+      "description": "Qaysi bildirishnomalarni olishni sozlang",
+      "push": "Push-bildirishnomalar",
+      "pushDescription": "Yangi xabarlar va javoblar haqida bildirishnomalar olish",
+      "email": "Email-bildirishnomalar",
+      "emailDescription": "Muhim bildirishnomalarni emailga olish"
+    },
+    "privacy": {
+      "title": "Maxfiylik",
+      "description": "Hisob ma'lumotlarini boshqarish",
+      "phone": "Telefon",
+      "deleteAccount": "Hisobni o'chirish",
+      "deleteConfirmTitle": "Ishonchingiz komilmi?",
+      "deleteConfirmDescription": "Bu amalni bekor qilib bo'lmaydi. Bu hisobingiz va barcha bog'liq ma'lumotlarni serverlarimizdan butunlay o'chirib tashlaydi.",
+      "cancelButton": "Bekor qilish",
+      "deleteButton": "Hisobni o'chirish",
+      "deleteNotImplemented": "Hisobni o'chirish funksiyasi keyinroq amalga oshiriladi",
+      "deleteError": "Hisobni o'chirishda xatolik yuz berdi"
+    }
+  },
+  "privacy": {
+    "title": "Shaxsiy ma'lumotlarni qayta ishlashga rozilik",
+    "metaTitle": "Maxfiylik siyosati | Osonish",
+    "metaDescription": "OSON ISH shaxsiy ma'lumotlarni qayta ishlash siyosati va roziligi"
+  },
+  "terms": {
+    "title": "Foydalanuvchi shartnomasi",
+    "metaTitle": "Foydalanuvchi shartnomasi | Osonish",
+    "metaDescription": "OSON ISH foydalanuvchi shartnomasi (Oferta). Xizmatdan foydalanish shartlari."
+  },
+  "createOrder": {
+    "title": "Buyurtma yaratish",
+    "titleVacancy": "Vakansiya yaratish",
+    "typeSelector": {
+      "label": "Turi",
+      "daily": "Kunlik ish",
+      "vacancy": "Vakansiya"
+    },
+    "progress": {
+      "step": "Qadam",
+      "of": "dan"
+    },
+    "buttons": {
+      "back": "Orqaga",
+      "next": "Keyingi",
+      "create": "Buyurtma yaratish",
+      "createVacancy": "Vakansiya yaratish",
+      "creating": "Yaratilmoqda...",
+      "add": "Qo'shish"
+    },
+    "vacancy": {
+      "step1": {
+        "title": "Vakansiya nomi",
+        "label": "Vakansiya nomi *",
+        "placeholder": "Masalan: React Native dasturchisi",
+        "characters": "belgi"
+      },
+      "step2": {
+        "title": "Mutaxassislik",
+        "searchLabel": "Mutaxassislikni qidirish",
+        "searchPlaceholder": "Qidirish...",
+        "noResults": "Mutaxassisliklar topilmadi"
+      },
+      "step3": {
+        "title": "Ish tajribasi"
+      },
+      "step4": {
+        "title": "Bandlik turi"
+      },
+      "step5": {
+        "title": "Ish formati"
+      },
+      "step6": {
+        "title": "Ish jadvali"
+      },
+      "step7": {
+        "title": "Joylashuv",
+        "label": "Manzil *",
+        "placeholder": "Masalan: Toshkent, Amir Temur ko'chasi 1"
+      },
+      "step8": {
+        "title": "Shahar"
+      },
+      "step9": {
+        "title": "Ish haqi",
+        "salaryFrom": "Dan (so'm)",
+        "salaryTo": "Gacha (so'm)",
+        "periodLabel": "To'lov davri",
+        "typeLabel": "Ish haqi turi"
+      },
+      "step10": {
+        "title": "To'lovlar chastotasi"
+      },
+      "step11": {
+        "title": "Vakansiya tavsifi",
+        "label": "Vakansiya tavsifi *",
+        "placeholder": "Vazifalar, talablar va ish sharoitlarini tavsiflang...",
+        "characters": "belgi"
+      },
+      "step12": {
+        "title": "Ko'nikmalar",
+        "selectLabel": "Ko'nikmalarni tanlang",
+        "customLabel": "O'z ko'nikmasini qo'shish",
+        "customPlaceholder": "Ko'nikmani kiriting...",
+        "selected": "Tanlangan ko'nikmalar"
+      },
+      "step13": {
+        "title": "Tillar",
+        "selectLabel": "Tillarni tanlang",
+        "customLabel": "O'z tilini qo'shish",
+        "customPlaceholder": "Tilni kiriting...",
+        "selected": "Tanlangan tillar"
+      }
+    },
+    "daily": {
+      "step1": {
+        "title": "Nomi",
+        "label": "Buyurtma nomi *",
+        "placeholder": "Masalan: Santexnik kerak",
+        "characters": "belgi"
+      },
+      "step2": {
+        "title": "Mutaxassislik",
+        "searchLabel": "Mutaxassislikni qidirish",
+        "searchPlaceholder": "Qidirish...",
+        "oneDayJob": "1 kunlik ish"
+      },
+      "step3": {
+        "title": "Tavsif",
+        "label": "Ishlar tavsifi (majburiy emas)",
+        "placeholder": "Nima qilish kerakligini tavsiflang...",
+        "characters": "belgi",
+        "hint": "💡 Ushbu qadamni o'tkazib yuborishingiz mumkin"
+      },
+      "step4": {
+        "title": "Joylashuv",
+        "label": "Ishlar bajarilish manzili *",
+        "placeholder": "Masalan: Toshkent, Amir Temur ko'chasi 1"
+      },
+      "step5": {
+        "title": "Ishchilar soni",
+        "label": "Ijrochilar soni *"
+      },
+      "step6": {
+        "title": "Byudjet",
+        "label": "Bir ishchi uchun byudjet (so'm) *",
+        "placeholder": "100 000",
+        "hint": "💡 Har bir ishchi uchun to'lovni ko'rsating"
+      },
+      "step7": {
+        "title": "Qo'shimcha qulayliklar",
+        "label": "Qo'shimcha shartlar (majburiy emas)",
+        "transportPaid": "🚗 Transport to'lanadi",
+        "mealIncluded": "🍽️ Ovqatlanish kiritilgan",
+        "mealPaid": "💰 Ovqatlanish to'lanadi",
+        "hint": "💡 Ushbu qadamni o'tkazib yuborishingiz mumkin"
+      },
+      "step8": {
+        "title": "Bajarilish sanasi",
+        "label": "Ishlar bajarilish sanasi *"
+      },
+      "step9": {
+        "title": "Rasm va video",
+        "label": "Rasm va video (majburiy emas)",
+        "description": "Vazifani yaxshiroq tushunish uchun 10 tagacha rasm yoki video qo'shing",
+        "uploadText": "Yuklash uchun bosing yoki fayllarni sudrab oling",
+        "fileTypes": "JPG, PNG, GIF, WebP, MP4, WebM (maks. 10 MB)",
+        "filesCount": "fayl",
+        "maxFiles": "✓ Maksimal miqdordagi fayllar yuklandi (10)",
+        "video": "🎥 Video",
+        "photo": "📷 Rasm",
+        "hint": "💡 Ushbu qadamni o'tkazib yuborishingiz mumkin"
+      },
+      "step10": {
+        "title": "Tasdiqlash",
+        "checkData": "Buyurtma ma'lumotlarini tekshiring",
+        "titleField": "Nomi",
+        "specializationField": "Mutaxassislik",
+        "descriptionField": "Tavsif",
+        "addressField": "Manzil",
+        "workersField": "Ishchilar soni",
+        "workersPerson": "kishi",
+        "budgetField": "Byudjet",
+        "perPerson": "har bir kishi uchun",
+        "total": "Jami",
+        "additionalField": "Qo'shimcha shartlar",
+        "transportCheck": "✓ Transport to'lanadi",
+        "mealIncludedCheck": "✓ Ovqatlanish kiritilgan",
+        "mealPaidCheck": "✓ Ovqatlanish to'lanadi",
+        "dateField": "Bajarilish sanasi",
+        "mediaField": "Media fayllar",
+        "moreFiles": "yana",
+        "notSpecified": "Ko'rsatilmagan"
+      }
+    },
+    "errors": {
+      "titleRequired": "Buyurtma nomini kiriting",
+      "titleTooLong": "Nom 70 belgidan oshmasligi kerak",
+      "jobTitleRequired": "Vakansiya nomini kiriting",
+      "jobTitleTooLong": "Nom 100 belgidan oshmasligi kerak",
+      "specializationRequired": "Mutaxassislikni tanlang",
+      "experienceRequired": "Tajriba darajasini tanlang",
+      "employmentRequired": "Bandlik turini tanlang",
+      "workFormatRequired": "Ish formatini tanlang",
+      "workScheduleRequired": "Ish jadvalini tanlang",
+      "locationRequired": "Ishlar bajarilish manzilini ko'rsating",
+      "locationRequiredVacancy": "Joylashuvni tanlang",
+      "cityRequired": "Shaharni tanlang",
+      "salaryRequired": "Ish haqini ko'rsating",
+      "paymentFrequencyRequired": "To'lovlar chastotasini tanlang",
+      "descriptionRequired": "Vakansiya tavsifini kiriting",
+      "descriptionTooLong": "Tavsif 2000 belgidan oshmasligi kerak",
+      "skillsRequired": "Kamida bitta ko'nikmani tanlang",
+      "languagesRequired": "Kamida bitta tilni tanlang",
+      "workersRequired": "Ijrochilar sonini ko'rsating",
+      "budgetRequired": "To'g'ri byudjetni ko'rsating",
+      "dateRequired": "Ishlar bajarilish sanasini tanlang",
+      "datePast": "Sana o'tmishda bo'lishi mumkin emas",
+      "maxFiles": "Maksimal 10 ta fayl",
+      "maxFileSize": "Fayl hajmi 10 MB dan oshmasligi kerak",
+      "invalidFileType": "Faqat rasmlar (JPG, PNG, GIF, WebP) va videolar (MP4, WebM) qo'llab-quvvatlanadi",
+      "createFailed": "Yaratib bo'lmadi",
+      "createError": "Yaratishda xatolik yuz berdi"
+    },
+    "success": {
+      "title": "Muvaffaqiyatli!",
+      "orderCreated": "Buyurtma muvaffaqiyatli yaratildi",
+      "vacancyCreated": "Vakansiya muvaffaqiyatli yaratildi"
+    }
   }
 }

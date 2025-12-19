@@ -9,7 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import type { CreateOrderRequest, OrderType } from "@/types";
-import { PARENT_CATEGORIES, SPECIALIZATIONS, UZBEKISTAN_CITIES, getSubcategoriesByParentId } from "@/constants/registration";
+import { PARENT_CATEGORIES, SPECIALIZATIONS, UZBEKISTAN_CITIES, getSubcategoriesByParentId, getCityName } from "@/constants/registration";
 import { 
   EXPERIENCE_LEVELS, 
   EMPLOYMENT_TYPES, 
@@ -24,6 +24,19 @@ import {
 import { CalendarOneDayIcon } from "@/components/icons/calendar-one-day-icon";
 import { DocumentIcon } from "@/components/icons/document-icon";
 import { CategoryIcon } from "@/components/icons/category-icon";
+import { useTranslations, useLocale } from 'next-intl';
+import { getSpecializationName } from '@/lib/specialization-utils';
+import { 
+  getExperienceLevelLabel, 
+  getEmploymentTypeLabel, 
+  getWorkFormatLabel, 
+  getWorkScheduleLabel,
+  getSalaryPeriodLabel,
+  getSalaryTypeLabel,
+  getPaymentFrequencyLabel,
+  getSkillLabel,
+  getLanguageLabel
+} from '@/constants/translations';
 
 interface FormData {
   type: OrderType;
@@ -60,6 +73,8 @@ export function CreateOrderClient() {
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);
+  const t = useTranslations('createOrder');
+  const locale = useLocale();
   const [formData, setFormData] = useState<FormData>({
     type: "daily",
     title: "",
@@ -73,7 +88,7 @@ export function CreateOrderClient() {
     mealPaid: false,
     // Vacancy fields
     salaryPeriod: "per_month",
-    salaryType: "before_tax",
+    salaryType: "gross",
     skills: [],
     languages: [],
   });
@@ -249,8 +264,7 @@ export function CreateOrderClient() {
     // Проверка на максимальное количество файлов (10)
     if (totalFiles > 10) {
       toast({
-        title: "Ошибка",
-        description: "Максимум 10 файлов",
+        title: t('errors.maxFiles'),
         variant: "destructive",
       });
       return;
@@ -262,8 +276,7 @@ export function CreateOrderClient() {
     
     if (invalidFiles.length > 0) {
       toast({
-        title: "Ошибка",
-        description: "Размер файла не должен превышать 10 МБ",
+        title: t('errors.maxFileSize'),
         variant: "destructive",
       });
       return;
@@ -275,8 +288,7 @@ export function CreateOrderClient() {
     
     if (invalidTypes.length > 0) {
       toast({
-        title: "Ошибка",
-        description: "Поддерживаются только изображения (JPG, PNG, GIF, WebP) и видео (MP4, WebM)",
+        title: t('errors.invalidFileType'),
         variant: "destructive",
       });
       return;
@@ -307,16 +319,14 @@ export function CreateOrderClient() {
         case 1: // Название вакансии
           if (!formData.jobTitle?.trim()) {
             toast({
-              title: "Ошибка",
-              description: "Введите название вакансии",
+              title: t('errors.jobTitleRequired'),
               variant: "destructive",
             });
             return false;
           }
           if (formData.jobTitle.length > 100) {
             toast({
-              title: "Ошибка",
-              description: "Название не должно превышать 100 символов",
+              title: t('errors.jobTitleTooLong'),
               variant: "destructive",
             });
             return false;
@@ -326,8 +336,7 @@ export function CreateOrderClient() {
         case 2: // Специализация
           if (!formData.specializationId) {
             toast({
-              title: "Ошибка",
-              description: "Выберите специализацию",
+              title: t('errors.specializationRequired'),
               variant: "destructive",
             });
             return false;
@@ -337,8 +346,7 @@ export function CreateOrderClient() {
         case 3: // Опыт работы
           if (!formData.experienceLevel) {
             toast({
-              title: "Ошибка",
-              description: "Выберите уровень опыта",
+              title: t('errors.experienceRequired'),
               variant: "destructive",
             });
             return false;
@@ -348,8 +356,7 @@ export function CreateOrderClient() {
         case 4: // Тип занятости
           if (!formData.employmentType) {
             toast({
-              title: "Ошибка",
-              description: "Выберите тип занятости",
+              title: t('errors.employmentRequired'),
               variant: "destructive",
             });
             return false;
@@ -359,8 +366,7 @@ export function CreateOrderClient() {
         case 5: // Формат работы
           if (!formData.workFormat) {
             toast({
-              title: "Ошибка",
-              description: "Выберите формат работы",
+              title: t('errors.workFormatRequired'),
               variant: "destructive",
             });
             return false;
@@ -370,8 +376,7 @@ export function CreateOrderClient() {
         case 6: // График работы
           if (!formData.workSchedule) {
             toast({
-              title: "Ошибка",
-              description: "Выберите график работы",
+              title: t('errors.workScheduleRequired'),
               variant: "destructive",
             });
             return false;
@@ -381,8 +386,7 @@ export function CreateOrderClient() {
         case 7: // Местоположение
           if (!formData.location.trim()) {
             toast({
-              title: "Ошибка",
-              description: "Выберите местоположение",
+              title: t('errors.locationRequiredVacancy'),
               variant: "destructive",
             });
             return false;
@@ -392,8 +396,7 @@ export function CreateOrderClient() {
         case 8: // Город
           if (!formData.city) {
             toast({
-              title: "Ошибка",
-              description: "Выберите город",
+              title: t('errors.cityRequired'),
               variant: "destructive",
             });
             return false;
@@ -403,8 +406,7 @@ export function CreateOrderClient() {
         case 9: // Оплата работы
           if (!formData.salaryFrom && !formData.salaryTo) {
             toast({
-              title: "Ошибка",
-              description: "Укажите зарплату",
+              title: t('errors.salaryRequired'),
               variant: "destructive",
             });
             return false;
@@ -414,8 +416,7 @@ export function CreateOrderClient() {
         case 10: // Частота выплат
           if (!formData.paymentFrequency) {
             toast({
-              title: "Ошибка",
-              description: "Выберите частоту выплат",
+              title: t('errors.paymentFrequencyRequired'),
               variant: "destructive",
             });
             return false;
@@ -425,16 +426,14 @@ export function CreateOrderClient() {
         case 11: // Описание
           if (!formData.description.trim()) {
             toast({
-              title: "Ошибка",
-              description: "Введите описание вакансии",
+              title: t('errors.descriptionRequired'),
               variant: "destructive",
             });
             return false;
           }
           if (formData.description.length > 2000) {
             toast({
-              title: "Ошибка",
-              description: "Описание не должно превышать 2000 символов",
+              title: t('errors.descriptionTooLong'),
               variant: "destructive",
             });
             return false;
@@ -444,8 +443,7 @@ export function CreateOrderClient() {
         case 12: // Навыки
           if (!formData.skills || formData.skills.length === 0) {
             toast({
-              title: "Ошибка",
-              description: "Выберите хотя бы один навык",
+              title: t('errors.skillsRequired'),
               variant: "destructive",
             });
             return false;
@@ -455,8 +453,7 @@ export function CreateOrderClient() {
         case 13: // Языки
           if (!formData.languages || formData.languages.length === 0) {
             toast({
-              title: "Ошибка",
-              description: "Выберите хотя бы один язык",
+              title: t('errors.languagesRequired'),
               variant: "destructive",
             });
             return false;
@@ -473,16 +470,14 @@ export function CreateOrderClient() {
       case 1: // Название
         if (!formData.title.trim()) {
           toast({
-            title: "Ошибка",
-            description: "Введите название заказа",
+            title: t('errors.titleRequired'),
             variant: "destructive",
           });
           return false;
         }
         if (formData.title.length > 70) {
           toast({
-            title: "Ошибка",
-            description: "Название не должно превышать 70 символов",
+            title: t('errors.titleTooLong'),
             variant: "destructive",
           });
           return false;
@@ -492,8 +487,7 @@ export function CreateOrderClient() {
       case 2: // Специализация
         if (!formData.specializationId) {
           toast({
-            title: "Ошибка",
-            description: "Выберите специализацию",
+            title: t('errors.specializationRequired'),
             variant: "destructive",
           });
           return false;
@@ -506,8 +500,7 @@ export function CreateOrderClient() {
       case 4: // Местоположение
         if (!formData.location.trim()) {
           toast({
-            title: "Ошибка",
-            description: "Укажите адрес выполнения работ",
+            title: t('errors.locationRequired'),
             variant: "destructive",
           });
           return false;
@@ -518,8 +511,7 @@ export function CreateOrderClient() {
         const workers = parseInt(formData.workersNeeded);
         if (!formData.workersNeeded || isNaN(workers) || workers <= 0) {
           toast({
-            title: "Ошибка",
-            description: "Укажите количество исполнителей",
+            title: t('errors.workersRequired'),
             variant: "destructive",
           });
           return false;
@@ -530,8 +522,7 @@ export function CreateOrderClient() {
         const budget = parseFloat(formData.budget);
         if (!formData.budget || isNaN(budget) || budget <= 0) {
           toast({
-            title: "Ошибка",
-            description: "Укажите корректный бюджет",
+            title: t('errors.budgetRequired'),
             variant: "destructive",
           });
           return false;
@@ -544,8 +535,7 @@ export function CreateOrderClient() {
       case 8: // Дата
         if (!formData.serviceDate) {
           toast({
-            title: "Ошибка",
-            description: "Выберите дату выполнения работ",
+            title: t('errors.dateRequired'),
             variant: "destructive",
           });
           return false;
@@ -555,8 +545,7 @@ export function CreateOrderClient() {
         today.setHours(0, 0, 0, 0);
         if (selectedDate < today) {
           toast({
-            title: "Ошибка",
-            description: "Дата не может быть в прошлом",
+            title: t('errors.datePast'),
             variant: "destructive",
           });
           return false;
@@ -654,8 +643,8 @@ export function CreateOrderClient() {
 
       if (result.success && result.data) {
         toast({
-          title: "Успешно!",
-          description: formData.type === "vacancy" ? "Вакансия успешно создана" : "Заказ успешно создан",
+          title: t('success.title'),
+          description: formData.type === "vacancy" ? t('success.vacancyCreated') : t('success.orderCreated'),
         });
         
         // Редирект в зависимости от типа
@@ -666,16 +655,14 @@ export function CreateOrderClient() {
         }
       } else {
         toast({
-          title: "Ошибка",
-          description: result.error || "Не удалось создать " + (formData.type === "vacancy" ? "вакансию" : "заказ"),
+          title: t('errors.createFailed') + " " + (formData.type === "vacancy" ? t('titleVacancy').toLowerCase() : t('title').toLowerCase()),
           variant: "destructive",
         });
       }
     } catch (error) {
       console.error("Error creating order:", error);
       toast({
-        title: "Ошибка",
-        description: "Произошла ошибка при создании " + (formData.type === "vacancy" ? "вакансии" : "заказа"),
+        title: t('errors.createError') + " " + (formData.type === "vacancy" ? t('titleVacancy').toLowerCase() : t('title').toLowerCase()),
         variant: "destructive",
       });
     } finally {
@@ -686,33 +673,33 @@ export function CreateOrderClient() {
   const getStepTitle = () => {
     if (formData.type === "vacancy") {
       switch (currentStep) {
-        case 1: return "Название вакансии";
-        case 2: return "Специализация";
-        case 3: return "Опыт работы";
-        case 4: return "Тип занятости";
-        case 5: return "Формат работы";
-        case 6: return "График работы";
-        case 7: return "Местоположение";
-        case 8: return "Город";
-        case 9: return "Оплата работы";
-        case 10: return "Частота выплат";
-        case 11: return "Описание вакансии";
-        case 12: return "Навыки";
-        case 13: return "Языки";
+        case 1: return t('vacancy.step1.title');
+        case 2: return t('vacancy.step2.title');
+        case 3: return t('vacancy.step3.title');
+        case 4: return t('vacancy.step4.title');
+        case 5: return t('vacancy.step5.title');
+        case 6: return t('vacancy.step6.title');
+        case 7: return t('vacancy.step7.title');
+        case 8: return t('vacancy.step8.title');
+        case 9: return t('vacancy.step9.title');
+        case 10: return t('vacancy.step10.title');
+        case 11: return t('vacancy.step11.title');
+        case 12: return t('vacancy.step12.title');
+        case 13: return t('vacancy.step13.title');
         default: return "";
       }
     } else {
       switch (currentStep) {
-        case 1: return "Название";
-        case 2: return "Специализация";
-        case 3: return "Описание";
-        case 4: return "Местоположение";
-        case 5: return "Количество работников";
-        case 6: return "Бюджет";
-        case 7: return "Дополнительные удобства";
-        case 8: return "Дата выполнения";
-        case 9: return "Фото и видео";
-        case 10: return "Подтверждение";
+        case 1: return t('daily.step1.title');
+        case 2: return t('daily.step2.title');
+        case 3: return t('daily.step3.title');
+        case 4: return t('daily.step4.title');
+        case 5: return t('daily.step5.title');
+        case 6: return t('daily.step6.title');
+        case 7: return t('daily.step7.title');
+        case 8: return t('daily.step8.title');
+        case 9: return t('daily.step9.title');
+        case 10: return t('daily.step10.title');
         default: return "";
       }
     }
@@ -724,20 +711,20 @@ export function CreateOrderClient() {
         return (
           <div className="space-y-4">
             <div>
-              <Label htmlFor="jobTitle">Название вакансии *</Label>
+              <Label htmlFor="jobTitle">{t('vacancy.step1.label')}</Label>
               <Input
                 id="jobTitle"
                 name="jobTitle"
                 type="text"
                 value={formData.jobTitle || ""}
                 onChange={handleInputChange}
-                placeholder="Например: Программист на React Native"
+                placeholder={t('vacancy.step1.placeholder')}
                 maxLength={100}
                 className="mt-1"
                 autoFocus
               />
               <p className="text-sm text-gray-500 mt-1">
-                {(formData.jobTitle || "").length}/100 символов
+                {(formData.jobTitle || "").length}/100 {t('vacancy.step1.characters')}
               </p>
             </div>
           </div>
@@ -747,13 +734,13 @@ export function CreateOrderClient() {
         return (
           <div className="space-y-4">
             <div>
-              <Label htmlFor="search">Поиск специализации</Label>
+              <Label htmlFor="search">{t('vacancy.step2.searchLabel')}</Label>
               <Input
                 id="search"
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Поиск..."
+                placeholder={t('vacancy.step2.searchPlaceholder')}
                 className="mt-1"
               />
             </div>
@@ -771,7 +758,7 @@ export function CreateOrderClient() {
                       >
                         <div className="flex items-center gap-2">
                           <CategoryIcon iconName={category.iconName} fallbackIcon={category.icon} className="w-6 h-6" />
-                          <span className="font-medium">{category.name}</span>
+                          <span className="font-medium">{getSpecializationName(category.id, locale)}</span>
                         </div>
                         <span>{isExpanded ? "▲" : "▼"}</span>
                       </button>
@@ -790,7 +777,7 @@ export function CreateOrderClient() {
                               }`}
                             >
                               <CategoryIcon iconName={sub.iconName} fallbackIcon={sub.icon} className="w-5 h-5" />
-                              <span>{sub.name}</span>
+                              <span>{getSpecializationName(sub.id, locale)}</span>
                             </button>
                           ))}
                         </div>
@@ -800,7 +787,7 @@ export function CreateOrderClient() {
                 })
               ) : (
                 <p className="text-center text-gray-500 py-8">
-                  Специализации не найдены
+                  {t('vacancy.step2.noResults')}
                 </p>
               )}
             </div>
@@ -821,7 +808,7 @@ export function CreateOrderClient() {
                     : "border-gray-200 hover:border-gray-300"
                 }`}
               >
-                <span className="font-medium">{level.label}</span>
+                <span className="font-medium">{getExperienceLevelLabel(level.value, locale)}</span>
               </button>
             ))}
           </div>
@@ -841,7 +828,7 @@ export function CreateOrderClient() {
                     : "border-gray-200 hover:border-gray-300"
                 }`}
               >
-                <span className="font-medium">{type.label}</span>
+                <span className="font-medium">{getEmploymentTypeLabel(type.value, locale)}</span>
               </button>
             ))}
           </div>
@@ -861,7 +848,7 @@ export function CreateOrderClient() {
                     : "border-gray-200 hover:border-gray-300"
                 }`}
               >
-                <span className="font-medium">{format.label}</span>
+                <span className="font-medium">{getWorkFormatLabel(format.value, locale)}</span>
               </button>
             ))}
           </div>
@@ -881,7 +868,7 @@ export function CreateOrderClient() {
                     : "border-gray-200 hover:border-gray-300"
                 }`}
               >
-                <span className="font-medium">{schedule.label}</span>
+                <span className="font-medium">{getWorkScheduleLabel(schedule.value, locale)}</span>
               </button>
             ))}
           </div>
@@ -891,14 +878,14 @@ export function CreateOrderClient() {
         return (
           <div className="space-y-4">
             <div>
-              <Label htmlFor="location">Адрес *</Label>
+              <Label htmlFor="location">{t('vacancy.step7.label')}</Label>
               <Input
                 id="location"
                 name="location"
                 type="text"
                 value={formData.location}
                 onChange={handleInputChange}
-                placeholder="Например: Ташкент, улица Амира Темура 1"
+                placeholder={t('vacancy.step7.placeholder')}
                 className="mt-1"
               />
             </div>
@@ -919,7 +906,7 @@ export function CreateOrderClient() {
                     : "border-gray-200 hover:border-gray-300"
                 }`}
               >
-                <span className="font-medium">{city.name}</span>
+                <span className="font-medium">{getCityName(city.id, locale)}</span>
               </button>
             ))}
           </div>
@@ -930,7 +917,7 @@ export function CreateOrderClient() {
           <div className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <Label htmlFor="salaryFrom">От (сум)</Label>
+                <Label htmlFor="salaryFrom">{t('vacancy.step9.salaryFrom')}</Label>
                 <Input
                   id="salaryFrom"
                   name="salaryFrom"
@@ -943,7 +930,7 @@ export function CreateOrderClient() {
                 />
               </div>
               <div>
-                <Label htmlFor="salaryTo">До (сум)</Label>
+                <Label htmlFor="salaryTo">{t('vacancy.step9.salaryTo')}</Label>
                 <Input
                   id="salaryTo"
                   name="salaryTo"
@@ -958,7 +945,7 @@ export function CreateOrderClient() {
             </div>
 
             <div>
-              <Label className="mb-2 block">Период оплаты</Label>
+              <Label className="mb-2 block">{t('vacancy.step9.periodLabel')}</Label>
               <div className="grid grid-cols-3 gap-2">
                 {SALARY_PERIODS.map((period) => (
                   <button
@@ -971,14 +958,14 @@ export function CreateOrderClient() {
                         : "border-gray-200 hover:border-gray-300"
                     }`}
                   >
-                    {period.label}
+                    {getSalaryPeriodLabel(period.value, locale)}
                   </button>
                 ))}
               </div>
             </div>
 
             <div>
-              <Label className="mb-2 block">Тип зарплаты</Label>
+              <Label className="mb-2 block">{t('vacancy.step9.typeLabel')}</Label>
               <div className="grid grid-cols-2 gap-2">
                 {SALARY_TYPES.map((type) => (
                   <button
@@ -986,12 +973,12 @@ export function CreateOrderClient() {
                     type="button"
                     onClick={() => setFormData(prev => ({ ...prev, salaryType: type.value }))}
                     className={`p-3 rounded-lg border-2 text-center transition-colors ${
-                      (formData.salaryType || "before_tax") === type.value
+                      (formData.salaryType || "gross") === type.value
                         ? "border-blue-500 bg-blue-50 text-blue-700 font-medium"
                         : "border-gray-200 hover:border-gray-300"
                     }`}
                   >
-                    {type.label}
+                    {getSalaryTypeLabel(type.value, locale)}
                   </button>
                 ))}
               </div>
@@ -1013,7 +1000,7 @@ export function CreateOrderClient() {
                     : "border-gray-200 hover:border-gray-300"
                 }`}
               >
-                <span className="font-medium">{freq.label}</span>
+                <span className="font-medium">{getPaymentFrequencyLabel(freq.value, locale)}</span>
               </button>
             ))}
           </div>
@@ -1023,19 +1010,19 @@ export function CreateOrderClient() {
         return (
           <div className="space-y-4">
             <div>
-              <Label htmlFor="description">Описание вакансии *</Label>
+              <Label htmlFor="description">{t('vacancy.step11.label')}</Label>
               <Textarea
                 id="description"
                 name="description"
                 value={formData.description}
                 onChange={handleInputChange}
-                placeholder="Опишите обязанности, требования и условия работы..."
+                placeholder={t('vacancy.step11.placeholder')}
                 maxLength={2000}
                 rows={8}
                 className="mt-1"
               />
               <p className="text-sm text-gray-500 mt-1">
-                {formData.description.length}/2000 символов
+                {formData.description.length}/2000 {t('vacancy.step11.characters')}
               </p>
             </div>
           </div>
@@ -1045,7 +1032,7 @@ export function CreateOrderClient() {
         return (
           <div className="space-y-4">
             <div>
-              <Label>Выберите навыки</Label>
+              <Label>{t('vacancy.step12.selectLabel')}</Label>
               <div className="flex flex-wrap gap-2 mt-2">
                 {/* Популярные навыки */}
                 {POPULAR_SKILLS.map((skill) => (
@@ -1059,7 +1046,7 @@ export function CreateOrderClient() {
                         : "bg-white text-gray-700 border-gray-300 hover:border-blue-300"
                     }`}
                   >
-                    {skill}
+                    {getSkillLabel(skill, locale)}
                   </button>
                 ))}
                 {/* Пользовательские навыки */}
@@ -1078,14 +1065,14 @@ export function CreateOrderClient() {
             </div>
 
             <div>
-              <Label htmlFor="customSkill">Добавить свой навык</Label>
+              <Label htmlFor="customSkill">{t('vacancy.step12.customLabel')}</Label>
               <div className="flex gap-2 mt-1">
                 <Input
                   id="customSkill"
                   type="text"
                   value={customSkill}
                   onChange={(e) => setCustomSkill(e.target.value)}
-                  placeholder="Введите навык..."
+                  placeholder={t('vacancy.step12.customPlaceholder')}
                   onKeyPress={(e) => {
                     if (e.key === "Enter") {
                       e.preventDefault();
@@ -1094,7 +1081,7 @@ export function CreateOrderClient() {
                   }}
                 />
                 <Button type="button" onClick={addCustomSkill} variant="outline">
-                  Добавить
+                  {t('buttons.add')}
                 </Button>
               </div>
             </div>
@@ -1102,7 +1089,7 @@ export function CreateOrderClient() {
             {formData.skills && formData.skills.length > 0 && (
               <div className="border-t pt-3">
                 <p className="text-sm font-medium">
-                  Выбрано навыков: {formData.skills.length}
+                  {t('vacancy.step12.selected')}: {formData.skills.length}
                 </p>
               </div>
             )}
@@ -1113,7 +1100,7 @@ export function CreateOrderClient() {
         return (
           <div className="space-y-4">
             <div>
-              <Label>Выберите языки</Label>
+              <Label>{t('vacancy.step13.selectLabel')}</Label>
               <div className="flex flex-wrap gap-2 mt-2">
                 {/* Популярные языки */}
                 {LANGUAGES.map((language) => (
@@ -1127,7 +1114,7 @@ export function CreateOrderClient() {
                         : "bg-white text-gray-700 border-gray-300 hover:border-blue-300"
                     }`}
                   >
-                    {language}
+                    {getLanguageLabel(language, locale)}
                   </button>
                 ))}
                 {/* Пользовательские языки */}
@@ -1146,14 +1133,14 @@ export function CreateOrderClient() {
             </div>
 
             <div>
-              <Label htmlFor="customLanguage">Добавить свой язык</Label>
+              <Label htmlFor="customLanguage">{t('vacancy.step13.customLabel')}</Label>
               <div className="flex gap-2 mt-1">
                 <Input
                   id="customLanguage"
                   type="text"
                   value={customLanguage}
                   onChange={(e) => setCustomLanguage(e.target.value)}
-                  placeholder="Введите язык..."
+                  placeholder={t('vacancy.step13.customPlaceholder')}
                   onKeyPress={(e) => {
                     if (e.key === "Enter") {
                       e.preventDefault();
@@ -1162,7 +1149,7 @@ export function CreateOrderClient() {
                   }}
                 />
                 <Button type="button" onClick={addCustomLanguage} variant="outline">
-                  Добавить
+                  {t('buttons.add')}
                 </Button>
               </div>
             </div>
@@ -1170,7 +1157,7 @@ export function CreateOrderClient() {
             {formData.languages && formData.languages.length > 0 && (
               <div className="border-t pt-3">
                 <p className="text-sm font-medium">
-                  Выбрано языков: {formData.languages.length}
+                  {t('vacancy.step13.selected')}: {formData.languages.length}
                 </p>
               </div>
             )}
@@ -1188,20 +1175,20 @@ export function CreateOrderClient() {
         return (
           <div className="space-y-4">
             <div>
-              <Label htmlFor="title">Название заказа *</Label>
+              <Label htmlFor="title">{t('daily.step1.label')}</Label>
               <Input
                 id="title"
                 name="title"
                 type="text"
                 value={formData.title}
                 onChange={handleInputChange}
-                placeholder="Например: Требуется сантехник"
+                placeholder={t('daily.step1.placeholder')}
                 maxLength={70}
                 className="mt-1"
                 autoFocus
               />
               <p className="text-sm text-gray-500 mt-1">
-                {formData.title.length}/70 символов
+                {formData.title.length}/70 {t('daily.step1.characters')}
               </p>
             </div>
           </div>
@@ -1211,20 +1198,20 @@ export function CreateOrderClient() {
         return (
           <div className="space-y-4">
             <div>
-              <Label htmlFor="search">Поиск специализации</Label>
+              <Label htmlFor="search">{t('daily.step2.searchLabel')}</Label>
               <Input
                 id="search"
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Поиск..."
+                placeholder={t('daily.step2.searchPlaceholder')}
                 className="mt-1"
               />
             </div>
             
             <div className="max-h-96 overflow-y-auto space-y-2">
               {/* Специальная категория "Работа на 1 день" */}
-              {(!searchQuery || 'работа на 1 день'.includes(searchQuery.toLowerCase())) && (
+              {(!searchQuery || 'работа на 1 день'.includes(searchQuery.toLowerCase()) || '1 kunlik ish'.includes(searchQuery.toLowerCase())) && (
                 <button
                   type="button"
                   onClick={() => setFormData(prev => ({ ...prev, specializationId: 'one_day_job' }))}
@@ -1235,7 +1222,7 @@ export function CreateOrderClient() {
                   }`}
                 >
                   <CalendarOneDayIcon className="w-6 h-6" />
-                  <span className="font-medium">Работа на 1 день</span>
+                  <span className="font-medium">{t('daily.step2.oneDayJob')}</span>
                   {formData.specializationId === 'one_day_job' && (
                     <span className="ml-auto text-blue-600">✓</span>
                   )}
@@ -1267,7 +1254,7 @@ export function CreateOrderClient() {
                     >
                       <div className="flex items-center gap-2">
                         <CategoryIcon iconName={category.iconName} fallbackIcon={category.icon} className="w-6 h-6" />
-                        <span className="font-medium">{category.name}</span>
+                        <span className="font-medium">{getSpecializationName(category.id, locale)}</span>
                       </div>
                       <span className="text-gray-400">{isExpanded ? "▲" : "▼"}</span>
                     </button>
@@ -1286,7 +1273,7 @@ export function CreateOrderClient() {
                             }`}
                           >
                             <CategoryIcon iconName={sub.iconName} fallbackIcon={sub.icon} className="w-5 h-5" />
-                            <span>{sub.name}</span>
+                            <span>{getSpecializationName(sub.id, locale)}</span>
                             {formData.specializationId === sub.id && (
                               <span className="ml-auto text-blue-600">✓</span>
                             )}
@@ -1305,23 +1292,23 @@ export function CreateOrderClient() {
         return (
           <div className="space-y-4">
             <div>
-              <Label htmlFor="description">Описание работ (необязательно)</Label>
+              <Label htmlFor="description">{t('daily.step3.label')}</Label>
               <Textarea
                 id="description"
                 name="description"
                 value={formData.description}
                 onChange={handleInputChange}
-                placeholder="Опишите, что нужно сделать..."
+                placeholder={t('daily.step3.placeholder')}
                 maxLength={500}
                 rows={6}
                 className="mt-1"
               />
               <p className="text-sm text-gray-500 mt-1">
-                {formData.description.length}/500 символов
+                {formData.description.length}/500 {t('daily.step3.characters')}
               </p>
             </div>
             <p className="text-sm text-gray-400">
-              💡 Вы можете пропустить этот шаг
+              {t('daily.step3.hint')}
             </p>
           </div>
         );
@@ -1330,14 +1317,14 @@ export function CreateOrderClient() {
         return (
           <div className="space-y-4">
             <div>
-              <Label htmlFor="location">Адрес выполнения работ *</Label>
+              <Label htmlFor="location">{t('daily.step4.label')}</Label>
               <Input
                 id="location"
                 name="location"
                 type="text"
                 value={formData.location}
                 onChange={handleInputChange}
-                placeholder="Например: Ташкент, улица Амира Темура 1"
+                placeholder={t('daily.step4.placeholder')}
                 className="mt-1"
               />
             </div>
@@ -1348,7 +1335,7 @@ export function CreateOrderClient() {
         return (
           <div className="space-y-4">
             <div>
-              <Label>Количество исполнителей *</Label>
+              <Label>{t('daily.step5.label')}</Label>
               <div className="flex items-center justify-center gap-4 mt-4">
                 <Button
                   type="button"
@@ -1386,7 +1373,7 @@ export function CreateOrderClient() {
         return (
           <div className="space-y-4">
             <div>
-              <Label htmlFor="budget">Бюджет за одного работника (сум) *</Label>
+              <Label htmlFor="budget">{t('daily.step6.label')}</Label>
               <div className="relative">
                 <Input
                   id="budget"
@@ -1395,7 +1382,7 @@ export function CreateOrderClient() {
                   inputMode="numeric"
                   value={formatNumber(formData.budget)}
                   onChange={(e) => handleBudgetChange(e.target.value)}
-                  placeholder="100 000"
+                  placeholder={t('daily.step6.placeholder')}
                   className="mt-1 pr-16"
                 />
                 <span className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 font-medium">
@@ -1403,7 +1390,7 @@ export function CreateOrderClient() {
                 </span>
               </div>
               <p className="text-sm text-gray-500 mt-1">
-                💡 Укажите оплату за каждого работника
+                {t('daily.step6.hint')}
               </p>
             </div>
           </div>
@@ -1413,7 +1400,7 @@ export function CreateOrderClient() {
         return (
           <div className="space-y-4">
             <div>
-              <Label className="mb-3 block">Дополнительные условия (необязательно)</Label>
+              <Label className="mb-3 block">{t('daily.step7.label')}</Label>
               <div className="space-y-2">
                 <button
                   type="button"
@@ -1425,7 +1412,7 @@ export function CreateOrderClient() {
                   }`}
                 >
                   <span className={formData.transportPaid ? "font-medium" : ""}>
-                    🚗 Проезд оплачивается
+                    {t('daily.step7.transportPaid')}
                   </span>
                   {formData.transportPaid && (
                     <span className="ml-auto text-blue-600">✓</span>
@@ -1446,7 +1433,7 @@ export function CreateOrderClient() {
                   }`}
                 >
                   <span className={formData.mealIncluded ? "font-medium" : ""}>
-                    🍽️ Питание включено
+                    {t('daily.step7.mealIncluded')}
                   </span>
                   {formData.mealIncluded && (
                     <span className="ml-auto text-blue-600">✓</span>
@@ -1467,7 +1454,7 @@ export function CreateOrderClient() {
                   }`}
                 >
                   <span className={formData.mealPaid ? "font-medium" : ""}>
-                    💰 Питание оплачивается
+                    {t('daily.step7.mealPaid')}
                   </span>
                   {formData.mealPaid && (
                     <span className="ml-auto text-blue-600">✓</span>
@@ -1476,7 +1463,7 @@ export function CreateOrderClient() {
               </div>
             </div>
             <p className="text-sm text-gray-400">
-              💡 Вы можете пропустить этот шаг
+              {t('daily.step7.hint')}
             </p>
           </div>
         );
@@ -1485,7 +1472,7 @@ export function CreateOrderClient() {
         return (
           <div className="space-y-4">
             <div>
-              <Label htmlFor="serviceDate">Дата выполнения работ *</Label>
+              <Label htmlFor="serviceDate">{t('daily.step8.label')}</Label>
               <Input
                 id="serviceDate"
                 name="serviceDate"
@@ -1503,9 +1490,9 @@ export function CreateOrderClient() {
         return (
           <div className="space-y-4">
             <div>
-              <Label>Фото и видео (необязательно)</Label>
+              <Label>{t('daily.step9.label')}</Label>
               <p className="text-sm text-gray-500 mt-1 mb-3">
-                Добавьте до 10 фотографий или видео для лучшего понимания задачи
+                {t('daily.step9.description')}
               </p>
               
               {/* Превью загруженных файлов */}
@@ -1538,7 +1525,7 @@ export function CreateOrderClient() {
                         </svg>
                       </button>
                       <div className="absolute bottom-2 left-2 bg-black bg-opacity-50 text-white text-xs px-2 py-1 rounded">
-                        {mediaFiles[index]?.type.startsWith('video/') ? '🎥 Видео' : '📷 Фото'}
+                        {mediaFiles[index]?.type.startsWith('video/') ? t('daily.step9.video') : t('daily.step9.photo')}
                       </div>
                     </div>
                   ))}
@@ -1559,13 +1546,13 @@ export function CreateOrderClient() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
                   </svg>
                   <p className="text-sm text-gray-600 font-medium mb-1">
-                    Нажмите для загрузки или перетащите файлы
+                    {t('daily.step9.uploadText')}
                   </p>
                   <p className="text-xs text-gray-500">
-                    JPG, PNG, GIF, WebP, MP4, WebM (макс. 10 МБ)
+                    {t('daily.step9.fileTypes')}
                   </p>
                   <p className="text-xs text-gray-400 mt-1">
-                    {mediaFiles.length}/10 файлов
+                    {mediaFiles.length}/10 {t('daily.step9.filesCount')}
                   </p>
                 </label>
               )}
@@ -1573,14 +1560,14 @@ export function CreateOrderClient() {
               {mediaFiles.length >= 10 && (
                 <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 text-center">
                   <p className="text-sm text-blue-700">
-                    ✓ Загружено максимальное количество файлов (10)
+                    {t('daily.step9.maxFiles')}
                   </p>
                 </div>
               )}
             </div>
             
             <p className="text-sm text-gray-400">
-              💡 Вы можете пропустить этот шаг
+              {t('daily.step9.hint')}
             </p>
           </div>
         );
@@ -1589,58 +1576,58 @@ export function CreateOrderClient() {
         return (
           <div className="space-y-4">
             <div>
-              <Label className="text-lg">Проверьте данные заказа</Label>
+              <Label className="text-lg">{t('daily.step10.checkData')}</Label>
               <div className="mt-4 space-y-3">
                 <div className="bg-gray-50 p-3 rounded-lg">
-                  <p className="text-sm text-gray-600">Название</p>
+                  <p className="text-sm text-gray-600">{t('daily.step10.titleField')}</p>
                   <p className="font-medium">{formData.title}</p>
                 </div>
                 
                 {formData.specializationId && (
                   <div className="bg-gray-50 p-3 rounded-lg">
-                    <p className="text-sm text-gray-600">Специализация</p>
+                    <p className="text-sm text-gray-600">{t('daily.step10.specializationField')}</p>
                     <p className="font-medium">
-                      {SPECIALIZATIONS.find(s => s.id === formData.specializationId)?.name || 'Не указано'}
+                      {getSpecializationName(formData.specializationId, locale) || t('daily.step10.notSpecified')}
                     </p>
                   </div>
                 )}
                 
                 {formData.description && (
                   <div className="bg-gray-50 p-3 rounded-lg">
-                    <p className="text-sm text-gray-600">Описание</p>
+                    <p className="text-sm text-gray-600">{t('daily.step10.descriptionField')}</p>
                     <p className="font-medium">{formData.description}</p>
                   </div>
                 )}
                 
                 <div className="bg-gray-50 p-3 rounded-lg">
-                  <p className="text-sm text-gray-600">Адрес</p>
+                  <p className="text-sm text-gray-600">{t('daily.step10.addressField')}</p>
                   <p className="font-medium">{formData.location}</p>
                 </div>
                 
                 <div className="bg-gray-50 p-3 rounded-lg">
-                  <p className="text-sm text-gray-600">Количество работников</p>
-                  <p className="font-medium">{formData.workersNeeded} чел.</p>
+                  <p className="text-sm text-gray-600">{t('daily.step10.workersField')}</p>
+                  <p className="font-medium">{formData.workersNeeded} {t('daily.step10.workersPerson')}</p>
                 </div>
                 
                 <div className="bg-gray-50 p-3 rounded-lg">
-                  <p className="text-sm text-gray-600">Бюджет</p>
-                  <p className="font-medium">{formatNumber(formData.budget)} UZS за человека</p>
+                  <p className="text-sm text-gray-600">{t('daily.step10.budgetField')}</p>
+                  <p className="font-medium">{formatNumber(formData.budget)} UZS {t('daily.step10.perPerson')}</p>
                   <p className="text-sm text-gray-500 mt-1">
-                    Всего: {formatNumber((parseFloat(formData.budget.replace(/\s/g, '')) * parseInt(formData.workersNeeded)).toString())} UZS
+                    {t('daily.step10.total')}: {formatNumber((parseFloat(formData.budget.replace(/\s/g, '')) * parseInt(formData.workersNeeded)).toString())} UZS
                   </p>
                 </div>
                 
                 {(formData.transportPaid || formData.mealIncluded || formData.mealPaid) && (
                   <div className="bg-gray-50 p-3 rounded-lg">
-                    <p className="text-sm text-gray-600 mb-2">Дополнительные условия</p>
-                    {formData.transportPaid && <p className="text-sm">✓ Проезд оплачивается</p>}
-                    {formData.mealIncluded && <p className="text-sm">✓ Питание включено</p>}
-                    {formData.mealPaid && <p className="text-sm">✓ Питание оплачивается</p>}
+                    <p className="text-sm text-gray-600 mb-2">{t('daily.step10.additionalField')}</p>
+                    {formData.transportPaid && <p className="text-sm">{t('daily.step10.transportCheck')}</p>}
+                    {formData.mealIncluded && <p className="text-sm">{t('daily.step10.mealIncludedCheck')}</p>}
+                    {formData.mealPaid && <p className="text-sm">{t('daily.step10.mealPaidCheck')}</p>}
                   </div>
                 )}
                 
                 <div className="bg-gray-50 p-3 rounded-lg">
-                  <p className="text-sm text-gray-600">Дата выполнения</p>
+                  <p className="text-sm text-gray-600">{t('daily.step10.dateField')}</p>
                   <p className="font-medium">
                     {new Date(formData.serviceDate).toLocaleDateString('ru-RU', {
                       weekday: 'long',
@@ -1653,7 +1640,7 @@ export function CreateOrderClient() {
                 
                 {mediaFiles.length > 0 && (
                   <div className="bg-gray-50 p-3 rounded-lg">
-                    <p className="text-sm text-gray-600 mb-2">Медиа файлы</p>
+                    <p className="text-sm text-gray-600 mb-2">{t('daily.step10.mediaField')}</p>
                     <div className="grid grid-cols-4 gap-2">
                       {mediaPreviews.slice(0, 4).map((preview, index) => (
                         <div key={index} className="aspect-square rounded overflow-hidden border border-gray-300">
@@ -1667,7 +1654,7 @@ export function CreateOrderClient() {
                     </div>
                     {mediaFiles.length > 4 && (
                       <p className="text-xs text-gray-500 mt-2">
-                        +{mediaFiles.length - 4} еще
+                        +{mediaFiles.length - 4} {t('daily.step10.moreFiles')}
                       </p>
                     )}
                   </div>
@@ -1685,13 +1672,13 @@ export function CreateOrderClient() {
   return (
     <div className="container mx-auto px-4 pt-24 pb-8 max-w-2xl">
       <h1 className="text-3xl font-bold mb-6">
-        {formData.type === "vacancy" ? "Создать вакансию" : "Создать заказ"}
+        {formData.type === "vacancy" ? t('titleVacancy') : t('title')}
       </h1>
 
       {/* Type Selector - только на первом шаге */}
       {currentStep === 1 && (
         <Card className="p-4 mb-6">
-          <Label className="mb-2 block">Тип</Label>
+          <Label className="mb-2 block">{t('typeSelector.label')}</Label>
           <div className="grid grid-cols-2 gap-2">
             <button
               type="button"
@@ -1709,7 +1696,7 @@ export function CreateOrderClient() {
               }`}
             >
               <CalendarOneDayIcon className="w-8 h-8" />
-              <span>Дневная работа</span>
+              <span>{t('typeSelector.daily')}</span>
             </button>
             <button
               type="button"
@@ -1727,7 +1714,7 @@ export function CreateOrderClient() {
               }`}
             >
               <DocumentIcon className="w-8 h-8" />
-              <span>Вакансия</span>
+              <span>{t('typeSelector.vacancy')}</span>
             </button>
           </div>
         </Card>
@@ -1746,7 +1733,7 @@ export function CreateOrderClient() {
           ))}
         </div>
         <p className="text-sm text-gray-600 text-center">
-          Шаг {currentStep} из {totalSteps}
+          {t('progress.step')} {currentStep} {t('progress.of')} {totalSteps}
         </p>
         <p className="text-sm text-gray-500 text-center mt-1">
           {getStepTitle()}
@@ -1760,18 +1747,18 @@ export function CreateOrderClient() {
         <div className="flex justify-between mt-6 pt-6 border-t">
           {currentStep > 1 && (
             <Button onClick={handleBack} variant="outline" disabled={loading}>
-              Назад
+              {t('buttons.back')}
             </Button>
           )}
 
           <div className="ml-auto">
             {currentStep < totalSteps ? (
               <Button onClick={handleNext} disabled={loading} className="text-white">
-                Далее
+                {t('buttons.next')}
               </Button>
             ) : (
               <Button onClick={handleSubmit} disabled={loading}>
-                {loading ? "Создание..." : formData.type === "vacancy" ? "Создать вакансию" : "Создать заказ"}
+                {loading ? t('buttons.creating') : formData.type === "vacancy" ? t('buttons.createVacancy') : t('buttons.create')}
               </Button>
             )}
           </div>

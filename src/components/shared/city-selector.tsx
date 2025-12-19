@@ -12,16 +12,21 @@ import {
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { useCity } from '@/contexts/city-context';
+import { useTranslations, useLocale } from 'next-intl';
+import { getCityName } from '@/constants/registration';
 
 export function CitySelector() {
+  const t = useTranslations('citySelector');
+  const locale = useLocale();
   const { currentCity, setCurrentCity, cities, requestGeolocation, isDetecting } = useCity();
   const [isOpen, setIsOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
 
-  // Фильтруем города по поисковому запросу
-  const filteredCities = cities.filter(city =>
-    city.name.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  // Фильтруем города по поисковому запросу (ищем по локализованным названиям)
+  const filteredCities = cities.filter(city => {
+    const localizedName = getCityName(city.id, locale);
+    return localizedName.toLowerCase().includes(searchQuery.toLowerCase());
+  });
 
   const handleCitySelect = (city: typeof cities[number]) => {
     setCurrentCity({ id: city.id, name: city.name });
@@ -44,13 +49,13 @@ export function CitySelector() {
           className="text-gray-600 hover:text-gray-900 font-normal rounded-full gap-1"
         >
           <MapPin className="h-4 w-4" />
-          {currentCity.name}
+          {getCityName(currentCity.id, locale)}
           <ChevronDown className="h-4 w-4" />
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Выберите город</DialogTitle>
+          <DialogTitle>{t('title')}</DialogTitle>
         </DialogHeader>
         <div className="mt-4">
           {/* Кнопка определения местоположения */}
@@ -61,14 +66,14 @@ export function CitySelector() {
             className="w-full mb-4 justify-start gap-2"
           >
             <Locate className="h-4 w-4" />
-            {isDetecting ? 'Определяем...' : 'Определить мое местоположение'}
+            {isDetecting ? t('detecting') : t('detectLocation')}
           </Button>
 
           {/* Поле поиска */}
           <div className="relative mb-4">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
             <Input
-              placeholder="Поиск города..."
+              placeholder={t('searchPlaceholder')}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="pl-10"
@@ -90,13 +95,13 @@ export function CitySelector() {
                 >
                   <div className="flex items-center gap-2">
                     <MapPin className="h-4 w-4" />
-                    <span className="font-medium">{city.name}</span>
+                    <span className="font-medium">{getCityName(city.id, locale)}</span>
                   </div>
                 </button>
               ))
             ) : (
               <div className="text-center py-8 text-gray-500">
-                Город не найден
+                {t('notFound')}
               </div>
             )}
           </div>

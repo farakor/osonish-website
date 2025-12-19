@@ -10,8 +10,10 @@ import {
 import { PageLoader } from "@/components/shared/loading";
 import { Button } from "@/components/ui/button";
 import type { WorkerProfile } from "@/types";
+import { useTranslations } from 'next-intl';
 
 export function WorkersPageClient() {
+  const t = useTranslations('workers');
   const [workers, setWorkers] = useState<WorkerProfile[]>([]);
   const [loading, setLoading] = useState(true);
   const [filters, setFilters] = useState<WorkerFilterValues>({});
@@ -79,10 +81,10 @@ export function WorkersPageClient() {
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-3xl md:text-4xl font-bold mb-2">
-            Работники и специалисты
+            {t('title')}
           </h1>
           <p className="text-lg text-muted-foreground">
-            Найдите проверенных исполнителей для ваших задач
+            {t('subtitle')}
           </p>
         </div>
 
@@ -103,17 +105,17 @@ export function WorkersPageClient() {
             ) : workers.length === 0 ? (
               <div className="text-center py-12">
                 <p className="text-lg text-muted-foreground">
-                  Работников не найдено
+                  {t('notFound')}
                 </p>
                 <p className="text-sm text-muted-foreground mt-2">
-                  Попробуйте изменить фильтры
+                  {t('notFoundDescription')}
                 </p>
               </div>
             ) : (
               <>
                 {/* Results Count */}
                 <div className="mb-4 text-sm text-muted-foreground">
-                  Найдено специалистов: {workers.length}
+                  {t('resultsCount', { count: workers.length })}
                 </div>
 
                 {/* Workers Grid */}
@@ -127,7 +129,7 @@ export function WorkersPageClient() {
                 {hasMore && (
                   <div className="mt-8 text-center">
                     <Button onClick={loadMore} disabled={loading} size="lg">
-                      {loading ? "Загрузка..." : "Показать еще"}
+                      {loading ? t('loading') : t('loadMore')}
                     </Button>
                   </div>
                 )}

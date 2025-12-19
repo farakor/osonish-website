@@ -9,17 +9,20 @@ interface ReviewCardProps {
 }
 
 export function ReviewCard({ review }: ReviewCardProps) {
+  const customerName = review.customerName || "Аноним";
+  const nameParts = customerName.split(" ");
+  
   return (
     <Card>
       <CardContent className="p-6">
         <div className="flex items-start gap-4">
           {/* Avatar */}
           <Avatar className="h-10 w-10">
-            <AvatarImage src={""} alt={review.customerName} />
+            <AvatarImage src={""} alt={customerName} />
             <AvatarFallback>
               {getInitials(
-                review.customerName.split(" ")[0],
-                review.customerName.split(" ")[1] || ""
+                nameParts[0] || "А",
+                nameParts[1] || ""
               )}
             </AvatarFallback>
           </Avatar>
@@ -29,7 +32,7 @@ export function ReviewCard({ review }: ReviewCardProps) {
             {/* Header */}
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-2">
               <div>
-                <p className="font-medium">{review.customerName}</p>
+                <p className="font-medium">{customerName}</p>
                 <p className="text-xs text-muted-foreground">
                   {formatDate(review.createdAt)}
                 </p>

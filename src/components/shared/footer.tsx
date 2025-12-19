@@ -1,9 +1,13 @@
-import Link from "next/link";
+"use client";
+
+import { Link } from "@/i18n/routing";
 import Image from "next/image";
-import { Facebook, Instagram, Send } from "lucide-react";
+import { Smartphone, Instagram, Send } from "lucide-react";
+import { useTranslations } from 'next-intl';
 
 export function Footer() {
   const currentYear = new Date().getFullYear();
+  const t = useTranslations('footer');
 
   return (
     <footer className="border-t bg-muted/50">
@@ -21,24 +25,33 @@ export function Footer() {
               />
             </div>
             <p className="text-sm text-muted-foreground">
-              Платформа для поиска работы и исполнителей в Узбекистане
+              {t('description')}
             </p>
             <div className="flex space-x-4">
               <a
-                href="#"
+                href="http://bit.ly/4pIXrCI"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="text-muted-foreground hover:text-primary transition-colors"
+                aria-label={t('downloadApp')}
               >
-                <Facebook className="h-5 w-5" />
+                <Smartphone className="h-5 w-5" />
               </a>
               <a
-                href="#"
+                href="https://www.instagram.com/osonish_uzb?igsh=MXNpMTMzeDdzOWs0ag=="
+                target="_blank"
+                rel="noopener noreferrer"
                 className="text-muted-foreground hover:text-primary transition-colors"
+                aria-label={t('instagram')}
               >
                 <Instagram className="h-5 w-5" />
               </a>
               <a
-                href="#"
+                href="http://t.me/osonish_sam"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="text-muted-foreground hover:text-primary transition-colors"
+                aria-label={t('telegram')}
               >
                 <Send className="h-5 w-5" />
               </a>
@@ -47,14 +60,14 @@ export function Footer() {
 
           {/* For Customers */}
           <div>
-            <h3 className="font-semibold mb-4">Для заказчиков</h3>
+            <h3 className="font-semibold mb-4">{t('forEmployers')}</h3>
             <ul className="space-y-2">
               <li>
                 <Link
                   href="/orders/create"
                   className="text-sm text-muted-foreground hover:text-primary transition-colors"
                 >
-                  Создать заказ
+                  {t('postJob')}
                 </Link>
               </li>
               <li>
@@ -62,15 +75,15 @@ export function Footer() {
                   href="/workers"
                   className="text-sm text-muted-foreground hover:text-primary transition-colors"
                 >
-                  Найти исполнителя
+                  {t('findWorker')}
                 </Link>
               </li>
               <li>
                 <Link
-                  href="/how-it-works"
+                  href="/#how-it-works"
                   className="text-sm text-muted-foreground hover:text-primary transition-colors"
                 >
-                  Как это работает
+                  {t('howItWorks')}
                 </Link>
               </li>
             </ul>
@@ -78,14 +91,14 @@ export function Footer() {
 
           {/* For Workers */}
           <div>
-            <h3 className="font-semibold mb-4">Для исполнителей</h3>
+            <h3 className="font-semibold mb-4">{t('forWorkers')}</h3>
             <ul className="space-y-2">
               <li>
                 <Link
                   href="/orders"
                   className="text-sm text-muted-foreground hover:text-primary transition-colors"
                 >
-                  Найти работу
+                  {t('findWork')}
                 </Link>
               </li>
               <li>
@@ -93,15 +106,15 @@ export function Footer() {
                   href="/vacancies"
                   className="text-sm text-muted-foreground hover:text-primary transition-colors"
                 >
-                  Вакансии
+                  {t('vacancies')}
                 </Link>
               </li>
               <li>
                 <Link
-                  href="/become-worker"
+                  href="/auth/login"
                   className="text-sm text-muted-foreground hover:text-primary transition-colors"
                 >
-                  Стать исполнителем
+                  {t('createResume')}
                 </Link>
               </li>
             </ul>
@@ -109,14 +122,14 @@ export function Footer() {
 
           {/* Support */}
           <div>
-            <h3 className="font-semibold mb-4">Поддержка</h3>
+            <h3 className="font-semibold mb-4">{t('support')}</h3>
             <ul className="space-y-2">
               <li>
                 <Link
                   href="/about"
                   className="text-sm text-muted-foreground hover:text-primary transition-colors"
                 >
-                  О нас
+                  {t('aboutUs')}
                 </Link>
               </li>
               <li>
@@ -124,7 +137,7 @@ export function Footer() {
                   href="/contact"
                   className="text-sm text-muted-foreground hover:text-primary transition-colors"
                 >
-                  Контакты
+                  {t('contact')}
                 </Link>
               </li>
               <li>
@@ -132,7 +145,7 @@ export function Footer() {
                   href="/privacy"
                   className="text-sm text-muted-foreground hover:text-primary transition-colors"
                 >
-                  Политика конфиденциальности
+                  {t('privacyPolicy')}
                 </Link>
               </li>
               <li>
@@ -140,7 +153,7 @@ export function Footer() {
                   href="/terms"
                   className="text-sm text-muted-foreground hover:text-primary transition-colors"
                 >
-                  Условия использования
+                  {t('termsOfService')}
                 </Link>
               </li>
             </ul>
@@ -149,7 +162,7 @@ export function Footer() {
 
         {/* Bottom Bar */}
         <div className="mt-12 pt-8 border-t text-center text-sm text-muted-foreground">
-          <p>© 2026 Oson Ish. Все права защищены.</p>
+          <p>{t('copyright', { year: currentYear })}</p>
         </div>
       </div>
     </footer>

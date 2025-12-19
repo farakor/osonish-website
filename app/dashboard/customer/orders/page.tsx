@@ -7,6 +7,8 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import Link from 'next/link';
 import { Calendar, MapPin, DollarSign, User } from 'lucide-react';
+import { getTranslations, getLocale } from 'next-intl/server';
+import { getCityName } from '@/constants/registration';
 
 export const metadata = {
   title: 'Мои заказы - Osonish',
@@ -15,6 +17,8 @@ export const metadata = {
 
 export default async function CustomerOrdersPage() {
   const user = await getCurrentUser();
+  const t = await getTranslations('customerOrders');
+  const locale = await getLocale();
   
   if (!user) {
     redirect('/auth/login');
@@ -69,12 +73,12 @@ export default async function CustomerOrdersPage() {
 
   const getStatusBadge = (status: string) => {
     const statusConfig: Record<string, { label: string; variant: 'default' | 'secondary' | 'destructive' | 'outline'; className?: string }> = {
-      open: { label: 'Открыт', variant: 'default', className: 'bg-primary text-white border-primary hover:bg-primary' },
-      in_progress: { label: 'В работе', variant: 'secondary' },
-      completed: { label: 'Завершен', variant: 'outline' },
-      cancelled: { label: 'Отменен', variant: 'destructive' },
-      new: { label: 'Новый', variant: 'default', className: 'bg-blue-500 text-white border-blue-500 hover:bg-blue-500' },
-      response_received: { label: 'Отклики получены', variant: 'secondary', className: 'bg-green-100 text-green-700 border-green-200' },
+      open: { label: t('statuses.open'), variant: 'default', className: 'bg-primary text-white border-primary hover:bg-primary' },
+      in_progress: { label: t('statuses.in_progress'), variant: 'secondary' },
+      completed: { label: t('statuses.completed'), variant: 'outline' },
+      cancelled: { label: t('statuses.cancelled'), variant: 'destructive' },
+      new: { label: t('statuses.new'), variant: 'default', className: 'bg-blue-500 text-white border-blue-500 hover:bg-blue-500' },
+      response_received: { label: t('statuses.response_received'), variant: 'secondary', className: 'bg-green-100 text-green-700 border-green-200 hover:bg-green-100' },
     };
 
     const config = statusConfig[status] || statusConfig.open;
@@ -85,9 +89,9 @@ export default async function CustomerOrdersPage() {
     <div className="pt-24 pb-8">
       <Container>
         <div className="flex items-center justify-between mb-8">
-          <h1 className="text-3xl font-bold">Мои заказы</h1>
+          <h1 className="text-3xl font-bold">{t('title')}</h1>
           <Link href="/dashboard/customer/create-order">
-            <Button>Создать новый заказ</Button>
+            <Button>{t('createNewOrder')}</Button>
           </Link>
         </div>
 
@@ -95,10 +99,10 @@ export default async function CustomerOrdersPage() {
           <Card>
             <CardContent className="pt-6 text-center">
               <p className="text-muted-foreground mb-4">
-                У вас пока нет заказов
+                {t('noOrders')}
               </p>
               <Link href="/dashboard/customer/create-order">
-                <Button>Создать первый заказ</Button>
+                <Button>{t('createFirstOrder')}</Button>
               </Link>
             </CardContent>
           </Card>
@@ -118,18 +122,18 @@ export default async function CustomerOrdersPage() {
                         {order.city && (
                           <div className="flex items-center gap-1">
                             <MapPin className="h-4 w-4" />
-                            {order.city}
+                            {getCityName(order.city, locale)}
                           </div>
                         )}
                         {order.budget && (
                           <div className="flex items-center gap-1">
                             <DollarSign className="h-4 w-4" />
-                            {order.budget.toLocaleString()} сум
+                            {order.budget.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ')} {t('currency')}
                           </div>
                         )}
                         <div className="flex items-center gap-1">
                           <User className="h-4 w-4" />
-                          {order.responsesCount || 0} откликов
+                          {order.responsesCount || 0} {t('responsesCount')}
                         </div>
                       </div>
                     </div>
@@ -145,12 +149,12 @@ export default async function CustomerOrdersPage() {
                   <div className="flex gap-2">
                     <Link href={`/orders/${order.id}`}>
                       <Button variant="outline" size="sm">
-                        Просмотр
+                        {t('view')}
                       </Button>
                     </Link>
                     <Link href={`/dashboard/customer/orders/${order.id}/responses`}>
                       <Button size="sm" className="bg-primary text-white hover:bg-primary/90">
-                        Отклики ({order.responsesCount || 0})
+                        {t('responses')} ({order.responsesCount || 0})
                       </Button>
                     </Link>
                   </div>

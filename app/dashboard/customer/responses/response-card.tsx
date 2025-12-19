@@ -8,6 +8,7 @@ import Link from 'next/link';
 import { Calendar, DollarSign, Eye, Phone, Briefcase, Check, X } from 'lucide-react';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { useTranslations, useLocale } from 'next-intl';
 
 interface ResponseCardProps {
   response: any;
@@ -17,13 +18,41 @@ export function ResponseCard({ response }: ResponseCardProps) {
   const router = useRouter();
   const [isProcessing, setIsProcessing] = useState(false);
   const [currentStatus, setCurrentStatus] = useState(response.status);
+  const t = useTranslations('customerResponses');
+  const locale = useLocale();
+
+  // Функция для форматирования даты
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    const day = date.getDate();
+    const year = date.getFullYear();
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+
+    if (locale === 'uz') {
+      const months = [
+        'yanvar', 'fevral', 'mart', 'aprel', 'may', 'iyun',
+        'iyul', 'avgust', 'sentabr', 'oktabr', 'noyabr', 'dekabr'
+      ];
+      const month = months[date.getMonth()];
+      return `${day} ${month} ${year} soat ${hours}:${minutes}`;
+    } else {
+      return date.toLocaleDateString('ru-RU', {
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+    }
+  };
 
   const getStatusBadge = (status: string) => {
     const statusConfig: Record<string, { label: string; variant: 'default' | 'secondary' | 'destructive' | 'outline'; className?: string }> = {
-      pending: { label: 'На рассмотрении', variant: 'outline', className: 'bg-[#DAE3EC] text-gray-700 border-[#DAE3EC]' },
-      accepted: { label: 'Принят', variant: 'secondary', className: 'bg-[#679B00] text-white border-[#679B00] hover:bg-[#679B00]' },
-      rejected: { label: 'Отклонен', variant: 'destructive' },
-      completed: { label: 'Завершен', variant: 'outline' },
+      pending: { label: t('statuses.pending'), variant: 'outline', className: 'bg-[#DAE3EC] text-gray-700 border-[#DAE3EC]' },
+      accepted: { label: t('statuses.accepted'), variant: 'secondary', className: 'bg-[#679B00] text-white border-[#679B00] hover:bg-[#679B00]' },
+      rejected: { label: t('statuses.rejected'), variant: 'destructive' },
+      completed: { label: t('statuses.completed'), variant: 'outline' },
     };
 
     const config = statusConfig[status] || statusConfig.pending;
@@ -34,8 +63,8 @@ export function ResponseCard({ response }: ResponseCardProps) {
     if (isProcessing) return;
 
     const confirmMessage = newStatus === 'accepted' 
-      ? `Вы уверены, что хотите принять отклик от ${response.worker?.first_name} ${response.worker?.last_name}?`
-      : `Вы уверены, что хотите отклонить отклик от ${response.worker?.first_name} ${response.worker?.last_name}?`;
+      ? `${t('card.confirmAccept')} ${response.worker?.first_name} ${response.worker?.last_name}?`
+      : `${t('card.confirmReject')} ${response.worker?.first_name} ${response.worker?.last_name}?`;
 
     if (!confirm(confirmMessage)) return;
 
@@ -60,11 +89,11 @@ export function ResponseCard({ response }: ResponseCardProps) {
         // Обновляем страницу для получения актуальных данных
         router.refresh();
       } else {
-        alert(data.error || 'Не удалось обновить статус отклика');
+        alert(data.error || t('card.errorUpdate'));
       }
     } catch (error) {
       console.error('Ошибка обновления статуса:', error);
-      alert('Произошла ошибка при обновлении статуса');
+      alert(t('card.errorGeneral'));
     } finally {
       setIsProcessing(false);
     }
@@ -80,7 +109,7 @@ export function ResponseCard({ response }: ResponseCardProps) {
               <div className="flex items-center gap-2 mb-1">
                 <Briefcase className="w-4 h-4 text-primary" />
                 <span className="text-xs font-medium text-primary uppercase">
-                  {response.order?.type === 'vacancy' ? 'Вакансия' : 'Заказ'}
+                  {response.order?.type === 'vacancy' ? t('card.vacancy') : t('card.order')}
                 </span>
               </div>
               <Link 
@@ -117,18 +146,12 @@ export function ResponseCard({ response }: ResponseCardProps) {
             <div className="flex flex-wrap gap-2 text-sm text-muted-foreground">
               <div className="flex items-center gap-1">
                 <Calendar className="h-4 w-4" />
-                {new Date(response.applied_at).toLocaleDateString('ru-RU', {
-                  day: 'numeric',
-                  month: 'long',
-                  year: 'numeric',
-                  hour: '2-digit',
-                  minute: '2-digit'
-                })}
+                {formatDate(response.applied_at)}
               </div>
               {response.proposed_price && (
                 <div className="flex items-center gap-1">
                   <DollarSign className="h-4 w-4" />
-                  {response.proposed_price.toLocaleString()} сум
+                  {response.proposed_price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ')} {t('card.currency')}
                 </div>
               )}
               {response.worker?.rating && (
@@ -167,7 +190,7 @@ export function ResponseCard({ response }: ResponseCardProps) {
                 className="bg-green-600 hover:bg-green-700 text-white"
               >
                 <Check className="w-4 h-4 mr-2" />
-                Принять
+                {t('card.acceptButton')}
               </Button>
               <Button 
                 size="sm" 
@@ -176,7 +199,7 @@ export function ResponseCard({ response }: ResponseCardProps) {
                 disabled={isProcessing}
               >
                 <X className="w-4 h-4 mr-2" />
-                Отклонить
+                {t('card.rejectButton')}
               </Button>
             </>
           )}
@@ -189,14 +212,14 @@ export function ResponseCard({ response }: ResponseCardProps) {
             >
               <a href={`tel:${response.worker.phone}`}>
                 <Phone className="w-4 h-4 mr-2" />
-                Позвонить
+                {t('card.callButton')}
               </a>
             </Button>
           )}
 
           <Link href={`/profiles/${response.worker?.id}`}>
             <Button variant="outline" size="sm">
-              Профиль
+              {t('card.profileButton')}
             </Button>
           </Link>
         </div>

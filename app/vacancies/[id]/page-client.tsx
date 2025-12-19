@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { useTranslations, useLocale } from "next-intl";
 import { Container } from "@/components/shared/container";
 import { PageLoader } from "@/components/shared/loading";
 import { Button } from "@/components/ui/button";
@@ -21,11 +22,13 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import {
-  employmentTypeLabels,
-  workFormatLabels,
-  experienceLevelLabels,
-  workScheduleLabels,
-  languageLabels,
+  getEmploymentTypeLabel,
+  getWorkFormatLabel,
+  getExperienceLevelLabel,
+  getWorkScheduleLabel,
+  getLanguageLabel,
+  getSalaryTypeLabel,
+  getSkillLabel,
 } from "@/constants/translations";
 import { getSpecializationName, getSpecializationIconName } from "@/lib/specialization-utils";
 import { SpecializationIcon } from "@/components/ui/specialization-icon";
@@ -40,6 +43,8 @@ interface VacancyDetailClientProps {
 
 export function VacancyDetailClient({ id, isAuthenticated = false, userRole }: VacancyDetailClientProps) {
   const router = useRouter();
+  const t = useTranslations('vacancies.detail');
+  const locale = useLocale();
   const [vacancy, setVacancy] = useState<Order | null>(null);
   const [loading, setLoading] = useState(true);
   const [applying, setApplying] = useState(false);
@@ -140,39 +145,64 @@ export function VacancyDetailClient({ id, isAuthenticated = false, userRole }: V
 
   const handleShareTelegram = () => {
     const url = window.location.href;
-    const text = `${vacancy?.title} - ${vacancy?.companyName}\nЗарплата: ${formatSalary(vacancy?.salaryFrom, vacancy?.salaryTo, vacancy?.salaryPeriod)}\n${vacancy?.location}`;
+    const text = `${vacancy?.title} - ${vacancy?.companyName}\nЗарплата: ${formatSalary(vacancy?.salaryFrom, vacancy?.salaryTo, vacancy?.salaryPeriod, vacancy?.salaryType)}\n${vacancy?.location}`;
     const telegramUrl = `https://t.me/share/url?url=${encodeURIComponent(url)}&text=${encodeURIComponent(text)}`;
     window.open(telegramUrl, '_blank');
   };
 
   const handleShareWhatsApp = () => {
     const url = window.location.href;
-    const text = `${vacancy?.title} - ${vacancy?.companyName}\nЗарплата: ${formatSalary(vacancy?.salaryFrom, vacancy?.salaryTo, vacancy?.salaryPeriod)}\n${vacancy?.location}\n${url}`;
+    const text = `${vacancy?.title} - ${vacancy?.companyName}\nЗарплата: ${formatSalary(vacancy?.salaryFrom, vacancy?.salaryTo, vacancy?.salaryPeriod, vacancy?.salaryType)}\n${vacancy?.location}\n${url}`;
     const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(text)}`;
     window.open(whatsappUrl, '_blank');
   };
 
-  const formatSalary = (from?: number, to?: number, period?: string) => {
-    if (!from && !to) return "По договоренности";
+  const formatSalary = (from?: number, to?: number, period?: string, type?: string) => {
+    if (!from && !to) return t('byAgreement');
     
     const formatAmount = (amount: number) => {
-      return new Intl.NumberFormat("ru-RU").format(amount);
+      // Форматируем число с пробелами вместо запятых
+      return amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
     };
     
-    const periodText = period === "month" ? "в месяц" : period === "hour" ? "в час" : "";
+    const periodText = period === "month" || period === "per_month" 
+      ? ` ${t('perMonth')}` 
+      : period === "hour" || period === "per_hour" 
+        ? ` ${t('perHour')}` 
+        : period === "day" || period === "per_day" 
+          ? ` ${t('perDay')}` 
+          : "";
+    
+    // Получаем локализованный текст типа зарплаты
+    const typeText = type ? ` (${getSalaryTypeLabel(type, locale)})` : "";
     
     if (from && to) {
-      return `${formatAmount(from)} - ${formatAmount(to)} сум ${periodText}`;
+      return `${formatAmount(from)} - ${formatAmount(to)}${periodText}${typeText}`;
     } else if (from) {
-      return `от ${formatAmount(from)} сум ${periodText}`;
+      return `${t('salaryFrom')} ${formatAmount(from)}${periodText}${typeText}`;
     } else if (to) {
-      return `до ${formatAmount(to)} сум ${periodText}`;
+      return `${t('salaryTo')} ${formatAmount(to)}${periodText}${typeText}`;
     }
   };
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
-    return new Intl.DateTimeFormat("ru-RU", {
+    
+    if (locale === 'uz') {
+      // Узбекские названия месяцев
+      const months = [
+        'Yanvar', 'Fevral', 'Mart', 'Aprel', 'May', 'Iyun',
+        'Iyul', 'Avgust', 'Sentabr', 'Oktabr', 'Noyabr', 'Dekabr'
+      ];
+      
+      const day = date.getDate();
+      const month = months[date.getMonth()];
+      const year = date.getFullYear();
+      
+      return `${year} yil ${day}-${month}`;
+    }
+    
+    return new Intl.DateTimeFormat('ru-RU', {
       day: "numeric",
       month: "long",
       year: "numeric",
@@ -197,7 +227,7 @@ export function VacancyDetailClient({ id, isAuthenticated = false, userRole }: V
           className="mb-6 -ml-2"
         >
           <ArrowLeft className="w-4 h-4 mr-2" />
-          Назад к вакансиям
+          {t('backToVacancies')}
         </Button>
 
         <div className="grid lg:grid-cols-3 gap-8">
@@ -220,7 +250,7 @@ export function VacancyDetailClient({ id, isAuthenticated = false, userRole }: V
                           size={18}
                         />
                       )}
-                      <span className="text-base">{getSpecializationName(vacancy.specializationId)}</span>
+                      <span className="text-base">{getSpecializationName(vacancy.specializationId, locale)}</span>
                     </div>
                   )}
                 </div>
@@ -234,7 +264,8 @@ export function VacancyDetailClient({ id, isAuthenticated = false, userRole }: V
                     {formatSalary(
                       vacancy.salaryFrom,
                       vacancy.salaryTo,
-                      vacancy.salaryPeriod
+                      vacancy.salaryPeriod,
+                      vacancy.salaryType
                     )}
                   </span>
                 </div>
@@ -244,11 +275,11 @@ export function VacancyDetailClient({ id, isAuthenticated = false, userRole }: V
                 </div>
                 <div className="flex items-center gap-2 text-sm">
                   <Briefcase className="w-4 h-4 text-purple-600" />
-                  <span>{employmentTypeLabels[vacancy.employmentType] || vacancy.employmentType}</span>
+                  <span>{getEmploymentTypeLabel(vacancy.employmentType, locale)}</span>
                 </div>
                 <div className="flex items-center gap-2 text-sm">
                   <Clock className="w-4 h-4 text-orange-600" />
-                  <span>{workScheduleLabels[vacancy.workSchedule] || vacancy.workSchedule}</span>
+                  <span>{getWorkScheduleLabel(vacancy.workSchedule, locale)}</span>
                 </div>
               </div>
 
@@ -256,11 +287,11 @@ export function VacancyDetailClient({ id, isAuthenticated = false, userRole }: V
               <div className="flex items-center gap-6 pt-4 border-t">
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
                   <Users className="w-4 h-4" />
-                  <span>{vacancy.applicantsCount} откликов</span>
+                  <span>{t('applicantsCount', { count: vacancy.applicantsCount })}</span>
                 </div>
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
                   <Eye className="w-4 h-4" />
-                  <span>{vacancy.viewsCount} просмотров</span>
+                  <span>{t('viewsCount', { count: vacancy.viewsCount })}</span>
                 </div>
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
                   <Calendar className="w-4 h-4" />
@@ -271,7 +302,7 @@ export function VacancyDetailClient({ id, isAuthenticated = false, userRole }: V
 
             {/* Description */}
             <div className="bg-card rounded-lg border p-6">
-              <h2 className="text-xl font-semibold mb-4">Описание вакансии</h2>
+              <h2 className="text-xl font-semibold mb-4">{t('description')}</h2>
               <p className="text-muted-foreground leading-relaxed">
                 {vacancy.description}
               </p>
@@ -280,7 +311,7 @@ export function VacancyDetailClient({ id, isAuthenticated = false, userRole }: V
             {/* Requirements */}
             {vacancy.requirements && vacancy.requirements.length > 0 && (
               <div className="bg-card rounded-lg border p-6">
-                <h2 className="text-xl font-semibold mb-4">Требования</h2>
+                <h2 className="text-xl font-semibold mb-4">{t('requirements')}</h2>
                 <ul className="space-y-2">
                   {vacancy.requirements.map((req, index) => (
                     <li key={index} className="flex items-start gap-2">
@@ -295,7 +326,7 @@ export function VacancyDetailClient({ id, isAuthenticated = false, userRole }: V
             {/* Responsibilities */}
             {vacancy.responsibilities && vacancy.responsibilities.length > 0 && (
               <div className="bg-card rounded-lg border p-6">
-                <h2 className="text-xl font-semibold mb-4">Обязанности</h2>
+                <h2 className="text-xl font-semibold mb-4">{t('responsibilities')}</h2>
                 <ul className="space-y-2">
                   {vacancy.responsibilities.map((resp, index) => (
                     <li key={index} className="flex items-start gap-2">
@@ -310,7 +341,7 @@ export function VacancyDetailClient({ id, isAuthenticated = false, userRole }: V
             {/* Benefits */}
             {vacancy.benefits && vacancy.benefits.length > 0 && (
               <div className="bg-card rounded-lg border p-6">
-                <h2 className="text-xl font-semibold mb-4">Условия и льготы</h2>
+                <h2 className="text-xl font-semibold mb-4">{t('benefits')}</h2>
                 <ul className="space-y-2">
                   {vacancy.benefits.map((benefit, index) => (
                     <li key={index} className="flex items-start gap-2">
@@ -325,11 +356,11 @@ export function VacancyDetailClient({ id, isAuthenticated = false, userRole }: V
             {/* Skills */}
             {vacancy.skills && vacancy.skills.length > 0 && (
               <div className="bg-card rounded-lg border p-6">
-                <h2 className="text-xl font-semibold mb-4">Ключевые навыки</h2>
+                <h2 className="text-xl font-semibold mb-4">{t('keySkills')}</h2>
                 <div className="flex flex-wrap gap-2">
                   {vacancy.skills.map((skill, index) => (
                     <Badge key={index} variant="secondary" className="bg-[#F3F4F6] text-primary hover:bg-[#F3F4F6]">
-                      {skill}
+                      {getSkillLabel(skill, locale)}
                     </Badge>
                   ))}
                 </div>
@@ -339,11 +370,11 @@ export function VacancyDetailClient({ id, isAuthenticated = false, userRole }: V
             {/* Languages */}
             {vacancy.languages && vacancy.languages.length > 0 && (
               <div className="bg-card rounded-lg border p-6">
-                <h2 className="text-xl font-semibold mb-4">Языки</h2>
+                <h2 className="text-xl font-semibold mb-4">{t('languages')}</h2>
                 <div className="flex flex-wrap gap-2">
                   {vacancy.languages.map((language, index) => (
                     <Badge key={index} variant="outline" className="bg-[#F3F4F6] text-primary border-transparent hover:bg-[#F3F4F6]">
-                      {languageLabels[language] || language}
+                      {getLanguageLabel(language, locale)}
                     </Badge>
                   ))}
                 </div>
@@ -364,24 +395,24 @@ export function VacancyDetailClient({ id, isAuthenticated = false, userRole }: V
                     className="w-full mb-4 text-white"
                   >
                     {checkingApplication 
-                      ? "Проверка..." 
+                      ? t('checking')
                       : hasApplied 
-                        ? "Отклик отправлен" 
+                        ? t('applied')
                         : applying 
-                          ? "Отправка..." 
-                          : "Откликнуться"}
+                          ? t('applying')
+                          : t('apply')}
                   </Button>
                   <p className="text-xs text-center text-muted-foreground">
                     {hasApplied 
-                      ? "Вы уже откликнулись на эту вакансию"
-                      : "Нажимая кнопку, вы соглашаетесь с условиями использования"}
+                      ? t('alreadyApplied')
+                      : t('agreeToTerms')}
                   </p>
                 </div>
               )}
 
               {/* Company Info */}
               <div className="bg-card rounded-lg border p-6">
-                <h3 className="font-semibold mb-3">О компании</h3>
+                <h3 className="font-semibold mb-3">{t('aboutCompany')}</h3>
                 <div className="space-y-3">
                   <div>
                     <div className="flex items-center gap-2 mb-2">
@@ -397,22 +428,22 @@ export function VacancyDetailClient({ id, isAuthenticated = false, userRole }: V
 
               {/* Additional Info */}
               <div className="bg-card rounded-lg border p-6">
-                <h3 className="font-semibold mb-3">Дополнительно</h3>
+                <h3 className="font-semibold mb-3">{t('additionalInfo')}</h3>
                 <div className="space-y-3 text-sm">
                   <div>
-                    <span className="text-muted-foreground">Формат работы:</span>
-                    <p className="font-medium">{workFormatLabels[vacancy.workFormat] || vacancy.workFormat}</p>
+                    <span className="text-muted-foreground">{t('workFormat')}</span>
+                    <p className="font-medium">{getWorkFormatLabel(vacancy.workFormat, locale)}</p>
                   </div>
                   <div>
-                    <span className="text-muted-foreground">Опыт работы:</span>
-                    <p className="font-medium">{experienceLevelLabels[vacancy.experienceLevel] || vacancy.experienceLevel}</p>
+                    <span className="text-muted-foreground">{t('experience')}</span>
+                    <p className="font-medium">{getExperienceLevelLabel(vacancy.experienceLevel, locale)}</p>
                   </div>
                 </div>
               </div>
 
               {/* Share */}
               <div className="bg-card rounded-lg border p-6">
-                <h3 className="font-semibold mb-3">Поделиться</h3>
+                <h3 className="font-semibold mb-3">{t('share')}</h3>
                 <div className="flex gap-2">
                   <Button 
                     onClick={handleShareTelegram}

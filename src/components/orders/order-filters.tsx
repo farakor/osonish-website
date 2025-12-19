@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Filter, X } from "lucide-react";
+import { useTranslations } from 'next-intl';
 
 interface OrderFiltersProps {
   onFilterChange: (filters: OrderFilterValues) => void;
@@ -21,40 +22,43 @@ export interface OrderFilterValues {
   type?: "daily" | "vacancy";
 }
 
-const cities = [
-  "Все города",
-  "Ташкент",
-  "Самарканд",
-  "Бухара",
-  "Андижан",
-  "Фергана",
-  "Наманган",
-  "Нукус",
-];
-
-const categories = [
-  "Все категории",
-  "Работа на 1 день",
-  "Ремонт и строительство",
-  "Сантехника",
-  "Электрика",
-  "Покраска/Маляр",
-  "Плотник",
-  "Плиточник",
-  "Строительство",
-  "Уборка",
-  "Садоводство",
-  "Общепит",
-  "Грузоперевозки",
-  "Другое",
-];
-
 export function OrderFilters({
   onFilterChange,
   initialFilters = {},
 }: OrderFiltersProps) {
+  const t = useTranslations('orders.filters');
+  const tCommon = useTranslations('common');
+  const tCities = useTranslations('cities');
   const [filters, setFilters] = useState<OrderFilterValues>(initialFilters);
   const [showFilters, setShowFilters] = useState(false);
+
+  const cities = [
+    t('allCities'),
+    "Ташкент",
+    "Самарканд",
+    "Бухара",
+    "Андижан",
+    "Фергана",
+    "Наманган",
+    "Нукус",
+  ];
+
+  const categories = [
+    t('allCategories'),
+    "Работа на 1 день",
+    "Ремонт и строительство",
+    "Сантехника",
+    "Электрика",
+    "Покраска/Маляр",
+    "Плотник",
+    "Плиточник",
+    "Строительство",
+    "Уборка",
+    "Садоводство",
+    "Общепит",
+    "Грузоперевозки",
+    "Другое",
+  ];
 
   const handleFilterChange = (key: keyof OrderFilterValues, value: any) => {
     const newFilters = { ...filters, [key]: value };
@@ -77,26 +81,26 @@ export function OrderFilters({
           className="w-full"
         >
           <Filter className="h-4 w-4 mr-2" />
-          {showFilters ? "Скрыть фильтры" : "Показать фильтры"}
+          {showFilters ? t('hideFilters') : t('showFilters')}
         </Button>
       </div>
 
       {/* Filters */}
       <Card className={`${showFilters ? "block" : "hidden md:block"}`}>
         <CardHeader className="flex flex-row items-center justify-between">
-          <CardTitle className="text-lg">Фильтры</CardTitle>
+          <CardTitle className="text-lg">{t('title')}</CardTitle>
           <Button variant="ghost" size="sm" onClick={clearFilters} className="border border-gray-300 hover:border-gray-400">
             <X className="h-4 w-4 mr-2" />
-            Очистить
+            {t('clear')}
           </Button>
         </CardHeader>
         <CardContent className="space-y-4">
           {/* Search */}
           <div className="space-y-2">
-            <Label htmlFor="search">Поиск</Label>
+            <Label htmlFor="search">{t('search')}</Label>
             <Input
               id="search"
-              placeholder="Введите ключевые слова..."
+              placeholder={t('searchPlaceholder')}
               value={filters.search || ""}
               onChange={(e) => handleFilterChange("search", e.target.value)}
             />
@@ -104,15 +108,15 @@ export function OrderFilters({
 
           {/* City */}
           <div className="space-y-2">
-            <Label htmlFor="city">Город</Label>
+            <Label htmlFor="city">{t('city')}</Label>
             <select
               id="city"
-              className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+              className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:border-2 focus-visible:border-[#679B00] transition-all"
               value={filters.city || ""}
               onChange={(e) => handleFilterChange("city", e.target.value)}
             >
               {cities.map((city) => (
-                <option key={city} value={city === "Все города" ? "" : city}>
+                <option key={city} value={city === t('allCities') ? "" : city}>
                   {city}
                 </option>
               ))}
@@ -121,17 +125,17 @@ export function OrderFilters({
 
           {/* Category */}
           <div className="space-y-2">
-            <Label htmlFor="category">Категория</Label>
+            <Label htmlFor="category">{t('category')}</Label>
             <select
               id="category"
-              className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+              className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:border-2 focus-visible:border-[#679B00] transition-all"
               value={filters.category || ""}
               onChange={(e) => handleFilterChange("category", e.target.value)}
             >
               {categories.map((category) => (
                 <option
                   key={category}
-                  value={category === "Все категории" ? "" : category}
+                  value={category === t('allCategories') ? "" : category}
                 >
                   {category}
                 </option>
@@ -141,11 +145,11 @@ export function OrderFilters({
 
           {/* Budget Range */}
           <div className="space-y-2">
-            <Label>Бюджет (сум)</Label>
+            <Label>{t('budget')}</Label>
             <div className="grid grid-cols-2 gap-2">
               <Input
                 type="number"
-                placeholder="От"
+                placeholder={t('budgetFrom')}
                 value={filters.minBudget || ""}
                 onChange={(e) =>
                   handleFilterChange("minBudget", Number(e.target.value))
@@ -153,7 +157,7 @@ export function OrderFilters({
               />
               <Input
                 type="number"
-                placeholder="До"
+                placeholder={t('budgetTo')}
                 value={filters.maxBudget || ""}
                 onChange={(e) =>
                   handleFilterChange("maxBudget", Number(e.target.value))
@@ -164,7 +168,7 @@ export function OrderFilters({
 
           {/* Type */}
           <div className="space-y-2">
-            <Label>Тип</Label>
+            <Label>{t('type')}</Label>
             <div className="grid grid-cols-3 gap-2">
               <Button
                 variant={!filters.type ? "default" : "outline"}
@@ -172,7 +176,7 @@ export function OrderFilters({
                 onClick={() => handleFilterChange("type", undefined)}
                 className={`text-xs ${!filters.type ? "text-white" : ""}`}
               >
-                Все
+                {t('all')}
               </Button>
               <Button
                 variant={filters.type === "daily" ? "default" : "outline"}
@@ -180,7 +184,7 @@ export function OrderFilters({
                 onClick={() => handleFilterChange("type", "daily")}
                 className={`text-xs whitespace-nowrap ${filters.type === "daily" ? "text-white" : ""}`}
               >
-                Дневная
+                {t('daily')}
               </Button>
               <Button
                 variant={filters.type === "vacancy" ? "default" : "outline"}
@@ -188,7 +192,7 @@ export function OrderFilters({
                 onClick={() => handleFilterChange("type", "vacancy")}
                 className={`text-xs ${filters.type === "vacancy" ? "text-white" : ""}`}
               >
-                Вакансия
+                {t('vacancy')}
               </Button>
             </div>
           </div>

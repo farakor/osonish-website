@@ -57,10 +57,16 @@ export async function GET(request: NextRequest) {
     // Получаем ID всех работников
     const workerIds = data?.map((w: any) => w.id) || [];
     
-    // Получаем отзывы для этих работников
+    // Получаем отзывы для этих работников с информацией о заказчиках
     const { data: reviewsData } = await supabase
       .from("reviews")
-      .select("*")
+      .select(`
+        *,
+        customer:customer_id (
+          first_name,
+          last_name
+        )
+      `)
       .in("worker_id", workerIds);
 
     // Группируем отзывы по worker_id
@@ -103,14 +109,27 @@ export async function GET(request: NextRequest) {
         totalReviews,
         completedJobs: completedJobsCounts[worker.id] || 0,
         joinedAt: worker.created_at,
-        reviews: reviews.map((r: any) => ({
-          id: r.id,
-          rating: r.rating,
-          comment: r.comment,
-          createdAt: r.created_at,
-          customerName: r.customer_name,
-          orderTitle: r.order_title,
-        })),
+        reviews: reviews.map((r: any) => {
+          // Пытаемся получить имя из разных источников
+          let customerName = "Аноним";
+          
+          if (r.customer_name) {
+            customerName = r.customer_name;
+          } else if (r.customer && r.customer.first_name && r.customer.last_name) {
+            customerName = `${r.customer.first_name} ${r.customer.last_name}`;
+          } else if (r.customer && r.customer.first_name) {
+            customerName = r.customer.first_name;
+          }
+          
+          return {
+            id: r.id,
+            rating: r.rating,
+            comment: r.comment,
+            createdAt: r.created_at,
+            customerName,
+            orderTitle: r.order_title,
+          };
+        }),
         workerType: worker.worker_type,
         city: worker.city,
         specialization: worker.specialization || null,

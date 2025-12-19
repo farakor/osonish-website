@@ -130,7 +130,7 @@ export function RegistrationForm({ phone, redirectTo }: RegistrationFormProps) {
           {/* Имя и Фамилия */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="firstName">Имя *</Label>
+              <Label htmlFor="firstName">Имя <span className="text-red-500">*</span></Label>
               <Input
                 id="firstName"
                 name="firstName"
@@ -142,7 +142,7 @@ export function RegistrationForm({ phone, redirectTo }: RegistrationFormProps) {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="lastName">Фамилия *</Label>
+              <Label htmlFor="lastName">Фамилия <span className="text-red-500">*</span></Label>
               <Input
                 id="lastName"
                 name="lastName"
