@@ -7,9 +7,26 @@ import { routing } from './src/i18n/routing';
 // Создаем middleware для интернационализации
 const intlMiddleware = createIntlMiddleware(routing);
 
+// Пути, которые не требуют интернационализации (без префикса локали)
+const nonLocalizedPaths = [
+  '/orders',
+  '/vacancies', 
+  '/workers',
+  '/about',
+  '/contact',
+  '/auth',
+  '/dashboard',
+  '/profiles'
+];
+
 export async function middleware(request: NextRequest) {
   // Определяем, есть ли локаль в URL
   const pathname = request.nextUrl.pathname;
+  
+  // Проверяем, является ли путь нелокализованным
+  const isNonLocalizedPath = nonLocalizedPaths.some(path => 
+    pathname.startsWith(path) || pathname === path
+  );
   
   // Извлекаем локаль из URL если есть
   const localeMatch = pathname.match(/^\/(ru|uz)/);
@@ -19,23 +36,35 @@ export async function middleware(request: NextRequest) {
   if (!locale) {
     const localeCookie = request.cookies.get('NEXT_LOCALE');
     locale = localeCookie?.value || 'ru'; // По умолчанию русский
+    
+    // Логируем для отладки
+    if (pathname.includes('/dashboard/settings')) {
+      console.log('🔍 [Middleware] Путь:', pathname);
+      console.log('🔍 [Middleware] Cookie локали:', localeCookie?.value);
+      console.log('🔍 [Middleware] Выбранная локаль:', locale);
+    }
   }
   
   const pathnameHasLocale = routing.locales.some(
     (loc) => pathname.startsWith(`/${loc}/`) || pathname === `/${loc}`
   );
 
-  // Обрабатываем интернационализацию для всех страниц
-  let intlResponse = intlMiddleware(request);
+  // Обрабатываем интернационализацию только для страниц в структуре [locale]
+  let intlResponse;
+  if (!isNonLocalizedPath) {
+    intlResponse = intlMiddleware(request);
+  }
   
   // Если переход на страницу с локалью, сохраняем ее в куках
   if (pathname === '/uz' || pathname === '/ru' || pathnameHasLocale) {
     const pageLocale = pathname.match(/^\/(ru|uz)/)?.[1];
-    if (pageLocale && intlResponse) {
-      intlResponse.cookies.set('NEXT_LOCALE', pageLocale, {
-        path: '/',
-        maxAge: 31536000, // 1 год
-      });
+    if (pageLocale) {
+      if (intlResponse) {
+        intlResponse.cookies.set('NEXT_LOCALE', pageLocale, {
+          path: '/',
+          maxAge: 31536000, // 1 год
+        });
+      }
     }
   }
   

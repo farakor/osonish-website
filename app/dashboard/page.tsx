@@ -117,7 +117,7 @@ export default async function DashboardPage() {
                 </Card>
               </Link>
 
-              <Link href="/dashboard/customer/create-order">
+              <Link href="/orders/create">
                 <Card className="border border-[#DAE3EC] hover:border-blue-400 transition-all cursor-pointer bg-primary text-white">
                   <CardHeader>
                     <Briefcase className="h-8 w-8 mb-2" />

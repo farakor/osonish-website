@@ -30,6 +30,7 @@ import {
   getSalaryTypeLabel,
   getSkillLabel,
 } from "@/constants/translations";
+import { getCityName } from "@/constants/registration";
 import { getSpecializationName, getSpecializationIconName } from "@/lib/specialization-utils";
 import { SpecializationIcon } from "@/components/ui/specialization-icon";
 import TelegramIcon from "@/components/assets/Telegram.svg";
@@ -430,6 +431,12 @@ export function VacancyDetailClient({ id, isAuthenticated = false, userRole }: V
               <div className="bg-card rounded-lg border p-6">
                 <h3 className="font-semibold mb-3">{t('additionalInfo')}</h3>
                 <div className="space-y-3 text-sm">
+                  {vacancy.city && (
+                    <div>
+                      <span className="text-muted-foreground">{t('city')}</span>
+                      <p className="font-medium">{getCityName(vacancy.city, locale)}</p>
+                    </div>
+                  )}
                   <div>
                     <span className="text-muted-foreground">{t('workFormat')}</span>
                     <p className="font-medium">{getWorkFormatLabel(vacancy.workFormat, locale)}</p>

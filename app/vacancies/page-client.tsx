@@ -31,6 +31,7 @@ export function VacanciesPageClient() {
       const params = new URLSearchParams();
       
       if (filters.city) params.append("city", filters.city);
+      if (filters.category) params.append("category", filters.category);
       if (filters.experienceLevel) params.append("experienceLevel", filters.experienceLevel);
       if (filters.employmentType) params.append("employmentType", filters.employmentType);
       if (filters.workFormat) params.append("workFormat", filters.workFormat);

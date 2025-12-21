@@ -17,6 +17,7 @@ import { getSpecializationName, getSpecializationIconName } from "@/lib/speciali
 import { SpecializationIcon } from "@/components/ui/specialization-icon";
 import { useTranslations, useLocale } from 'next-intl';
 import { getSkillLabel } from "@/constants/translations";
+import { getCityName } from "@/constants/registration";
 
 interface VacancyCardProps {
   vacancy: Order;
@@ -145,10 +146,12 @@ export function VacancyCard({ vacancy }: VacancyCardProps) {
 
         {/* Info Grid */}
         <div className="grid grid-cols-2 gap-3 mb-4 text-sm">
-          <div className="flex items-center gap-2 text-muted-foreground">
-            <MapPin className="w-4 h-4" />
-            <span className="truncate">{vacancy.location}</span>
-          </div>
+          {vacancy.city && (
+            <div className="flex items-center gap-2 text-muted-foreground">
+              <MapPin className="w-4 h-4" />
+              <span className="truncate">{getCityName(vacancy.city, locale)}</span>
+            </div>
+          )}
           <div className="flex items-center gap-2 text-muted-foreground">
             <Briefcase className="w-4 h-4" />
             <span>{vacancy.workFormat ? tWorkFormat(vacancy.workFormat) : '-'}</span>

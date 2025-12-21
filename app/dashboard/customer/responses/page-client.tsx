@@ -152,7 +152,7 @@ export function ResponsesClient({ orderResponses, vacancyResponses }: ResponsesC
                 : t('empty.vacanciesDescription')
               }
             </p>
-            <Link href={activeTab === 'orders' ? '/dashboard/customer/create-order' : '/dashboard/customer/create-vacancy'}>
+            <Link href={activeTab === 'orders' ? '/orders/create' : '/dashboard/customer/create-vacancy'}>
               <Button>
                 {activeTab === 'orders' ? t('empty.createOrder') : t('empty.createVacancy')}
               </Button>

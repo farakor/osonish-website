@@ -31,6 +31,12 @@ export async function GET(request: NextRequest) {
       query = query.eq("city", city);
     }
 
+    if (specialization) {
+      // Фильтруем по специализации используя PostgreSQL JSONB operator
+      // Используем @> оператор для проверки, содержит ли массив объект с указанным id
+      query = query.filter('specializations', 'cs', JSON.stringify([{ id: specialization }]));
+    }
+
     if (workerType) {
       query = query.eq("worker_type", workerType);
     }
@@ -146,9 +152,6 @@ export async function GET(request: NextRequest) {
       const minRatingValue = parseFloat(minRating);
       workers = workers.filter((w: any) => w.averageRating >= minRatingValue);
     }
-
-    // Фильтрация по специализации (если она передана как текст, а не ID)
-    // TODO: Улучшить фильтрацию по специализации через связь со справочником
 
     return NextResponse.json({
       workers,

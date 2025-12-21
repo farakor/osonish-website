@@ -19,6 +19,7 @@ import { formatPhoneNumber, getInitials } from "@/lib/utils";
 import { getSpecializationName, getSpecializationIconName } from "@/lib/specialization-utils";
 import { SpecializationIcon } from "@/components/ui/specialization-icon";
 import Image from "next/image";
+import { useTranslations } from 'next-intl';
 
 interface ProfileHeaderProps {
   profile: WorkerProfile;
@@ -26,6 +27,8 @@ interface ProfileHeaderProps {
 
 export function ProfileHeader({ profile }: ProfileHeaderProps) {
   const [showPhone, setShowPhone] = useState(false);
+  const t = useTranslations('profilePage');
+  
   return (
     <Card>
       <CardContent className="p-6">
@@ -56,7 +59,7 @@ export function ProfileHeader({ profile }: ProfileHeaderProps) {
                     size="md"
                   />
                   <span className="text-sm text-muted-foreground">
-                    {profile.totalReviews} отзывов
+                    {profile.totalReviews} {t('reviewsCount')}
                   </span>
                 </div>
               )}
@@ -69,15 +72,15 @@ export function ProfileHeader({ profile }: ProfileHeaderProps) {
                 <div className="flex items-center gap-2">
                   <CheckCircle className="h-5 w-5 text-primary" />
                   <div>
-                    <p className="text-sm text-muted-foreground">Выполнено</p>
-                    <p className="font-semibold">{profile.completedJobs} заказов</p>
+                    <p className="text-sm text-muted-foreground">{t('completedJobs')}</p>
+                    <p className="font-semibold">{profile.completedJobs} {t('completedJobsCount')}</p>
                   </div>
                 </div>
               )}
               <div className="flex items-center gap-2">
                 <Calendar className="h-5 w-5 text-primary" />
                 <div>
-                  <p className="text-sm text-muted-foreground">На платформе</p>
+                  <p className="text-sm text-muted-foreground">{t('onPlatformSince')}</p>
                   <p className="font-semibold">
                     {new Date(profile.joinedAt).getFullYear()}
                   </p>
@@ -86,7 +89,7 @@ export function ProfileHeader({ profile }: ProfileHeaderProps) {
               <div className="flex items-center gap-2">
                 <Phone className="h-5 w-5 text-primary" />
                 <div>
-                  <p className="text-sm text-muted-foreground">Телефон</p>
+                  <p className="text-sm text-muted-foreground">{t('phoneLabel')}</p>
                   {showPhone ? (
                     <p className="font-semibold text-sm">
                       {formatPhoneNumber(profile.phone)}
@@ -98,7 +101,7 @@ export function ProfileHeader({ profile }: ProfileHeaderProps) {
                       onClick={() => setShowPhone(true)}
                       className="h-auto p-0 font-semibold text-sm"
                     >
-                      Показать номер
+                      {t('showPhone')}
                     </Button>
                   )}
                 </div>

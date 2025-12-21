@@ -1,7 +1,8 @@
 'use client';
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useState, useTransition } from 'react';
+import { useRouter, usePathname } from 'next/navigation';
+import { useLocale } from 'next-intl';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
@@ -34,9 +35,12 @@ interface SettingsFormProps {
 
 export function SettingsForm({ user }: SettingsFormProps) {
   const router = useRouter();
+  const pathname = usePathname();
+  const currentLocale = useLocale() as 'ru' | 'uz';
+  const [isPending, startTransition] = useTransition();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const [language, setLanguage] = useState(user.preferred_language || 'ru');
+  const [language, setLanguage] = useState(user.preferred_language || currentLocale);
   const [notifications, setNotifications] = useState(true);
   const [emailNotifications, setEmailNotifications] = useState(false);
   const t = useTranslations('settings');
@@ -46,6 +50,7 @@ export function SettingsForm({ user }: SettingsFormProps) {
     setError('');
 
     try {
+      // Сохраняем язык в профиле пользователя
       const response = await fetch('/api/profile/update', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -57,9 +62,26 @@ export function SettingsForm({ user }: SettingsFormProps) {
       const data = await response.json();
 
       if (data.success) {
-        console.log('✅ Настройки сохранены');
-        alert(t('mainSettings.saveSuccess'));
-        router.refresh();
+        console.log('✅ Настройки сохранены, выбранный язык:', language);
+        
+        // Если язык изменился, переключаем локаль
+        if (language !== currentLocale) {
+          console.log('🔄 Переключение локали с', currentLocale, 'на', language);
+          
+          // Сохраняем выбранный язык в cookie
+          document.cookie = `NEXT_LOCALE=${language}; path=/; max-age=31536000; SameSite=Lax`;
+          
+          alert(t('mainSettings.saveSuccess'));
+          
+          // Используем setTimeout, чтобы cookie успела установиться
+          setTimeout(() => {
+            // Перезагружаем страницу с принудительной перезагрузкой с сервера
+            window.location.href = pathname;
+          }, 100);
+        } else {
+          alert(t('mainSettings.saveSuccess'));
+          router.refresh();
+        }
       } else {
         setError(data.error || t('mainSettings.saveError'));
       }
@@ -112,7 +134,6 @@ export function SettingsForm({ user }: SettingsFormProps) {
               <SelectContent>
                 <SelectItem value="ru">{t('mainSettings.russian')}</SelectItem>
                 <SelectItem value="uz">{t('mainSettings.uzbek')}</SelectItem>
-                <SelectItem value="en">{t('mainSettings.english')}</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -125,8 +146,8 @@ export function SettingsForm({ user }: SettingsFormProps) {
             </div>
           </div>
 
-          <Button onClick={handleSaveSettings} disabled={loading}>
-            {loading ? (
+          <Button onClick={handleSaveSettings} disabled={loading || isPending}>
+            {loading || isPending ? (
               <>
                 <Loader2 className="h-4 w-4 mr-2 animate-spin" />
                 {t('mainSettings.saving')}

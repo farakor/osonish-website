@@ -12,7 +12,7 @@ export function DownloadAppSection() {
   const t = useTranslations('landing.downloadApp');
   
   return (
-    <section className="relative py-20 md:py-32 overflow-hidden">
+    <section className="relative py-16 sm:py-20 md:py-32 overflow-hidden">
       {/* Background Image */}
       <div className="absolute inset-0 z-0">
         <Image
@@ -32,11 +32,11 @@ export function DownloadAppSection() {
       </div>
 
       <Container>
-        <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center relative z-10">
+        <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 xl:gap-16 items-center relative z-10">
           {/* Left side - Content */}
           <div className="text-center lg:text-left order-2 lg:order-1">
             {/* Liquid Glass morphism container */}
-            <div className="relative backdrop-blur-2xl bg-gradient-to-br from-white/30 via-white/20 to-white/10 rounded-3xl p-8 md:p-10 shadow-2xl border border-white/40 overflow-hidden">
+            <div className="relative backdrop-blur-2xl bg-gradient-to-br from-white/30 via-white/20 to-white/10 rounded-2xl sm:rounded-3xl p-6 sm:p-8 md:p-10 shadow-2xl border border-white/40 overflow-hidden">
               {/* Liquid glass animated gradients */}
               <div className="absolute inset-0 opacity-50">
                 <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-primary/20 via-transparent to-blue-500/10 animate-liquid-1" />
@@ -47,52 +47,52 @@ export function DownloadAppSection() {
               <div className="absolute -top-1/2 -right-1/2 w-full h-full bg-gradient-to-br from-white/50 via-transparent to-transparent blur-3xl opacity-40 pointer-events-none rotate-12" />
               
               <div className="relative z-10">
-                <div className="inline-flex items-center gap-2 bg-white/30 backdrop-blur-md text-gray-900 px-4 py-2 rounded-full text-sm font-semibold mb-6 border border-white/40">
+                <div className="inline-flex items-center gap-2 bg-white/30 backdrop-blur-md text-gray-900 px-4 py-2 rounded-full text-sm font-semibold mb-4 sm:mb-6 border border-white/40">
                   <Smartphone className="w-4 h-4" />
                   {t('badge')}
                 </div>
                 
-                <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 text-gray-900 leading-tight drop-shadow-sm">
+                <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 sm:mb-6 text-gray-900 leading-tight drop-shadow-sm">
                   {t('title')}
                 </h2>
                 
-                <p className="text-lg md:text-xl text-gray-800 mb-8 leading-relaxed drop-shadow-sm">
+                <p className="text-base sm:text-lg md:text-xl text-gray-800 mb-6 sm:mb-8 leading-relaxed drop-shadow-sm">
                   {t('description')}
                 </p>
 
                 {/* Features list */}
-                <div className="space-y-4 mb-10">
-                  <div className="flex items-center gap-3 text-left backdrop-blur-sm bg-white/20 rounded-2xl p-3 border border-white/30">
-                    <div className="flex-shrink-0 w-10 h-10 bg-white/40 backdrop-blur-sm rounded-xl flex items-center justify-center border border-white/40">
-                      <Zap className="w-5 h-5 text-primary" />
+                <div className="space-y-3 sm:space-y-4 mb-8 sm:mb-10">
+                  <div className="flex items-center gap-3 text-left backdrop-blur-sm bg-white/20 rounded-xl sm:rounded-2xl p-3 border border-white/30">
+                    <div className="flex-shrink-0 w-9 h-9 sm:w-10 sm:h-10 bg-white/40 backdrop-blur-sm rounded-lg sm:rounded-xl flex items-center justify-center border border-white/40">
+                      <Zap className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
                     </div>
                     <div>
-                      <div className="font-bold text-gray-900">{t('feature1')}</div>
-                      <div className="text-sm text-gray-800">{t('feature1Description')}</div>
+                      <div className="font-bold text-sm sm:text-base text-gray-900">{t('feature1')}</div>
+                      <div className="text-xs sm:text-sm text-gray-800">{t('feature1Description')}</div>
                     </div>
                   </div>
-                  <div className="flex items-center gap-3 text-left backdrop-blur-sm bg-white/20 rounded-2xl p-3 border border-white/30">
-                    <div className="flex-shrink-0 w-10 h-10 bg-white/40 backdrop-blur-sm rounded-xl flex items-center justify-center border border-white/40">
-                      <Shield className="w-5 h-5 text-primary" />
+                  <div className="flex items-center gap-3 text-left backdrop-blur-sm bg-white/20 rounded-xl sm:rounded-2xl p-3 border border-white/30">
+                    <div className="flex-shrink-0 w-9 h-9 sm:w-10 sm:h-10 bg-white/40 backdrop-blur-sm rounded-lg sm:rounded-xl flex items-center justify-center border border-white/40">
+                      <Shield className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
                     </div>
                     <div>
-                      <div className="font-bold text-gray-900">{t('feature2')}</div>
-                      <div className="text-sm text-gray-800">{t('feature2Description')}</div>
+                      <div className="font-bold text-sm sm:text-base text-gray-900">{t('feature2')}</div>
+                      <div className="text-xs sm:text-sm text-gray-800">{t('feature2Description')}</div>
                     </div>
                   </div>
-                  <div className="flex items-center gap-3 text-left backdrop-blur-sm bg-white/20 rounded-2xl p-3 border border-white/30">
-                    <div className="flex-shrink-0 w-10 h-10 bg-white/40 backdrop-blur-sm rounded-xl flex items-center justify-center border border-white/40">
-                      <Star className="w-5 h-5 text-primary" />
+                  <div className="flex items-center gap-3 text-left backdrop-blur-sm bg-white/20 rounded-xl sm:rounded-2xl p-3 border border-white/30">
+                    <div className="flex-shrink-0 w-9 h-9 sm:w-10 sm:h-10 bg-white/40 backdrop-blur-sm rounded-lg sm:rounded-xl flex items-center justify-center border border-white/40">
+                      <Star className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
                     </div>
                     <div>
-                      <div className="font-bold text-gray-900">{t('feature3')}</div>
-                      <div className="text-sm text-gray-800">{t('feature3Description')}</div>
+                      <div className="font-bold text-sm sm:text-base text-gray-900">{t('feature3')}</div>
+                      <div className="text-xs sm:text-sm text-gray-800">{t('feature3Description')}</div>
                     </div>
                   </div>
                 </div>
 
                 {/* Download buttons */}
-                <div className="flex flex-col sm:flex-row items-center lg:items-start justify-center lg:justify-start gap-4">
+                <div className="flex flex-col sm:flex-row items-center lg:items-start justify-center lg:justify-start gap-3 sm:gap-4">
                   <a
                     href="https://onelink.to/5gaph5"
                     target="_blank"
@@ -129,32 +129,32 @@ export function DownloadAppSection() {
 
           {/* Right side - Phone mockups */}
           <div className="relative order-1 lg:order-2">
-            {/* Floating elements - placed before mockups for proper z-index */}
-            <div className="absolute top-10 -left-10 bg-white rounded-2xl shadow-xl p-4 animate-float hidden lg:block z-30">
+            {/* Floating elements - hidden on mobile, shown on md+ */}
+            <div className="absolute top-10 -left-10 bg-white rounded-2xl shadow-xl p-4 animate-float hidden md:block z-30">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
-                  <CheckCircle className="w-6 h-6 text-green-600" />
+                <div className="w-9 h-9 sm:w-10 sm:h-10 bg-green-100 rounded-full flex items-center justify-center">
+                  <CheckCircle className="w-5 h-5 sm:w-6 sm:h-6 text-green-600" />
                 </div>
                 <div>
-                  <div className="text-sm font-semibold text-gray-900">+15 новых</div>
-                  <div className="text-xs text-gray-600">заказов сегодня</div>
+                  <div className="text-xs sm:text-sm font-semibold text-gray-900">+15 новых</div>
+                  <div className="text-[10px] sm:text-xs text-gray-600">заказов сегодня</div>
                 </div>
               </div>
             </div>
 
-            <div className="absolute bottom-10 -right-10 bg-white rounded-2xl shadow-xl p-4 animate-float-delayed hidden lg:block z-30">
+            <div className="absolute bottom-10 -right-10 bg-white rounded-2xl shadow-xl p-4 animate-float-delayed hidden md:block z-30">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
-                  <Star className="w-6 h-6 text-primary" />
+                <div className="w-9 h-9 sm:w-10 sm:h-10 bg-primary/10 rounded-full flex items-center justify-center">
+                  <Star className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />
                 </div>
                 <div>
-                  <div className="text-sm font-semibold text-gray-900">Рейтинг 4.8</div>
-                  <div className="text-xs text-gray-600">из 500+ отзывов</div>
+                  <div className="text-xs sm:text-sm font-semibold text-gray-900">Рейтинг 4.8</div>
+                  <div className="text-[10px] sm:text-xs text-gray-600">из 500+ отзывов</div>
                 </div>
               </div>
             </div>
 
-            <div className="relative flex items-center justify-center gap-4">
+            <div className="relative flex items-center justify-center gap-3 sm:gap-4">
               {/* iPhone mockup */}
               <div className="relative z-20 transform hover:scale-105 transition-transform duration-300">
                 <div className="relative">
@@ -163,27 +163,27 @@ export function DownloadAppSection() {
                     alt="Oson Ish на iPhone - вакансии"
                     width={280}
                     height={570}
-                    className="w-[280px] h-auto drop-shadow-2xl"
+                    className="w-[200px] sm:w-[240px] md:w-[280px] h-auto drop-shadow-2xl"
                     priority
                   />
                   {/* Glow effect */}
-                  <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-transparent rounded-[3rem] blur-2xl -z-10 opacity-60" />
+                  <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-transparent rounded-[2.5rem] sm:rounded-[3rem] blur-2xl -z-10 opacity-60" />
                 </div>
               </div>
 
               {/* Pixel mockup */}
-              <div className="relative z-10 transform hover:scale-105 transition-transform duration-300 -ml-8 mt-12">
+              <div className="relative z-10 transform hover:scale-105 transition-transform duration-300 -ml-6 sm:-ml-8 mt-8 sm:mt-12">
                 <div className="relative">
                   <Image
                     src={PixelMockup}
                     alt="Oson Ish на Android - категории"
                     width={260}
                     height={530}
-                    className="w-[260px] h-auto drop-shadow-2xl"
+                    className="w-[180px] sm:w-[220px] md:w-[260px] h-auto drop-shadow-2xl"
                     priority
                   />
                   {/* Glow effect */}
-                  <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-transparent rounded-[2.5rem] blur-2xl -z-10 opacity-60" />
+                  <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-transparent rounded-[2rem] sm:rounded-[2.5rem] blur-2xl -z-10 opacity-60" />
                 </div>
               </div>
             </div>

@@ -2,8 +2,10 @@
 
 import { useState, FormEvent } from 'react';
 import { Send } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 
 export function ContactForm() {
+  const t = useTranslations('contact');
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState('');
@@ -24,7 +26,7 @@ export function ContactForm() {
 
     // Клиентская валидация
     if (!data.name || !data.phone || !data.subject || !data.message) {
-      setError('Пожалуйста, заполните все поля');
+      setError(t('errorAllFields'));
       setLoading(false);
       return;
     }
@@ -41,7 +43,7 @@ export function ContactForm() {
       const result = await response.json();
 
       if (!response.ok || !result.success) {
-        throw new Error(result.error || 'Произошла ошибка при отправке');
+        throw new Error(result.error || t('errorSending'));
       }
 
       setSuccess(true);
@@ -51,7 +53,7 @@ export function ContactForm() {
       // Скрываем сообщение об успехе через 5 секунд
       setTimeout(() => setSuccess(false), 5000);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Произошла ошибка при отправке');
+      setError(err instanceof Error ? err.message : t('errorSending'));
     } finally {
       setLoading(false);
     }
@@ -60,15 +62,15 @@ export function ContactForm() {
   return (
     <div>
       <h2 className="mb-6 text-3xl font-bold text-gray-900">
-        Напишите нам
+        {t('writeToUs')}
       </h2>
       <p className="mb-8 text-gray-600">
-        Заполните форму ниже, и мы свяжемся с вами в ближайшее время.
+        {t('writeToUsDesc')}
       </p>
 
       {success && (
         <div className="mb-6 rounded-lg bg-green-50 border border-green-200 p-4 text-green-800">
-          ✅ Сообщение успешно отправлено! Мы свяжемся с вами в ближайшее время.
+          {t('successMessage')}
         </div>
       )}
 
@@ -84,7 +86,7 @@ export function ContactForm() {
             htmlFor="name"
             className="mb-2 block text-sm font-medium text-gray-700"
           >
-            Ваше имя
+            {t('yourName')}
           </label>
           <input
             type="text"
@@ -93,7 +95,7 @@ export function ContactForm() {
             required
             disabled={loading}
             className="w-full rounded-lg border border-gray-300 px-4 py-3 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200 disabled:bg-gray-100 disabled:cursor-not-allowed"
-            placeholder="Введите ваше имя"
+            placeholder={t('yourNamePlaceholder')}
           />
         </div>
 
@@ -102,7 +104,7 @@ export function ContactForm() {
             htmlFor="phone"
             className="mb-2 block text-sm font-medium text-gray-700"
           >
-            Телефон
+            {t('phone')}
           </label>
           <input
             type="tel"
@@ -111,7 +113,7 @@ export function ContactForm() {
             required
             disabled={loading}
             className="w-full rounded-lg border border-gray-300 px-4 py-3 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200 disabled:bg-gray-100 disabled:cursor-not-allowed"
-            placeholder="+998 90 123 45 67"
+            placeholder={t('phonePlaceholder')}
           />
         </div>
 
@@ -120,7 +122,7 @@ export function ContactForm() {
             htmlFor="subject"
             className="mb-2 block text-sm font-medium text-gray-700"
           >
-            Тема обращения
+            {t('subjectLabel')}
           </label>
           <select
             id="subject"
@@ -129,12 +131,12 @@ export function ContactForm() {
             disabled={loading}
             className="w-full rounded-lg border border-gray-300 px-4 py-3 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200 disabled:bg-gray-100 disabled:cursor-not-allowed"
           >
-            <option value="">Выберите тему</option>
-            <option value="Общий вопрос">Общий вопрос</option>
-            <option value="Техническая поддержка">Техническая поддержка</option>
-            <option value="Корпоративные решения">Корпоративные решения</option>
-            <option value="Партнерство">Партнерство</option>
-            <option value="Другое">Другое</option>
+            <option value="">{t('selectSubject')}</option>
+            <option value="Общий вопрос">{t('subjectGeneral')}</option>
+            <option value="Техническая поддержка">{t('subjectTechnical')}</option>
+            <option value="Корпоративные решения">{t('subjectCorporate')}</option>
+            <option value="Партнерство">{t('subjectPartnership')}</option>
+            <option value="Другое">{t('subjectOther')}</option>
           </select>
         </div>
 
@@ -143,7 +145,7 @@ export function ContactForm() {
             htmlFor="message"
             className="mb-2 block text-sm font-medium text-gray-700"
           >
-            Сообщение
+            {t('messageLabel')}
           </label>
           <textarea
             id="message"
@@ -152,7 +154,7 @@ export function ContactForm() {
             required
             disabled={loading}
             className="w-full rounded-lg border border-gray-300 px-4 py-3 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200 disabled:bg-gray-100 disabled:cursor-not-allowed"
-            placeholder="Опишите ваш вопрос или предложение..."
+            placeholder={t('messagePlaceholder')}
           ></textarea>
         </div>
 
@@ -162,7 +164,7 @@ export function ContactForm() {
           className="flex w-full items-center justify-center gap-2 rounded-lg bg-blue-600 px-6 py-3 font-semibold text-white transition-all hover:bg-blue-700 disabled:bg-blue-400 disabled:cursor-not-allowed"
         >
           <Send className="h-5 w-5" />
-          {loading ? 'Отправка...' : 'Отправить сообщение'}
+          {loading ? t('sending') : t('sendButton')}
         </button>
       </form>
     </div>

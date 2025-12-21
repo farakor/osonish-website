@@ -90,7 +90,7 @@ export default async function CustomerOrdersPage() {
       <Container>
         <div className="flex items-center justify-between mb-8">
           <h1 className="text-3xl font-bold">{t('title')}</h1>
-          <Link href="/dashboard/customer/create-order">
+          <Link href="/orders/create">
             <Button>{t('createNewOrder')}</Button>
           </Link>
         </div>
@@ -101,7 +101,7 @@ export default async function CustomerOrdersPage() {
               <p className="text-muted-foreground mb-4">
                 {t('noOrders')}
               </p>
-              <Link href="/dashboard/customer/create-order">
+              <Link href="/orders/create">
                 <Button>{t('createFirstOrder')}</Button>
               </Link>
             </CardContent>
@@ -116,44 +116,44 @@ export default async function CustomerOrdersPage() {
                       <CardTitle className="mb-2">{order.title}</CardTitle>
                       <div className="flex flex-wrap gap-2 text-sm text-muted-foreground">
                         <div className="flex items-center gap-1">
-                          <Calendar className="h-4 w-4" />
+                          <Calendar className="h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0" />
                           {new Date(order.created_at).toLocaleDateString('ru-RU')}
                         </div>
                         {order.city && (
                           <div className="flex items-center gap-1">
-                            <MapPin className="h-4 w-4" />
-                            {getCityName(order.city, locale)}
+                            <MapPin className="h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0" />
+                            <span className="truncate">{getCityName(order.city, locale)}</span>
                           </div>
                         )}
                         {order.budget && (
                           <div className="flex items-center gap-1">
-                            <DollarSign className="h-4 w-4" />
+                            <DollarSign className="h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0" />
                             {order.budget.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ')} {t('currency')}
                           </div>
                         )}
                         <div className="flex items-center gap-1">
-                          <User className="h-4 w-4" />
+                          <User className="h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0" />
                           {order.responsesCount || 0} {t('responsesCount')}
                         </div>
                       </div>
                     </div>
-                    <div className="ml-4">
+                    <div className="ml-3 sm:ml-4 flex-shrink-0">
                       {getStatusBadge(order.status)}
                     </div>
                   </div>
                 </CardHeader>
-                <CardContent>
-                  <p className="text-sm text-muted-foreground mb-4 line-clamp-2">
+                <CardContent className="pb-3 sm:pb-4">
+                  <p className="text-xs sm:text-sm text-muted-foreground mb-3 sm:mb-4 line-clamp-2">
                     {order.description}
                   </p>
-                  <div className="flex gap-2">
-                    <Link href={`/orders/${order.id}`}>
-                      <Button variant="outline" size="sm">
+                  <div className="flex flex-col sm:flex-row gap-2">
+                    <Link href={`/orders/${order.id}`} className="flex-1">
+                      <Button variant="outline" size="sm" className="w-full">
                         {t('view')}
                       </Button>
                     </Link>
-                    <Link href={`/dashboard/customer/orders/${order.id}/responses`}>
-                      <Button size="sm" className="bg-primary text-white hover:bg-primary/90">
+                    <Link href={`/dashboard/customer/orders/${order.id}/responses`} className="flex-1">
+                      <Button size="sm" className="w-full bg-primary text-white hover:bg-primary/90">
                         {t('responses')} ({order.responsesCount || 0})
                       </Button>
                     </Link>

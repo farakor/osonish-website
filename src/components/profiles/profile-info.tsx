@@ -1,6 +1,9 @@
+'use client';
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Briefcase, GraduationCap } from "lucide-react";
 import type { WorkExperience, Education } from "@/types";
+import { useTranslations } from 'next-intl';
 
 interface ProfileInfoProps {
   education?: Education[];
@@ -19,6 +22,8 @@ export function ProfileInfo({
   willingToRelocate,
   desiredSalary,
 }: ProfileInfoProps) {
+  const t = useTranslations('profilePage');
+  
   // Проверяем что массивы действительно массивы
   const safeSkills = Array.isArray(skills) ? skills : [];
   const safeWorkExperience = Array.isArray(workExperience) ? workExperience : [];
@@ -40,7 +45,7 @@ export function ProfileInfo({
       {safeSkills.length > 0 && (
         <Card>
           <CardHeader>
-            <CardTitle>Навыки</CardTitle>
+            <CardTitle>{t('skills')}</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="flex flex-wrap gap-2">
@@ -63,7 +68,7 @@ export function ProfileInfo({
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Briefcase className="h-5 w-5" />
-              Опыт работы
+              {t('workExperience')}
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -72,7 +77,7 @@ export function ProfileInfo({
                 <h3 className="font-semibold">{exp.position}</h3>
                 <p className="text-sm text-muted-foreground">{exp.company}</p>
                 <p className="text-xs text-muted-foreground mt-1">
-                  {exp.yearStart} - {exp.yearEnd || "Настоящее время"}
+                  {exp.yearStart} - {exp.yearEnd || t('present')}
                 </p>
                 {exp.description && (
                   <p className="text-sm mt-2">{exp.description}</p>
@@ -89,7 +94,7 @@ export function ProfileInfo({
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <GraduationCap className="h-5 w-5" />
-              Образование
+              {t('education')}
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -100,7 +105,7 @@ export function ProfileInfo({
                   <p className="text-sm text-muted-foreground">{edu.degree}</p>
                 )}
                 <p className="text-xs text-muted-foreground mt-1">
-                  {edu.yearStart} - {edu.yearEnd || "Настоящее время"}
+                  {edu.yearStart} - {edu.yearEnd || t('present')}
                 </p>
               </div>
             ))}

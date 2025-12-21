@@ -7,6 +7,7 @@ export async function GET(request: NextRequest) {
     
     // Получаем параметры фильтрации
     const city = searchParams.get("city");
+    const category = searchParams.get("category");
     const experienceLevel = searchParams.get("experienceLevel");
     const employmentType = searchParams.get("employmentType");
     const workFormat = searchParams.get("workFormat");
@@ -40,6 +41,10 @@ export async function GET(request: NextRequest) {
     // Применяем фильтры
     if (city) {
       query = query.eq("city", city);
+    }
+
+    if (category) {
+      query = query.eq("specialization_id", category);
     }
 
     if (experienceLevel) {

@@ -1,11 +1,16 @@
+'use client';
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import Image from "next/image";
+import { useTranslations } from 'next-intl';
 
 interface ProfilePortfolioProps {
   photos?: string[];
 }
 
 export function ProfilePortfolio({ photos }: ProfilePortfolioProps) {
+  const t = useTranslations('profilePage');
+  
   if (!photos || photos.length === 0) {
     return null;
   }
@@ -13,7 +18,7 @@ export function ProfilePortfolio({ photos }: ProfilePortfolioProps) {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Портфолио</CardTitle>
+        <CardTitle>{t('portfolio')}</CardTitle>
       </CardHeader>
       <CardContent>
         <div className="grid grid-cols-2 md:grid-cols-3 gap-4">

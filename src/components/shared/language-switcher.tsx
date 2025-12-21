@@ -2,15 +2,7 @@
 
 import { usePathname, useRouter } from 'next/navigation';
 import { useLocale } from 'next-intl';
-import { Button } from '@/components/ui/button';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { Globe } from 'lucide-react';
-import { useState, useTransition } from 'react';
+import { useState, useEffect, useRef, useTransition } from 'react';
 
 const languages = [
   { code: 'ru', name: 'Русский', flag: '🇷🇺' },
@@ -21,13 +13,35 @@ export function LanguageSwitcher() {
   const router = useRouter();
   const pathname = usePathname();
   const [isPending, startTransition] = useTransition();
+  const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
   
   // Получаем текущую локаль из контекста next-intl
   const currentLocale = useLocale() as 'ru' | 'uz';
   const currentLanguage = languages.find(lang => lang.code === currentLocale) || languages[0];
 
+  // Закрытие при клике вне меню
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
+    };
+
+    if (isOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isOpen]);
+
   const handleLanguageChange = (newLocale: string) => {
-    if (newLocale === currentLocale) return;
+    if (newLocale === currentLocale) {
+      setIsOpen(false);
+      return;
+    }
 
     startTransition(() => {
       // Определяем, есть ли префикс локали в текущем URL
@@ -44,57 +58,68 @@ export function LanguageSwitcher() {
         
         // Добавляем новую локаль
         if (newLocale === 'ru') {
-          // Для русского языка не используем префикс (по умолчанию)
-          router.push(newPathname || '/');
+          // Для русского языка используем префикс /ru
+          router.push(`/ru${newPathname || ''}`);
         } else {
           router.push(`/${newLocale}${newPathname || ''}`);
         }
       } else {
         // Для страниц без префикса просто перезагружаем с новой локалью
-        // Middleware увидит заголовок Accept-Language и применит нужную локаль
         if (newLocale === 'uz') {
           router.push('/uz');
         } else {
-          router.push('/');
+          router.push('/ru');
         }
       }
       
+      setIsOpen(false);
       router.refresh();
     });
   };
 
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button
-          variant="ghost"
-          size="sm"
-          className="text-gray-600 hover:text-gray-900 rounded-full gap-1.5"
-          disabled={isPending}
-        >
-          <Globe className="h-4 w-4" />
-          <span className="hidden sm:inline">{currentLanguage.flag}</span>
-          <span className="hidden md:inline">{currentLanguage.name}</span>
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="min-w-[150px]">
-        {languages.map((language) => (
-          <DropdownMenuItem
-            key={language.code}
-            onClick={() => handleLanguageChange(language.code)}
-            className={`cursor-pointer ${
-              language.code === currentLocale ? 'bg-gray-100' : ''
-            }`}
-          >
-            <span className="mr-2">{language.flag}</span>
-            <span>{language.name}</span>
-            {language.code === currentLocale && (
-              <span className="ml-auto text-primary">✓</span>
-            )}
-          </DropdownMenuItem>
-        ))}
-      </DropdownMenuContent>
-    </DropdownMenu>
+    <div className="relative" ref={dropdownRef}>
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        disabled={isPending}
+        className="w-full inline-flex items-center justify-between whitespace-nowrap text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#679B00] focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-gray-100 hover:text-gray-900 h-10 rounded-lg px-3 text-gray-700 gap-2 border border-gray-200"
+      >
+        <span className="flex items-center gap-2">
+          <span>{currentLanguage.flag}</span>
+          <span>{currentLanguage.name}</span>
+        </span>
+        <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+        </svg>
+      </button>
+
+      {isOpen && (
+        <div className="absolute left-0 right-0 mt-2 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-50">
+          <div className="py-1" role="menu">
+            {languages.map((language) => (
+              <button
+                key={language.code}
+                onClick={() => handleLanguageChange(language.code)}
+                disabled={isPending}
+                className={`w-full text-left px-4 py-2 text-sm hover:bg-gray-100 flex items-center justify-between ${
+                  language.code === currentLocale ? 'bg-gray-50' : ''
+                }`}
+                role="menuitem"
+              >
+                <div className="flex items-center gap-2">
+                  <span>{language.flag}</span>
+                  <span>{language.name}</span>
+                </div>
+                {language.code === currentLocale && (
+                  <span className="text-green-600">✓</span>
+                )}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
   );
 }
+
 

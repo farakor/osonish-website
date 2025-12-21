@@ -109,7 +109,7 @@ export function CreateOrderClient() {
   const totalSteps = formData.type === "vacancy" ? 13 : 10;
 
   const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => {
     const { name, value, type } = e.target;
     setFormData((prev) => ({
@@ -498,6 +498,13 @@ export function CreateOrderClient() {
         return true;
 
       case 4: // Местоположение
+        if (!formData.city) {
+          toast({
+            title: t('errors.cityRequired'),
+            variant: "destructive",
+          });
+          return false;
+        }
         if (!formData.location.trim()) {
           toast({
             title: t('errors.locationRequired'),
@@ -593,7 +600,7 @@ export function CreateOrderClient() {
           workersNeeded: 1,
           serviceDate: new Date().toISOString(), // Для вакансий дата не обязательна
           specializationId: formData.specializationId,
-          category: "other",
+          category: formData.specializationId || "other", // Используем specializationId для category
           photos: [],
           // Поля вакансии
           jobTitle: formData.jobTitle,
@@ -626,8 +633,9 @@ export function CreateOrderClient() {
           mealIncluded: formData.mealIncluded,
           mealPaid: formData.mealPaid,
           specializationId: formData.specializationId,
-          category: "other",
+          category: formData.specializationId || "other", // Используем specializationId для category
           photos: [],
+          city: formData.city, // Добавляем поле city
         };
       }
 
@@ -640,6 +648,8 @@ export function CreateOrderClient() {
       });
 
       const result = await response.json();
+      
+      console.log("Server response:", result);
 
       if (result.success && result.data) {
         toast({
@@ -654,8 +664,11 @@ export function CreateOrderClient() {
           router.push(`/orders/${result.data.id}`);
         }
       } else {
+        // Показываем конкретную ошибку от сервера
+        const errorMessage = result.error || t('errors.createFailed');
         toast({
           title: t('errors.createFailed') + " " + (formData.type === "vacancy" ? t('titleVacancy').toLowerCase() : t('title').toLowerCase()),
+          description: errorMessage,
           variant: "destructive",
         });
       }
@@ -1316,6 +1329,23 @@ export function CreateOrderClient() {
       case 4: // Местоположение
         return (
           <div className="space-y-4">
+            <div>
+              <Label htmlFor="city">{t('daily.step4.cityLabel')}</Label>
+              <select
+                id="city"
+                name="city"
+                value={formData.city || ""}
+                onChange={handleInputChange}
+                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 mt-1"
+              >
+                <option value="">{t('daily.step4.selectCity')}</option>
+                {UZBEKISTAN_CITIES.map((city) => (
+                  <option key={city.id} value={city.id}>
+                    {getCityName(city.id, locale)}
+                  </option>
+                ))}
+              </select>
+            </div>
             <div>
               <Label htmlFor="location">{t('daily.step4.label')}</Label>
               <Input

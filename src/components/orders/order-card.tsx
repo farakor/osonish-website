@@ -19,6 +19,7 @@ import Image from "next/image";
 import { getSpecializationName, getSpecializationIconName } from "@/lib/specialization-utils";
 import { SpecializationIcon } from "@/components/ui/specialization-icon";
 import { useTranslations, useLocale } from 'next-intl';
+import { getCityName } from "@/constants/registration";
 
 interface OrderCardProps {
   order: Order;
@@ -61,13 +62,13 @@ export function OrderCard({ order }: OrderCardProps) {
 
   return (
     <Card className="border border-[#DAE3EC] hover:border-blue-300 transition-all">
-      <CardContent className="p-6">
+      <CardContent className="p-4 sm:p-6">
         {/* Header */}
-        <div className="flex justify-between items-start mb-4">
+        <div className="flex justify-between items-start mb-3 sm:mb-4">
           <div className="flex-1">
             <Link
               href={`/orders/${order.id}`}
-              className="text-xl font-semibold hover:text-primary transition-colors line-clamp-2"
+              className="text-lg sm:text-xl font-semibold hover:text-primary transition-colors line-clamp-2"
             >
               {order.title}
             </Link>
@@ -75,24 +76,26 @@ export function OrderCard({ order }: OrderCardProps) {
               {order.description}
             </p>
           </div>
-          <div className="ml-4 flex items-center gap-3">
+          <div className="ml-3 sm:ml-4 flex items-center gap-2 sm:gap-3">
             {order.viewsCount !== undefined && order.viewsCount > 0 && (
               <div className="flex items-center gap-1 text-sm text-muted-foreground">
                 <Eye className="h-4 w-4" />
-                <span>{order.viewsCount}</span>
+                <span className="hidden sm:inline">{order.viewsCount}</span>
               </div>
             )}
           </div>
         </div>
 
         {/* Details */}
-        <div className="space-y-2 mb-4">
+        <div className="space-y-2 mb-3 sm:mb-4">
+          {order.city && (
+            <div className="flex items-center text-sm text-muted-foreground">
+              <MapPin className="h-4 w-4 mr-2 flex-shrink-0" />
+              <span className="truncate">{getCityName(order.city, locale)}</span>
+            </div>
+          )}
           <div className="flex items-center text-sm text-muted-foreground">
-            <MapPin className="h-4 w-4 mr-2" />
-            <span>{order.location}</span>
-          </div>
-          <div className="flex items-center text-sm text-muted-foreground">
-            <Calendar className="h-4 w-4 mr-2" />
+            <Calendar className="h-4 w-4 mr-2 flex-shrink-0" />
             <span>{formatDate(order.serviceDate, locale)}</span>
           </div>
           <div className="flex items-center text-sm">
@@ -104,10 +107,10 @@ export function OrderCard({ order }: OrderCardProps) {
         </div>
 
         {/* Tags */}
-        <div className="flex flex-wrap gap-2 mb-4">
+        <div className="flex flex-wrap gap-2 mb-3 sm:mb-4">
           {isNewOrder() && order.status === 'new' && (
             <Badge 
-              className={`${statusColors[order.status]} h-auto py-1.5 cursor-default`}
+              className="h-auto py-1.5 cursor-default text-xs sm:text-sm"
               style={{ 
                 backgroundColor: '#DBEAFE',
                 color: '#1E40AF'
@@ -122,7 +125,7 @@ export function OrderCard({ order }: OrderCardProps) {
           {order.specializationId && (
             <Badge 
               variant="outline" 
-              className="flex items-center gap-1.5 h-auto py-1.5"
+              className="flex items-center gap-1.5 h-auto py-1.5 text-xs sm:text-sm"
             >
               {getSpecializationIconName(order.specializationId) && (
                 <SpecializationIcon 
@@ -130,23 +133,23 @@ export function OrderCard({ order }: OrderCardProps) {
                   size={16} 
                 />
               )}
-              <span>{getSpecializationName(order.specializationId, locale)}</span>
+              <span className="truncate max-w-[150px] sm:max-w-none">{getSpecializationName(order.specializationId, locale)}</span>
             </Badge>
           )}
           {order.workersNeeded > 1 && (
-            <Badge variant="outline" className="h-auto py-1.5">
+            <Badge variant="outline" className="h-auto py-1.5 text-xs sm:text-sm">
               <Users className="h-3 w-3 mr-1" />
               {t('people', { count: order.workersNeeded })}
             </Badge>
           )}
           {order.mealIncluded && (
-            <Badge variant="outline" className="h-auto py-1.5">
+            <Badge variant="outline" className="h-auto py-1.5 text-xs sm:text-sm">
               <Utensils className="h-3 w-3 mr-1" />
               {t('mealIncluded')}
             </Badge>
           )}
           {order.transportPaid && (
-            <Badge variant="outline" className="h-auto py-1.5">
+            <Badge variant="outline" className="h-auto py-1.5 text-xs sm:text-sm">
               <Bus className="h-3 w-3 mr-1" />
               {t('transportPaid')}
             </Badge>
@@ -155,7 +158,7 @@ export function OrderCard({ order }: OrderCardProps) {
 
         {/* Stats */}
         {order.applicantsCount > 0 && (
-          <div className="flex items-center gap-4 text-sm text-muted-foreground">
+          <div className="flex items-center gap-4 text-sm text-muted-foreground mb-3 sm:mb-0">
             <div className="flex items-center">
               <MessageSquare className="h-4 w-4 mr-1" />
               <span>{t('responses', { count: order.applicantsCount })}</span>
@@ -164,8 +167,8 @@ export function OrderCard({ order }: OrderCardProps) {
         )}
       </CardContent>
 
-      <CardFooter className="p-6 pt-0">
-        <Button asChild className="w-full text-white">
+      <CardFooter className="p-4 sm:p-6 pt-0">
+        <Button asChild className="w-full text-white h-11 sm:h-10 text-base sm:text-sm">
           <Link href={`/orders/${order.id}`}>{t('viewDetails')}</Link>
         </Button>
       </CardFooter>

@@ -6,6 +6,9 @@ import type { CreateOrderRequest } from "@/types";
 export async function POST(request: NextRequest) {
   try {
     const orderData: CreateOrderRequest = await request.json();
+    
+    // Логируем полученные данные для отладки
+    console.log("Received order data:", JSON.stringify(orderData, null, 2));
 
     // Валидация данных в зависимости от типа
     const isVacancy = orderData.type === "vacancy";
@@ -112,6 +115,13 @@ export async function POST(request: NextRequest) {
             success: false,
             error: "Описание заказа не должно превышать 500 символов",
           },
+          { status: 400 }
+        );
+      }
+
+      if (!orderData.location?.trim()) {
+        return NextResponse.json(
+          { success: false, error: "Местоположение обязательно" },
           { status: 400 }
         );
       }

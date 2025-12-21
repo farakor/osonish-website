@@ -45,11 +45,12 @@ export async function GET(request: NextRequest) {
 
     // Применяем фильтры
     if (city) {
-      query = query.ilike("location", `%${city}%`);
+      query = query.eq("city", city);
     }
 
     if (category) {
-      query = query.eq("category", category);
+      // Фильтруем по specialization_id вместо category
+      query = query.eq("specialization_id", category);
     }
 
     if (minBudget) {

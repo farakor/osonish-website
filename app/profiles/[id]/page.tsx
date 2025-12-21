@@ -8,12 +8,14 @@ import { ReviewCard } from "@/components/reviews/review-card";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { User, DollarSign, MapPin } from "lucide-react";
 import type { WorkerProfile } from "@/types";
+import { getTranslations } from 'next-intl/server';
 
 interface ProfilePageProps {
   params: Promise<{ id: string }>;
 }
 
 export async function generateMetadata({ params }: ProfilePageProps): Promise<Metadata> {
+  const t = await getTranslations('profilePage');
   const { id } = await params;
   
   // Получаем реальные данные профиля
@@ -24,7 +26,7 @@ export async function generateMetadata({ params }: ProfilePageProps): Promise<Me
     
     if (!response.ok) {
       return {
-        title: "Профиль не найден",
+        title: t('profileNotFound'),
       };
     }
 
@@ -32,16 +34,16 @@ export async function generateMetadata({ params }: ProfilePageProps): Promise<Me
     const profile = data.profile;
 
     return {
-      title: `${profile.firstName} ${profile.lastName} - Профиль исполнителя`,
-      description: `Профиль исполнителя ${profile.firstName} ${profile.lastName}. Рейтинг: ${profile.averageRating}. Выполнено заказов: ${profile.completedJobs}.`,
+      title: `${profile.firstName} ${profile.lastName} - ${t('profileExecutor')}`,
+      description: `${t('profileExecutor')} ${profile.firstName} ${profile.lastName}. Рейтинг: ${profile.averageRating}. Выполнено заказов: ${profile.completedJobs}.`,
       openGraph: {
         title: `${profile.firstName} ${profile.lastName} - Osonish`,
-        description: `Рейтинг: ${profile.averageRating} ⭐ | ${profile.completedJobs} выполненных заказов`,
+        description: `Рейтинг: ${profile.averageRating} ⭐ | ${profile.completedJobs} заказов`,
       },
     };
   } catch (error) {
     return {
-      title: "Профиль не найден",
+      title: t('profileNotFound'),
     };
   }
 }
@@ -67,6 +69,7 @@ async function getProfile(id: string): Promise<WorkerProfile | null> {
 export default async function ProfilePage({ params }: ProfilePageProps) {
   const { id } = await params;
   const profile = await getProfile(id);
+  const t = await getTranslations('profilePage');
 
   if (!profile) {
     notFound();
@@ -107,7 +110,7 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
                     <CardHeader>
                       <CardTitle className="flex items-center gap-2">
                         <User className="h-5 w-5" />
-                        О себе
+                        {t('aboutMe')}
                       </CardTitle>
                     </CardHeader>
                     <CardContent>
@@ -126,12 +129,12 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
                       <CardHeader>
                         <CardTitle className="flex items-center gap-2">
                           <DollarSign className="h-5 w-5" />
-                          Желаемая зарплата
+                          {t('desiredSalary')}
                         </CardTitle>
                       </CardHeader>
                       <CardContent>
                         <p className="text-lg font-semibold text-primary">
-                          {profile.desiredSalary.toLocaleString('ru-RU')} сум
+                          {profile.desiredSalary.toLocaleString('ru-RU')} {t('common.currency')}
                         </p>
                       </CardContent>
                     </Card>
@@ -143,15 +146,15 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
                       <CardHeader>
                         <CardTitle className="flex items-center gap-2">
                           <MapPin className="h-5 w-5" />
-                          Готовность к переездам
+                          {t('willingToRelocate')}
                         </CardTitle>
                       </CardHeader>
                       <CardContent>
                         <p className="text-sm font-medium">
                           {profile.willingToRelocate ? (
-                            <span className="text-green-600">Готов к переездам</span>
+                            <span className="text-green-600">{t('willingToRelocateYes')}</span>
                           ) : (
-                            <span className="text-orange-600">Не готов к переездам</span>
+                            <span className="text-orange-600">{t('willingToRelocateNo')}</span>
                           )}
                         </p>
                       </CardContent>
@@ -188,7 +191,7 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
                       <User className="h-5 w-5" />
-                      О себе
+                      {t('aboutMe')}
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
@@ -209,7 +212,7 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
                 <Card>
                   <CardHeader>
                     <CardTitle>
-                      Отзывы ({profile.reviews.length})
+                      {t('reviews')} ({profile.reviews.length})
                     </CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-4">

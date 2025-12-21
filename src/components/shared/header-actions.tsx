@@ -65,7 +65,7 @@ export function HeaderActions({ user }: HeaderActionsProps) {
         )}
       </div>
 
-      {/* Mobile Menu */}
+      {/* Mobile Actions */}
       <div className="md:hidden flex items-center gap-2">
         {user ? (
           <UserMenu user={user} />
@@ -73,7 +73,7 @@ export function HeaderActions({ user }: HeaderActionsProps) {
           <Link href="/auth/login">
             <Button 
               size="sm"
-              className="rounded-full bg-primary hover:bg-primary/90 text-white"
+              className="rounded-full bg-primary hover:bg-primary/90 text-white h-9 px-4 text-sm"
             >
               {t('login')}
             </Button>

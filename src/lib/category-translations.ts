@@ -5,6 +5,10 @@ export const categoryTranslations: Record<string, { ru: string; uz: string }> = 
     ru: "Вакансии дня",
     uz: "Kunlik vakansiyalar"
   },
+  "Заказы дня": {
+    ru: "Заказы дня",
+    uz: "Kunlik buyurtmalar"
+  },
   "Работа из дома": {
     ru: "Работа из дома",
     uz: "Uydan ish"
@@ -142,8 +146,8 @@ export const categoryTranslations: Record<string, { ru: string; uz: string }> = 
     uz: "Elektriklar"
   },
   "Маляр-Штукатур": {
-    ru: "Маляр-Штукатур",
-    uz: "Bo'yoqchi-Shtukaturchi"
+    ru: "Маляр-Штукатур (ремонт и строительство)",
+    uz: "Bo'yoqchi-Shtukaturchi (ta'mirlash va qurilish)"
   },
   "Установка котлов": {
     ru: "Установка котлов",
@@ -706,8 +710,8 @@ export const categoryTranslations: Record<string, { ru: string; uz: string }> = 
     uz: "Omborchi"
   },
   "Маляр, штукатур": {
-    ru: "Маляр, штукатур",
-    uz: "Bo'yoqchi, shtukaturchi"
+    ru: "Маляр, штукатур (рабочий персонал)",
+    uz: "Bo'yoqchi, shtukaturchi (ishchi xodimlar)"
   },
   "Монтажник": {
     ru: "Монтажник",
@@ -920,6 +924,36 @@ export function formatVacancyCount(count: number, locale: string): string {
   }
   
   return `${count} вакансий`;
+}
+
+/**
+ * Форматирует количество заказов с правильным окончанием
+ * @param count - Количество заказов
+ * @param locale - Локаль (ru или uz)
+ * @returns Отформатированная строка
+ */
+export function formatOrderCount(count: number, locale: string): string {
+  if (locale === 'uz') {
+    return `${count} buyurtma`;
+  }
+  
+  // Для русского языка
+  const lastDigit = count % 10;
+  const lastTwoDigits = count % 100;
+  
+  if (lastTwoDigits >= 11 && lastTwoDigits <= 19) {
+    return `${count} заказов`;
+  }
+  
+  if (lastDigit === 1) {
+    return `${count} заказ`;
+  }
+  
+  if (lastDigit >= 2 && lastDigit <= 4) {
+    return `${count} заказа`;
+  }
+  
+  return `${count} заказов`;
 }
 
 

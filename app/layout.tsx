@@ -60,6 +60,13 @@ export const metadata: Metadata = {
   },
 };
 
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
+  userScalable: true,
+};
+
 export default async function RootLayout({
   children,
 }: Readonly<{
@@ -78,7 +85,7 @@ export default async function RootLayout({
           <ClientProviders>
             <div className="flex min-h-screen flex-col">
               <Header />
-              <main className="flex-1">{children}</main>
+              <main className="flex-1 pb-16 md:pb-0">{children}</main>
               <Footer />
             </div>
           </ClientProviders>

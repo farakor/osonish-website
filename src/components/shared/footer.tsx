@@ -11,17 +11,17 @@ export function Footer() {
 
   return (
     <footer className="border-t bg-muted/50">
-      <div className="container mx-auto px-4 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+      <div className="container mx-auto px-4 py-8 sm:py-12">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 sm:gap-8">
           {/* About */}
-          <div className="space-y-4">
+          <div className="space-y-3 sm:space-y-4">
             <div className="flex items-center space-x-2">
               <Image 
                 src="/logo-osonish.svg" 
                 alt="Osonish" 
                 width={150} 
                 height={32}
-                className="h-8 w-auto"
+                className="h-7 sm:h-8 w-auto"
               />
             </div>
             <p className="text-sm text-muted-foreground">
@@ -60,7 +60,7 @@ export function Footer() {
 
           {/* For Customers */}
           <div>
-            <h3 className="font-semibold mb-4">{t('forEmployers')}</h3>
+            <h3 className="font-semibold mb-3 sm:mb-4 text-sm sm:text-base">{t('forEmployers')}</h3>
             <ul className="space-y-2">
               <li>
                 <Link
@@ -91,7 +91,7 @@ export function Footer() {
 
           {/* For Workers */}
           <div>
-            <h3 className="font-semibold mb-4">{t('forWorkers')}</h3>
+            <h3 className="font-semibold mb-3 sm:mb-4 text-sm sm:text-base">{t('forWorkers')}</h3>
             <ul className="space-y-2">
               <li>
                 <Link
@@ -122,7 +122,7 @@ export function Footer() {
 
           {/* Support */}
           <div>
-            <h3 className="font-semibold mb-4">{t('support')}</h3>
+            <h3 className="font-semibold mb-3 sm:mb-4 text-sm sm:text-base">{t('support')}</h3>
             <ul className="space-y-2">
               <li>
                 <Link
@@ -161,7 +161,7 @@ export function Footer() {
         </div>
 
         {/* Bottom Bar */}
-        <div className="mt-12 pt-8 border-t text-center text-sm text-muted-foreground">
+        <div className="mt-8 sm:mt-12 pt-6 sm:pt-8 border-t text-center text-xs sm:text-sm text-muted-foreground">
           <p>{t('copyright', { year: currentYear })}</p>
         </div>
       </div>

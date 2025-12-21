@@ -125,7 +125,7 @@ export function HeroSection() {
   };
 
   return (
-    <section className="relative py-24 md:py-32 lg:py-36 overflow-hidden min-h-[500px]">
+    <section className="relative py-20 sm:py-24 md:py-32 lg:py-36 overflow-hidden min-h-[500px] sm:min-h-[550px]">
       {/* Background Image with Overlay */}
       <div className="absolute inset-0 z-0">
         <Image
@@ -141,10 +141,10 @@ export function HeroSection() {
       </div>
 
       {/* Content */}
-      <Container className="relative z-10 pt-20">
+      <Container className="relative z-10 pt-16 sm:pt-20">
         <div className="max-w-2xl">
           {/* Liquid Glass morphism container */}
-          <div className="relative backdrop-blur-2xl bg-gradient-to-br from-white/30 via-white/20 to-white/10 rounded-3xl p-8 md:p-10 shadow-2xl border border-white/40 overflow-hidden">
+          <div className="relative backdrop-blur-2xl bg-gradient-to-br from-white/30 via-white/20 to-white/10 rounded-2xl sm:rounded-3xl p-6 sm:p-8 md:p-10 shadow-2xl border border-white/40 overflow-hidden">
             {/* Liquid glass animated gradients */}
             <div className="absolute inset-0 opacity-50 pointer-events-none">
               <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-primary/20 via-transparent to-blue-500/10 animate-liquid-1" />
@@ -156,13 +156,14 @@ export function HeroSection() {
             
             <div className="relative z-10">
               {/* Title */}
-              <h1 className="text-xl md:text-2xl lg:text-3xl font-bold tracking-tight mb-6 text-white leading-tight drop-shadow-lg">
+              <h1 className="text-xl sm:text-2xl md:text-3xl font-bold tracking-tight mb-4 sm:mb-6 text-white leading-tight drop-shadow-lg">
                 {t('title')}
               </h1>
 
               {/* Phone Input Form */}
-              <form onSubmit={handleSubmit} className="mb-6">
-                <div className="flex gap-3 mb-2">
+              <form onSubmit={handleSubmit} className="mb-4 sm:mb-6">
+                {/* Desktop: Horizontal layout */}
+                <div className="hidden sm:flex gap-3 mb-2">
                   <Input
                     type="tel"
                     placeholder="+998 XX XXX XX XX"
@@ -170,17 +171,39 @@ export function HeroSection() {
                     onChange={handlePhoneChange}
                     onKeyDown={handleKeyDown}
                     autoFocus
-                    className="h-14 text-lg bg-white/90 backdrop-blur-md border-white/40 text-gray-900 placeholder:text-gray-500 shadow-lg"
+                    className="h-12 sm:h-14 text-base sm:text-lg bg-white/90 backdrop-blur-md border-white/40 text-gray-900 placeholder:text-gray-500 shadow-lg"
                   />
                   <Button 
                     type="submit" 
                     size="lg" 
-                    className="px-8 h-14 text-base font-medium shadow-2xl whitespace-nowrap bg-gradient-to-br from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 border border-white/30 text-white"
+                    className="px-6 sm:px-8 h-12 sm:h-14 text-sm sm:text-base font-medium shadow-2xl whitespace-nowrap bg-gradient-to-br from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 border border-white/30 text-white"
                     disabled={isSubmitting || phone.replace(/\D/g, '').length < 12}
                   >
                     {isSubmitting ? tCommon('loading') : tCommon('continue')}
                   </Button>
                 </div>
+
+                {/* Mobile: Vertical layout */}
+                <div className="flex sm:hidden flex-col gap-3 mb-2">
+                  <Input
+                    type="tel"
+                    placeholder="+998 XX XXX XX XX"
+                    value={phone}
+                    onChange={handlePhoneChange}
+                    onKeyDown={handleKeyDown}
+                    autoFocus
+                    className="h-12 text-base bg-white/90 backdrop-blur-md border-white/40 text-gray-900 placeholder:text-gray-500 shadow-lg"
+                  />
+                  <Button 
+                    type="submit" 
+                    size="lg" 
+                    className="w-full h-12 text-base font-medium shadow-2xl bg-gradient-to-br from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 border border-white/30 text-white"
+                    disabled={isSubmitting || phone.replace(/\D/g, '').length < 12}
+                  >
+                    {isSubmitting ? tCommon('loading') : tCommon('continue')}
+                  </Button>
+                </div>
+
                 {error && (
                   <div className="text-sm text-red-100 bg-red-500/30 backdrop-blur-md px-4 py-2 rounded-lg border border-red-400/40">
                     {error}
@@ -189,7 +212,7 @@ export function HeroSection() {
               </form>
 
               {/* Privacy Policy */}
-              <p className="text-sm text-white font-medium drop-shadow-lg">
+              <p className="text-xs sm:text-sm text-white font-medium drop-shadow-lg">
                 {t('privacyText')}{" "}
                 <a href="/terms" className="underline hover:text-white/80 font-semibold">
                   {t('agreement')}

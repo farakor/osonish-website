@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { AuthModal } from "@/components/auth/auth-modal";
+import { MediaLightbox } from "@/components/shared/media-lightbox";
 import type { Order } from "@/types";
 import {
   MapPin,
@@ -25,6 +26,7 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import { getSpecializationName, getSpecializationIconName } from "@/lib/specialization-utils";
+import { getCityName } from "@/constants/registration";
 import { SpecializationIcon } from "@/components/ui/specialization-icon";
 import TelegramIcon from "@/components/assets/Telegram.svg";
 import WhatsappIcon from "@/components/assets/Whatsapp.svg";
@@ -48,6 +50,8 @@ export function OrderDetailClient({ id, isAuthenticated = false, userRole }: Ord
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [hasApplied, setHasApplied] = useState(false);
   const [checkingApplication, setCheckingApplication] = useState(false);
+  const [lightboxOpen, setLightboxOpen] = useState(false);
+  const [lightboxIndex, setLightboxIndex] = useState(0);
 
   useEffect(() => {
     fetchOrder();
@@ -450,26 +454,54 @@ export function OrderDetailClient({ id, isAuthenticated = false, userRole }: Ord
               </Card>
             )}
 
-            {/* Photos */}
+            {/* Photos and Videos */}
             {order.photos && order.photos.length > 0 && (
               <Card>
                 <CardContent className="p-6">
                   <h2 className="text-xl font-semibold mb-4">{t('photos')}</h2>
                   <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                    {order.photos.map((photo, index) => (
-                      <div
-                        key={index}
-                        className="aspect-square rounded-lg overflow-hidden"
-                      >
-                        <Image
-                          src={photo}
-                          alt={t('photo', { number: index + 1 })}
-                          width={300}
-                          height={300}
-                          className="w-full h-full object-cover hover:scale-105 transition-transform"
-                        />
-                      </div>
-                    ))}
+                    {order.photos.map((media, index) => {
+                      // Определяем, является ли файл видео
+                      const isVideo = /\.(mp4|mov|avi|mkv|webm|m4v|3gp|flv|wmv)(\?|$)/i.test(media) ||
+                        media.includes('video') ||
+                        media.includes('/video/') ||
+                        media.includes('_video_');
+
+                      return (
+                        <div
+                          key={index}
+                          className="aspect-square rounded-lg overflow-hidden bg-gray-100 cursor-pointer group relative"
+                          onClick={() => {
+                            setLightboxIndex(index);
+                            setLightboxOpen(true);
+                          }}
+                        >
+                          {isVideo ? (
+                            <video
+                              src={media}
+                              className="w-full h-full object-cover"
+                              playsInline
+                              preload="metadata"
+                            >
+                              {t('videoNotSupported', { number: index + 1 })}
+                            </video>
+                          ) : (
+                            <>
+                              <Image
+                                src={media}
+                                alt={t('photo', { number: index + 1 })}
+                                width={300}
+                                height={300}
+                                className="w-full h-full object-cover group-hover:scale-105 transition-transform"
+                              />
+                              <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors flex items-center justify-center">
+                                <Eye className="w-8 h-8 text-white opacity-0 group-hover:opacity-100 transition-opacity drop-shadow-lg" />
+                              </div>
+                            </>
+                          )}
+                        </div>
+                      );
+                    })}
                   </div>
                 </CardContent>
               </Card>
@@ -566,6 +598,14 @@ export function OrderDetailClient({ id, isAuthenticated = false, userRole }: Ord
                         {getStatusLabel(order.status)}
                       </p>
                     </div>
+                    {order.city && (
+                      <div>
+                        <span className="text-muted-foreground">{t('city')}:</span>
+                        <p className="font-medium">
+                          {getCityName(order.city, locale)}
+                        </p>
+                      </div>
+                    )}
                     <div>
                       <span className="text-muted-foreground">
                         {t('publicationDate')}:
@@ -615,6 +655,16 @@ export function OrderDetailClient({ id, isAuthenticated = false, userRole }: Ord
         onClose={() => setShowAuthModal(false)}
         redirectTo={`/orders/${id}`}
       />
+
+      {/* Lightbox для просмотра медиа */}
+      {order?.photos && (
+        <MediaLightbox
+          media={order.photos}
+          initialIndex={lightboxIndex}
+          isOpen={lightboxOpen}
+          onClose={() => setLightboxOpen(false)}
+        />
+      )}
     </div>
   );
 }
