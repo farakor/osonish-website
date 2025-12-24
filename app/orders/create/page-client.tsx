@@ -1063,7 +1063,7 @@ export function CreateOrderClient() {
                   </button>
                 ))}
                 {/* Пользовательские навыки */}
-                {formData.skills?.filter(skill => !POPULAR_SKILLS.includes(skill)).map((skill) => (
+                {formData.skills?.filter(skill => !(POPULAR_SKILLS as readonly string[]).includes(skill)).map((skill) => (
                   <button
                     key={skill}
                     type="button"
@@ -1131,7 +1131,7 @@ export function CreateOrderClient() {
                   </button>
                 ))}
                 {/* Пользовательские языки */}
-                {formData.languages?.filter(language => !LANGUAGES.includes(language)).map((language) => (
+                {formData.languages?.filter(language => !(LANGUAGES as readonly string[]).includes(language)).map((language) => (
                   <button
                     key={language}
                     type="button"

@@ -349,6 +349,8 @@ export interface WorkerProfile {
   firstName: string;
   lastName: string;
   phone: string;
+  birthDate?: string;
+  gender?: 'male' | 'female';
   profileImage?: string;
   averageRating: number;
   totalReviews: number;

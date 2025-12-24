@@ -276,11 +276,11 @@ export function VacancyDetailClient({ id, isAuthenticated = false, userRole }: V
                 </div>
                 <div className="flex items-center gap-2 text-sm">
                   <Briefcase className="w-4 h-4 text-purple-600" />
-                  <span>{getEmploymentTypeLabel(vacancy.employmentType, locale)}</span>
+                  <span>{getEmploymentTypeLabel(vacancy.employmentType || '', locale)}</span>
                 </div>
                 <div className="flex items-center gap-2 text-sm">
                   <Clock className="w-4 h-4 text-orange-600" />
-                  <span>{getWorkScheduleLabel(vacancy.workSchedule, locale)}</span>
+                  <span>{getWorkScheduleLabel(vacancy.workSchedule || '', locale)}</span>
                 </div>
               </div>
 
@@ -288,11 +288,11 @@ export function VacancyDetailClient({ id, isAuthenticated = false, userRole }: V
               <div className="flex items-center gap-6 pt-4 border-t">
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
                   <Users className="w-4 h-4" />
-                  <span>{t('applicantsCount', { count: vacancy.applicantsCount })}</span>
+                  <span>{t('applicantsCount', { count: vacancy.applicantsCount || 0 })}</span>
                 </div>
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
                   <Eye className="w-4 h-4" />
-                  <span>{t('viewsCount', { count: vacancy.viewsCount })}</span>
+                  <span>{t('viewsCount', { count: vacancy.viewsCount || 0 })}</span>
                 </div>
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
                   <Calendar className="w-4 h-4" />
@@ -439,11 +439,11 @@ export function VacancyDetailClient({ id, isAuthenticated = false, userRole }: V
                   )}
                   <div>
                     <span className="text-muted-foreground">{t('workFormat')}</span>
-                    <p className="font-medium">{getWorkFormatLabel(vacancy.workFormat, locale)}</p>
+                    <p className="font-medium">{getWorkFormatLabel(vacancy.workFormat || '', locale)}</p>
                   </div>
                   <div>
                     <span className="text-muted-foreground">{t('experience')}</span>
-                    <p className="font-medium">{getExperienceLevelLabel(vacancy.experienceLevel, locale)}</p>
+                    <p className="font-medium">{getExperienceLevelLabel(vacancy.experienceLevel || '', locale)}</p>
                   </div>
                 </div>
               </div>

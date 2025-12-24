@@ -13,6 +13,7 @@ import {
   Calendar,
   Award,
   CheckCircle,
+  Download,
 } from "lucide-react";
 import type { WorkerProfile } from "@/types";
 import { formatPhoneNumber, getInitials } from "@/lib/utils";
@@ -27,7 +28,23 @@ interface ProfileHeaderProps {
 
 export function ProfileHeader({ profile }: ProfileHeaderProps) {
   const [showPhone, setShowPhone] = useState(false);
+  const [isDownloading, setIsDownloading] = useState(false);
   const t = useTranslations('profilePage');
+  
+  const handleDownloadResume = async () => {
+    try {
+      setIsDownloading(true);
+      // Динамически импортируем сервис только при нажатии кнопки
+      const { generateResumePDF } = await import("@/lib/services/pdfResumeService");
+      await generateResumePDF(profile);
+    } catch (error) {
+      console.error('[ProfileHeader] Ошибка при скачивании резюме:', error);
+      // Используем alert вместо toast, так как toast может быть не настроен
+      alert(t('downloadResumeError'));
+    } finally {
+      setIsDownloading(false);
+    }
+  };
   
   return (
     <Card>
@@ -128,6 +145,21 @@ export function ProfileHeader({ profile }: ProfileHeaderProps) {
                     </Badge>
                   ))}
                 </div>
+              </div>
+            )}
+
+            {/* Download Resume Button - only for job_seeker */}
+            {profile.workerType === 'job_seeker' && (
+              <div className="mt-4">
+                <Button
+                  onClick={handleDownloadResume}
+                  disabled={isDownloading}
+                  variant="outline"
+                  className="gap-2"
+                >
+                  <Download className="h-4 w-4" />
+                  {isDownloading ? t('downloadingResume') : t('downloadResume')}
+                </Button>
               </div>
             )}
           </div>

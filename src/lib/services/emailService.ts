@@ -113,8 +113,7 @@ ${data.message}
  */
 export async function sendEmailOTP(email: string): Promise<{ success: boolean; error?: string; code?: string }> {
   try {
-    const cookieStore = cookies();
-    const supabase = createClient(cookieStore);
+    const supabase = await createClient();
     const otp = generateOTP();
 
     // Сохраняем OTP в базе данных
@@ -173,8 +172,7 @@ export async function verifyEmailOTP(email: string, code: string): Promise<{
   userId?: string;
 }> {
   try {
-    const cookieStore = cookies();
-    const supabase = createClient(cookieStore);
+    const supabase = await createClient();
 
     // Получаем OTP из базы данных
     const { data: otpData, error: fetchError } = await supabase

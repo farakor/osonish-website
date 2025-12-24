@@ -125,7 +125,7 @@ export function HeroSection() {
   };
 
   return (
-    <section className="relative py-20 sm:py-24 md:py-32 lg:py-36 overflow-hidden min-h-[500px] sm:min-h-[550px]">
+    <section className="relative py-12 sm:py-16 md:py-20 lg:py-24 overflow-hidden min-h-[500px] sm:min-h-[550px]">
       {/* Background Image with Overlay */}
       <div className="absolute inset-0 z-0">
         <Image
@@ -141,7 +141,7 @@ export function HeroSection() {
       </div>
 
       {/* Content */}
-      <Container className="relative z-10 pt-16 sm:pt-20">
+      <Container className="relative z-10 pt-10 sm:pt-12">
         <div className="max-w-2xl">
           {/* Liquid Glass morphism container */}
           <div className="relative backdrop-blur-2xl bg-gradient-to-br from-white/30 via-white/20 to-white/10 rounded-2xl sm:rounded-3xl p-6 sm:p-8 md:p-10 shadow-2xl border border-white/40 overflow-hidden">
@@ -214,11 +214,11 @@ export function HeroSection() {
               {/* Privacy Policy */}
               <p className="text-xs sm:text-sm text-white font-medium drop-shadow-lg">
                 {t('privacyText')}{" "}
-                <a href="/terms" className="underline hover:text-white/80 font-semibold">
+                <a href="/ru/terms" className="underline hover:text-white/80 font-semibold">
                   {t('agreement')}
                 </a>{" "}
                 {t('and')}{" "}
-                <a href="/privacy" className="underline hover:text-white/80 font-semibold">
+                <a href="/ru/privacy" className="underline hover:text-white/80 font-semibold">
                   {t('privacyPolicy')}
                 </a>
               </p>

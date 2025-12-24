@@ -98,6 +98,8 @@ export async function GET(
       firstName: worker.first_name,
       lastName: worker.last_name,
       phone: worker.phone,
+      birthDate: worker.birth_date,
+      gender: worker.gender,
       profileImage: worker.profile_image,
       averageRating: parseFloat(averageRating.toFixed(1)),
       totalReviews,

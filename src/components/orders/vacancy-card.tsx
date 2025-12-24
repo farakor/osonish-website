@@ -106,7 +106,7 @@ export function VacancyCard({ vacancy }: VacancyCardProps) {
             )}
           </div>
           <Badge variant="secondary" className="bg-[#F3F4F6] text-primary hover:bg-[#F3F4F6]">
-            {tEmployment(vacancy.employmentType)}
+            {tEmployment(vacancy.employmentType || '')}
           </Badge>
         </div>
 

@@ -5,8 +5,8 @@ import { useLocale } from 'next-intl';
 import { useState, useEffect, useRef, useTransition } from 'react';
 
 const languages = [
-  { code: 'ru', name: 'Русский', flag: '🇷🇺' },
   { code: 'uz', name: "O'zbekcha", flag: '🇺🇿' },
+  { code: 'ru', name: 'Русский', flag: '🇷🇺' },
 ];
 
 export function LanguageSwitcher() {
@@ -57,18 +57,18 @@ export function LanguageSwitcher() {
         }
         
         // Добавляем новую локаль
-        if (newLocale === 'ru') {
-          // Для русского языка используем префикс /ru
-          router.push(`/ru${newPathname || ''}`);
+        if (newLocale === 'uz') {
+          // Для узбекского языка не используем префикс (это язык по умолчанию)
+          router.push(`${newPathname || '/'}`);
         } else {
           router.push(`/${newLocale}${newPathname || ''}`);
         }
       } else {
         // Для страниц без префикса просто перезагружаем с новой локалью
         if (newLocale === 'uz') {
-          router.push('/uz');
+          router.push('/');
         } else {
-          router.push('/ru');
+          router.push(`/${newLocale}`);
         }
       }
       

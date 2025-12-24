@@ -27,7 +27,7 @@ export function getSpecializationInfo(specializationId: string | undefined | nul
 /**
  * Получает имя специализации по ID с поддержкой локализации
  */
-export function getSpecializationName(specializationId: string | undefined | null, locale: string = 'ru'): string {
+export function getSpecializationName(specializationId: string | undefined | null, locale: string = 'uz'): string {
   const info = getSpecializationInfo(specializationId);
   if (!info) {
     return locale === 'uz' ? 'Ko\'rsatilmagan' : 'Не указано';

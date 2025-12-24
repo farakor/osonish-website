@@ -347,7 +347,9 @@ export function AuthForm({ redirectTo, mode = 'login' }: AuthFormProps) {
                   {[0, 1, 2, 3, 4, 5].map((index) => (
                     <input
                       key={index}
-                      ref={(el) => (otpInputs.current[index] = el)}
+                      ref={(el) => {
+                        otpInputs.current[index] = el;
+                      }}
                       type="text"
                       inputMode="numeric"
                       maxLength={1}

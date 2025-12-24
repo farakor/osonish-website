@@ -316,7 +316,9 @@ export function AuthModal({ isOpen, onClose, redirectTo }: AuthModalProps) {
                   {[0, 1, 2, 3, 4, 5].map((index) => (
                     <input
                       key={index}
-                      ref={(el) => (otpInputs.current[index] = el)}
+                      ref={(el) => {
+                        otpInputs.current[index] = el;
+                      }}
                       type="text"
                       inputMode="numeric"
                       maxLength={1}

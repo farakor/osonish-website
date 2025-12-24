@@ -161,11 +161,6 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
                     </Card>
                   )}
                 </div>
-
-                {/* Portfolio - only for professionals */}
-                {profile.workerType === 'professional' && (
-                  <ProfilePortfolio photos={profile.workPhotos} />
-                )}
               </div>
 
               {/* Sidebar - only for job_seekers */}
@@ -207,21 +202,19 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
                 <ProfilePortfolio photos={profile.workPhotos} />
               )}
               
-              {/* Reviews - only for daily_worker and professional */}
-              {profile.workerType !== 'job_seeker' && (
-                <Card>
-                  <CardHeader>
-                    <CardTitle>
-                      {t('reviews')} ({profile.reviews.length})
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    {profile.reviews.map((review) => (
-                      <ReviewCard key={review.id} review={review} />
-                    ))}
-                  </CardContent>
-                </Card>
-              )}
+              {/* Reviews - for daily_worker and professional */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>
+                    {t('reviews')} ({profile.reviews.length})
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  {profile.reviews.map((review) => (
+                    <ReviewCard key={review.id} review={review} />
+                  ))}
+                </CardContent>
+              </Card>
             </div>
           )}
         </Container>

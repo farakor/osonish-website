@@ -44,7 +44,7 @@ export function MobileMenu() {
           <Menu className="h-5 w-5" />
         </Button>
       </SheetTrigger>
-      <SheetContent side="right" className="w-[300px] sm:w-[350px]">
+      <SheetContent side="left" className="w-[300px] sm:w-[350px]">
         <SheetHeader>
           <SheetTitle className="text-left">Меню</SheetTitle>
         </SheetHeader>

@@ -8,7 +8,7 @@ import {
   OrderFilterValues,
 } from "@/components/orders/order-filters";
 import { PageLoader } from "@/components/shared/loading";
-import { Button } from "@/components/ui/button";
+import { Pagination } from "@/components/ui/pagination";
 import type { Order } from "@/types";
 import { useTranslations } from 'next-intl';
 
@@ -18,7 +18,9 @@ export function OrdersPageClient() {
   const [loading, setLoading] = useState(true);
   const [filters, setFilters] = useState<OrderFilterValues>({});
   const [page, setPage] = useState(1);
-  const [hasMore, setHasMore] = useState(true);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalCount, setTotalCount] = useState(0);
+  const ITEMS_PER_PAGE = 4;
 
   useEffect(() => {
     fetchOrders();
@@ -38,7 +40,7 @@ export function OrdersPageClient() {
       if (filters.type) params.append("type", filters.type);
       
       params.append("page", page.toString());
-      params.append("limit", "20");
+      params.append("limit", ITEMS_PER_PAGE.toString());
 
       // Запрос к API
       const response = await fetch(`/api/orders?${params.toString()}`);
@@ -49,18 +51,14 @@ export function OrdersPageClient() {
 
       const data = await response.json();
       
-      // Если это первая страница - заменяем список, иначе добавляем
-      if (page === 1) {
-        setOrders(data.orders);
-      } else {
-        setOrders((prev) => [...prev, ...data.orders]);
-      }
-      
-      setHasMore(data.hasMore);
+      setOrders(data.orders);
+      setTotalCount(data.total);
+      setTotalPages(Math.ceil(data.total / ITEMS_PER_PAGE));
     } catch (error) {
       console.error("Failed to fetch orders:", error);
       setOrders([]);
-      setHasMore(false);
+      setTotalPages(1);
+      setTotalCount(0);
     } finally {
       setLoading(false);
     }
@@ -68,12 +66,13 @@ export function OrdersPageClient() {
 
   const handleFilterChange = (newFilters: OrderFilterValues) => {
     setFilters(newFilters);
-    setPage(1);
-    setOrders([]); // Сбрасываем список при изменении фильтров
+    setPage(1); // Сбрасываем на первую страницу при изменении фильтров
   };
 
-  const loadMore = () => {
-    setPage((prev) => prev + 1);
+  const handlePageChange = (newPage: number) => {
+    setPage(newPage);
+    // Прокручиваем страницу вверх при смене страницы
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   return (
@@ -101,7 +100,7 @@ export function OrdersPageClient() {
 
           {/* Orders List */}
           <div className="lg:col-span-3">
-            {loading && page === 1 ? (
+            {loading ? (
               <PageLoader />
             ) : orders.length === 0 ? (
               <div className="text-center py-12">
@@ -116,7 +115,7 @@ export function OrdersPageClient() {
               <>
                 {/* Results Count */}
                 <div className="mb-4 text-sm text-muted-foreground">
-                  {t('resultsCount', { count: orders.length })}
+                  {t('totalResults', { count: totalCount })}
                 </div>
 
                 {/* Orders Grid */}
@@ -126,12 +125,14 @@ export function OrdersPageClient() {
                   ))}
                 </div>
 
-                {/* Load More */}
-                {hasMore && (
-                  <div className="mt-8 text-center">
-                    <Button onClick={loadMore} disabled={loading} size="lg">
-                      {loading ? t('loading') : t('loadMore')}
-                    </Button>
+                {/* Pagination */}
+                {totalPages > 1 && (
+                  <div className="mt-8">
+                    <Pagination
+                      currentPage={page}
+                      totalPages={totalPages}
+                      onPageChange={handlePageChange}
+                    />
                   </div>
                 )}
               </>

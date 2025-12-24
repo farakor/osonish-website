@@ -19,9 +19,9 @@ export function Footer() {
               <Image 
                 src="/logo-osonish.svg" 
                 alt="Osonish" 
-                width={150} 
-                height={32}
-                className="h-7 sm:h-8 w-auto"
+                width={180} 
+                height={48}
+                className="h-9 sm:h-10 w-auto"
               />
             </div>
             <p className="text-sm text-muted-foreground">

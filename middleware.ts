@@ -30,20 +30,7 @@ export async function middleware(request: NextRequest) {
   
   // Извлекаем локаль из URL если есть
   const localeMatch = pathname.match(/^\/(ru|uz)/);
-  let locale = localeMatch ? localeMatch[1] : null;
-  
-  // Если локали нет в URL, проверяем куки
-  if (!locale) {
-    const localeCookie = request.cookies.get('NEXT_LOCALE');
-    locale = localeCookie?.value || 'ru'; // По умолчанию русский
-    
-    // Логируем для отладки
-    if (pathname.includes('/dashboard/settings')) {
-      console.log('🔍 [Middleware] Путь:', pathname);
-      console.log('🔍 [Middleware] Cookie локали:', localeCookie?.value);
-      console.log('🔍 [Middleware] Выбранная локаль:', locale);
-    }
-  }
+  let locale = localeMatch ? localeMatch[1] : 'uz'; // По умолчанию узбекский
   
   const pathnameHasLocale = routing.locales.some(
     (loc) => pathname.startsWith(`/${loc}/`) || pathname === `/${loc}`
@@ -55,16 +42,23 @@ export async function middleware(request: NextRequest) {
     intlResponse = intlMiddleware(request);
   }
   
-  // Если переход на страницу с локалью, сохраняем ее в куках
-  if (pathname === '/uz' || pathname === '/ru' || pathnameHasLocale) {
-    const pageLocale = pathname.match(/^\/(ru|uz)/)?.[1];
-    if (pageLocale) {
-      if (intlResponse) {
+  // Сохраняем локаль в cookies на основе URL
+  if (intlResponse) {
+    // Если путь содержит локаль, сохраняем её
+    if (pathnameHasLocale) {
+      const pageLocale = pathname.match(/^\/(ru|uz)/)?.[1];
+      if (pageLocale) {
         intlResponse.cookies.set('NEXT_LOCALE', pageLocale, {
           path: '/',
           maxAge: 31536000, // 1 год
         });
       }
+    } else if (pathname === '/') {
+      // Для главной страницы без префикса устанавливаем узбекский
+      intlResponse.cookies.set('NEXT_LOCALE', 'uz', {
+        path: '/',
+        maxAge: 31536000,
+      });
     }
   }
   
@@ -82,7 +76,7 @@ export async function middleware(request: NextRequest) {
     if (!sessionCookie) {
       // Определяем текущую локаль для редиректа
       const protectedLocale = pathname.match(/^\/(ru|uz)/)?.[1] || locale;
-      const loginUrl = protectedLocale === 'ru' ? '/auth/login' : `/${protectedLocale}/auth/login`;
+      const loginUrl = protectedLocale === 'uz' ? '/auth/login' : `/${protectedLocale}/auth/login`;
       return NextResponse.redirect(new URL(loginUrl, request.url));
     }
   }
@@ -92,7 +86,7 @@ export async function middleware(request: NextRequest) {
   
   // Устанавливаем заголовки для определения локали
   response.headers.set('x-pathname', pathname);
-  response.headers.set('x-locale', locale || 'ru');
+  response.headers.set('x-locale', locale);
   
   // Если intl вернул response (редирект), используем его
   if (intlResponse && intlResponse.status !== 200) {

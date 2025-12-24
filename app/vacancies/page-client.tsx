@@ -8,7 +8,7 @@ import {
   VacancyFilterValues,
 } from "@/components/orders/vacancy-filters";
 import { PageLoader } from "@/components/shared/loading";
-import { Button } from "@/components/ui/button";
+import { Pagination } from "@/components/ui/pagination";
 import type { Order } from "@/types";
 import { useTranslations } from 'next-intl';
 
@@ -18,7 +18,9 @@ export function VacanciesPageClient() {
   const [loading, setLoading] = useState(true);
   const [filters, setFilters] = useState<VacancyFilterValues>({});
   const [page, setPage] = useState(1);
-  const [hasMore, setHasMore] = useState(true);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalCount, setTotalCount] = useState(0);
+  const ITEMS_PER_PAGE = 4;
 
   useEffect(() => {
     fetchVacancies();
@@ -40,7 +42,7 @@ export function VacanciesPageClient() {
       if (filters.search) params.append("search", filters.search);
       
       params.append("page", page.toString());
-      params.append("limit", "20");
+      params.append("limit", ITEMS_PER_PAGE.toString());
 
       // Запрос к API
       const response = await fetch(`/api/vacancies?${params.toString()}`);
@@ -51,18 +53,14 @@ export function VacanciesPageClient() {
 
       const data = await response.json();
       
-      // Если это первая страница - заменяем список, иначе добавляем
-      if (page === 1) {
-        setVacancies(data.vacancies);
-      } else {
-        setVacancies((prev) => [...prev, ...data.vacancies]);
-      }
-      
-      setHasMore(data.hasMore);
+      setVacancies(data.vacancies);
+      setTotalCount(data.total);
+      setTotalPages(Math.ceil(data.total / ITEMS_PER_PAGE));
     } catch (error) {
       console.error("Failed to fetch vacancies:", error);
       setVacancies([]);
-      setHasMore(false);
+      setTotalPages(1);
+      setTotalCount(0);
     } finally {
       setLoading(false);
     }
@@ -70,12 +68,13 @@ export function VacanciesPageClient() {
 
   const handleFilterChange = (newFilters: VacancyFilterValues) => {
     setFilters(newFilters);
-    setPage(1);
-    setVacancies([]); // Сбрасываем список при изменении фильтров
+    setPage(1); // Сбрасываем на первую страницу при изменении фильтров
   };
 
-  const loadMore = () => {
-    setPage((prev) => prev + 1);
+  const handlePageChange = (newPage: number) => {
+    setPage(newPage);
+    // Прокручиваем страницу вверх при смене страницы
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   return (
@@ -101,7 +100,7 @@ export function VacanciesPageClient() {
 
           {/* Vacancies List */}
           <div className="lg:col-span-3">
-            {loading && page === 1 ? (
+            {loading ? (
               <PageLoader />
             ) : vacancies.length === 0 ? (
               <div className="text-center py-12">
@@ -116,22 +115,24 @@ export function VacanciesPageClient() {
               <>
                 {/* Results Count */}
                 <div className="mb-4 text-sm text-muted-foreground">
-                  {t('resultsCount', { count: vacancies.length })}
+                  {t('totalResults', { count: totalCount })}
                 </div>
 
-                {/* Vacancies Grid */}
+                {/* Vacancies Grid - 1 column */}
                 <div className="grid gap-6">
                   {vacancies.map((vacancy) => (
                     <VacancyCard key={vacancy.id} vacancy={vacancy} />
                   ))}
                 </div>
 
-                {/* Load More */}
-                {hasMore && (
-                  <div className="mt-8 text-center">
-                    <Button onClick={loadMore} disabled={loading} size="lg">
-                      {loading ? t('loading') : t('loadMore')}
-                    </Button>
+                {/* Pagination */}
+                {totalPages > 1 && (
+                  <div className="mt-8">
+                    <Pagination
+                      currentPage={page}
+                      totalPages={totalPages}
+                      onPageChange={handlePageChange}
+                    />
                   </div>
                 )}
               </>

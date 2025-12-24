@@ -6,10 +6,14 @@ export const routing = defineRouting({
   locales: ['ru', 'uz'],
 
   // Used when no locale matches
-  defaultLocale: 'ru',
+  defaultLocale: 'uz',
   
   // Show locale prefix only when necessary (not for default locale)
-  localePrefix: 'as-needed'
+  localePrefix: 'as-needed',
+  
+  // Отключаем автоматическое определение локали из headers/cookies
+  // Будем управлять этим вручную через middleware
+  localeDetection: false
 });
 
 // Lightweight wrappers around Next.js' navigation APIs

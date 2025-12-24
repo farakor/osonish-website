@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { Header } from "@/components/shared/header";
 import { Footer } from "@/components/shared/footer";
+import { BetaBanner } from "@/components/shared/beta-banner";
 import { ClientProviders } from "@/components/providers/client-providers";
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages, getLocale } from 'next-intl/server';
@@ -32,6 +33,14 @@ export const metadata: Metadata = {
   ],
   authors: [{ name: "Osonish" }],
   creator: "Osonish",
+  icons: {
+    icon: [
+      { url: "/icon.png", type: "image/png" },
+    ],
+    apple: [
+      { url: "/apple-icon.png", type: "image/png" },
+    ],
+  },
   openGraph: {
     type: "website",
     locale: "ru_RU",
@@ -84,6 +93,7 @@ export default async function RootLayout({
         <NextIntlClientProvider messages={messages} locale={locale}>
           <ClientProviders>
             <div className="flex min-h-screen flex-col">
+              <BetaBanner />
               <Header />
               <main className="flex-1 pb-16 md:pb-0">{children}</main>
               <Footer />

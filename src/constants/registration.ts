@@ -35,7 +35,7 @@ const CITY_NAMES_UZ: Record<string, string> = {
 };
 
 // Получить название города с учетом локали
-export const getCityName = (cityId: string, locale: string = 'ru'): string => {
+export const getCityName = (cityId: string, locale: string = 'uz'): string => {
   if (locale === 'uz' && CITY_NAMES_UZ[cityId]) {
     return CITY_NAMES_UZ[cityId];
   }

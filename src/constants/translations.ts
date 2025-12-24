@@ -20,13 +20,13 @@ const employmentTypeTranslations = {
   }
 };
 
-export const getEmploymentTypeLabel = (key: string, locale: string = 'ru'): string => {
-  const translations = employmentTypeTranslations[locale as 'ru' | 'uz'] || employmentTypeTranslations.ru;
+export const getEmploymentTypeLabel = (key: string, locale: string = 'uz'): string => {
+  const translations = employmentTypeTranslations[locale as 'ru' | 'uz'] || employmentTypeTranslations.uz;
   return translations[key as keyof typeof translations] || key;
 };
 
 // Для обратной совместимости
-export const employmentTypeLabels: Record<string, string> = employmentTypeTranslations.ru;
+export const employmentTypeLabels: Record<string, string> = employmentTypeTranslations.uz;
 
 // Формат работы (Work Format)
 const workFormatTranslations = {
@@ -44,12 +44,12 @@ const workFormatTranslations = {
   }
 };
 
-export const getWorkFormatLabel = (key: string, locale: string = 'ru'): string => {
-  const translations = workFormatTranslations[locale as 'ru' | 'uz'] || workFormatTranslations.ru;
+export const getWorkFormatLabel = (key: string, locale: string = 'uz'): string => {
+  const translations = workFormatTranslations[locale as 'ru' | 'uz'] || workFormatTranslations.uz;
   return translations[key as keyof typeof translations] || key;
 };
 
-export const workFormatLabels: Record<string, string> = workFormatTranslations.ru;
+export const workFormatLabels: Record<string, string> = workFormatTranslations.uz;
 
 // Уровень опыта (Experience Level) - используем те же ключи что и в мобильном
 const experienceLevelTranslations = {
@@ -77,12 +77,12 @@ const experienceLevelTranslations = {
   }
 };
 
-export const getExperienceLevelLabel = (key: string, locale: string = 'ru'): string => {
-  const translations = experienceLevelTranslations[locale as 'ru' | 'uz'] || experienceLevelTranslations.ru;
+export const getExperienceLevelLabel = (key: string, locale: string = 'uz'): string => {
+  const translations = experienceLevelTranslations[locale as 'ru' | 'uz'] || experienceLevelTranslations.uz;
   return translations[key as keyof typeof translations] || key;
 };
 
-export const experienceLevelLabels: Record<string, string> = experienceLevelTranslations.ru;
+export const experienceLevelLabels: Record<string, string> = experienceLevelTranslations.uz;
 
 // График работы (Work Schedule)
 const workScheduleTranslations = {
@@ -102,12 +102,12 @@ const workScheduleTranslations = {
   }
 };
 
-export const getWorkScheduleLabel = (key: string, locale: string = 'ru'): string => {
-  const translations = workScheduleTranslations[locale as 'ru' | 'uz'] || workScheduleTranslations.ru;
+export const getWorkScheduleLabel = (key: string, locale: string = 'uz'): string => {
+  const translations = workScheduleTranslations[locale as 'ru' | 'uz'] || workScheduleTranslations.uz;
   return translations[key as keyof typeof translations] || key;
 };
 
-export const workScheduleLabels: Record<string, string> = workScheduleTranslations.ru;
+export const workScheduleLabels: Record<string, string> = workScheduleTranslations.uz;
 
 // Период выплаты зарплаты (Salary Period)
 const salaryPeriodTranslations = {
@@ -131,12 +131,12 @@ const salaryPeriodTranslations = {
   }
 };
 
-export const getSalaryPeriodLabel = (key: string, locale: string = 'ru'): string => {
-  const translations = salaryPeriodTranslations[locale as 'ru' | 'uz'] || salaryPeriodTranslations.ru;
+export const getSalaryPeriodLabel = (key: string, locale: string = 'uz'): string => {
+  const translations = salaryPeriodTranslations[locale as 'ru' | 'uz'] || salaryPeriodTranslations.uz;
   return translations[key as keyof typeof translations] || key;
 };
 
-export const salaryPeriodLabels: Record<string, string> = salaryPeriodTranslations.ru;
+export const salaryPeriodLabels: Record<string, string> = salaryPeriodTranslations.uz;
 
 // Частота выплат (Payment Frequency)
 const paymentFrequencyTranslations = {
@@ -156,12 +156,12 @@ const paymentFrequencyTranslations = {
   }
 };
 
-export const getPaymentFrequencyLabel = (key: string, locale: string = 'ru'): string => {
-  const translations = paymentFrequencyTranslations[locale as 'ru' | 'uz'] || paymentFrequencyTranslations.ru;
+export const getPaymentFrequencyLabel = (key: string, locale: string = 'uz'): string => {
+  const translations = paymentFrequencyTranslations[locale as 'ru' | 'uz'] || paymentFrequencyTranslations.uz;
   return translations[key as keyof typeof translations] || key;
 };
 
-export const paymentFrequencyLabels: Record<string, string> = paymentFrequencyTranslations.ru;
+export const paymentFrequencyLabels: Record<string, string> = paymentFrequencyTranslations.uz;
 
 // Типы зарплаты (Salary Type) - используем те же ключи что и в мобильном
 const salaryTypeTranslations = {
@@ -179,12 +179,12 @@ const salaryTypeTranslations = {
   }
 };
 
-export const getSalaryTypeLabel = (key: string, locale: string = 'ru'): string => {
-  const translations = salaryTypeTranslations[locale as 'ru' | 'uz'] || salaryTypeTranslations.ru;
+export const getSalaryTypeLabel = (key: string, locale: string = 'uz'): string => {
+  const translations = salaryTypeTranslations[locale as 'ru' | 'uz'] || salaryTypeTranslations.uz;
   return translations[key as keyof typeof translations] || key;
 };
 
-export const salaryTypeLabels: Record<string, string> = salaryTypeTranslations.ru;
+export const salaryTypeLabels: Record<string, string> = salaryTypeTranslations.uz;
 
 // Языки (Languages)
 const languageTranslations = {
@@ -256,12 +256,12 @@ const languageTranslations = {
   }
 };
 
-export const getLanguageLabel = (key: string, locale: string = 'ru'): string => {
-  const translations = languageTranslations[locale as 'ru' | 'uz'] || languageTranslations.ru;
+export const getLanguageLabel = (key: string, locale: string = 'uz'): string => {
+  const translations = languageTranslations[locale as 'ru' | 'uz'] || languageTranslations.uz;
   return translations[key as keyof typeof translations] || key;
 };
 
-export const languageLabels: Record<string, string> = languageTranslations.ru;
+export const languageLabels: Record<string, string> = languageTranslations.uz;
 
 // Навыки (Skills) - для перевода навыков из базы данных
 const skillsTranslations = {
@@ -323,8 +323,8 @@ const skillsTranslations = {
   }
 };
 
-export const getSkillLabel = (key: string, locale: string = 'ru'): string => {
-  const translations = skillsTranslations[locale as 'ru' | 'uz'] || skillsTranslations.ru;
+export const getSkillLabel = (key: string, locale: string = 'uz'): string => {
+  const translations = skillsTranslations[locale as 'ru' | 'uz'] || skillsTranslations.uz;
   return translations[key as keyof typeof translations] || key;
 };
 

@@ -10,14 +10,14 @@ export async function getLocale(): Promise<string> {
   
   // Извлекаем локаль из pathname
   const localeMatch = pathname.match(/^\/(ru|uz)/);
-  return localeMatch ? localeMatch[1] : 'ru';
+  return localeMatch ? localeMatch[1] : 'uz';
 }
 
 /**
  * Создает URL с учетом текущей локали
  */
-export function createLocalizedUrl(path: string, locale: string = 'ru'): string {
-  if (locale === 'ru') {
+export function createLocalizedUrl(path: string, locale: string = 'uz'): string {
+  if (locale === 'uz') {
     return path;
   }
   return `/${locale}${path}`;
