@@ -39,16 +39,19 @@ export async function POST(request: NextRequest) {
         formattedPhone 
       });
       
-      // Ищем пользователя в разных форматах
-      const { data: existingUser, error: searchError } = await supabase
+      // Ищем пользователя в разных форматах (используем limit(1) вместо single())
+      const { data: users, error: searchError } = await supabase
         .from('users')
         .select('id, phone')
         .or(`phone.eq.${formattedPhone},phone.eq.${cleanPhone},phone.eq.+${cleanPhone}`)
-        .single();
+        .limit(1);
+      
+      const existingUser = users && users.length > 0 ? users[0] : null;
       
       console.log('🔍 [verify-otp] Результат поиска пользователя:', { 
         existingUser, 
         searchError,
+        usersFound: users?.length || 0,
         searchQuery: `phone.eq.${formattedPhone},phone.eq.${cleanPhone},phone.eq.+${cleanPhone}`
       });
 
