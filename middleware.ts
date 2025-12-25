@@ -70,10 +70,11 @@ export async function middleware(request: NextRequest) {
   );
 
   if (isProtectedRoute) {
-    // Check if user is authenticated
+    // Check if user is authenticated (проверяем оба типа cookies)
+    const userIdCookie = request.cookies.get("user_id");
     const sessionCookie = request.cookies.get("session_token");
 
-    if (!sessionCookie) {
+    if (!userIdCookie && !sessionCookie) {
       // Определяем текущую локаль для редиректа
       const protectedLocale = pathname.match(/^\/(ru|uz)/)?.[1] || locale;
       const loginUrl = protectedLocale === 'uz' ? '/auth/login' : `/${protectedLocale}/auth/login`;

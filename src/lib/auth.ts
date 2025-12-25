@@ -7,38 +7,48 @@ import { cookies } from 'next/headers';
 export async function getCurrentUser() {
   try {
     const cookieStore = await cookies();
+    
+    // Сначала пробуем новый метод (user_id)
+    const userIdCookie = cookieStore.get('user_id');
+    
+    // Если нет user_id, пробуем старый метод (session_token)
     const sessionToken = cookieStore.get('session_token');
 
-    if (!sessionToken) {
-      return null;
+    let userId: string | null = null;
+
+    if (userIdCookie) {
+      userId = userIdCookie.value;
+    } else if (sessionToken) {
+      // Старый метод - получаем user_id из user_sessions
+      const supabase = await createClient();
+      const { data: sessionData } = await supabase
+        .from('user_sessions')
+        .select('user_id, expires_at')
+        .eq('id', sessionToken.value)
+        .single();
+
+      if (sessionData) {
+        // Проверяем срок действия
+        if (new Date(sessionData.expires_at) < new Date()) {
+          // Удаляем истекшую сессию
+          await supabase.from('user_sessions').delete().eq('id', sessionToken.value);
+          cookieStore.delete('session_token');
+          return null;
+        }
+        userId = sessionData.user_id;
+      }
     }
 
-    const supabase = await createClient();
-
-    // Получаем сессию
-    const { data: sessionData, error: sessionError } = await supabase
-      .from('user_sessions')
-      .select('user_id, expires_at')
-      .eq('id', sessionToken.value)
-      .single();
-
-    if (sessionError || !sessionData) {
-      return null;
-    }
-
-    // Проверяем срок действия
-    if (new Date(sessionData.expires_at) < new Date()) {
-      // Удаляем истекшую сессию
-      await supabase.from('user_sessions').delete().eq('id', sessionToken.value);
-      cookieStore.delete('session_token');
+    if (!userId) {
       return null;
     }
 
     // Получаем данные пользователя
+    const supabase = await createClient();
     const { data: userData, error: userError } = await supabase
       .from('users')
       .select('*')
-      .eq('id', sessionData.user_id)
+      .eq('id', userId)
       .single();
 
     if (userError || !userData) {

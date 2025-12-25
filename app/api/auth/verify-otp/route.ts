@@ -56,38 +56,22 @@ export async function POST(request: NextRequest) {
       });
 
       if (existingUser) {
-        // Существующий пользователь - создаем сессию и логиним
-        console.log('✅ [verify-otp] Существующий пользователь, создаем сессию:', existingUser.id);
+        // Существующий пользователь - создаем сессию через cookies
+        console.log('✅ [verify-otp] Существующий пользователь найден:', existingUser.id);
         
-      const { data: sessionData, error: sessionError } = await supabase
-        .from('user_sessions')
-        .insert({
-            user_id: existingUser.id,
-            expires_at: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
-        })
-        .select()
-        .single();
+        // Создаем простую сессию (сохраняем user_id в cookie)
+        const cookieStore = await cookies();
+        cookieStore.set('user_id', existingUser.id, {
+          httpOnly: true,
+          secure: process.env.NODE_ENV === 'production',
+          sameSite: 'lax',
+          maxAge: 30 * 24 * 60 * 60, // 30 дней
+          path: '/',
+        });
 
-      if (sessionError) {
-        console.error('❌ [verify-otp] Session creation error:', sessionError);
-        return NextResponse.json(
-          { success: false, error: 'Failed to create session' },
-          { status: 500 }
-        );
-      }
-
-      const cookieStore = await cookies();
-      cookieStore.set('session_token', sessionData.id, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'lax',
-          maxAge: 30 * 24 * 60 * 60,
-        path: '/',
-      });
-
-      console.log('✅ [verify-otp] Авторизация завершена успешно');
-      return NextResponse.json({ 
-        success: true,
+        console.log('✅ [verify-otp] Авторизация завершена успешно');
+        return NextResponse.json({ 
+          success: true,
           isNewUser: false,
           userId: existingUser.id,
         });
