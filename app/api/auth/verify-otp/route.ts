@@ -33,12 +33,24 @@ export async function POST(request: NextRequest) {
       const cleanPhone = phone.replace(/\D/g, '');
       const formattedPhone = cleanPhone.startsWith('998') ? `+${cleanPhone}` : cleanPhone;
       
+      console.log('📞 [verify-otp] Форматирование номера:', { 
+        original: phone, 
+        cleanPhone, 
+        formattedPhone 
+      });
+      
       // Ищем пользователя в разных форматах
-      const { data: existingUser } = await supabase
+      const { data: existingUser, error: searchError } = await supabase
         .from('users')
-        .select('id')
+        .select('id, phone')
         .or(`phone.eq.${formattedPhone},phone.eq.${cleanPhone},phone.eq.+${cleanPhone}`)
         .single();
+      
+      console.log('🔍 [verify-otp] Результат поиска пользователя:', { 
+        existingUser, 
+        searchError,
+        searchQuery: `phone.eq.${formattedPhone},phone.eq.${cleanPhone},phone.eq.+${cleanPhone}`
+      });
 
       if (existingUser) {
         // Существующий пользователь - создаем сессию и логиним
@@ -78,7 +90,7 @@ export async function POST(request: NextRequest) {
         });
       } else {
         // Новый пользователь - требуется регистрация
-        console.log('🆕 [verify-otp] Новый пользователь, требуется регистрация');
+        console.log('🆕 [verify-otp] Новый пользователь, требуется регистрация. Возвращаем phone:', formattedPhone);
         
         // Удаляем использованный OTP (пробуем удалить в разных форматах)
         await supabase.from('otp_codes').delete().or(`phone.eq.${formattedPhone},phone.eq.${cleanPhone}`);

@@ -172,6 +172,11 @@ export async function POST(request: NextRequest) {
       // Форматируем номер телефона с плюсом
       const formattedPhone = phone ? (phone.startsWith('+') ? phone : `+${phone}`) : null;
       
+      console.log('📞 [register] Форматирование телефона:', { 
+        original: phone, 
+        formatted: formattedPhone 
+      });
+      
       const userData: any = {
         phone: formattedPhone,
         email: email || null,
