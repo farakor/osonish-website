@@ -141,20 +141,20 @@ export function Footer() {
                 </Link>
               </li>
               <li>
-                <Link
-                  href="/privacy"
+                <a
+                  href="https://oson-ish.uz/ru/privacy"
                   className="text-sm text-muted-foreground hover:text-primary transition-colors"
                 >
                   {t('privacyPolicy')}
-                </Link>
+                </a>
               </li>
               <li>
-                <Link
-                  href="/terms"
+                <a
+                  href="https://oson-ish.uz/ru/terms"
                   className="text-sm text-muted-foreground hover:text-primary transition-colors"
                 >
                   {t('termsOfService')}
-                </Link>
+                </a>
               </li>
             </ul>
           </div>

@@ -214,11 +214,11 @@ export function HeroSection() {
               {/* Privacy Policy */}
               <p className="text-xs sm:text-sm text-white font-medium drop-shadow-lg">
                 {t('privacyText')}{" "}
-                <a href="/ru/terms" className="underline hover:text-white/80 font-semibold">
+                <a href="https://oson-ish.uz/ru/terms" className="underline hover:text-white/80 font-semibold">
                   {t('agreement')}
                 </a>{" "}
                 {t('and')}{" "}
-                <a href="/ru/privacy" className="underline hover:text-white/80 font-semibold">
+                <a href="https://oson-ish.uz/ru/privacy" className="underline hover:text-white/80 font-semibold">
                   {t('privacyPolicy')}
                 </a>
               </p>
