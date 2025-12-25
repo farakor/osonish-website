@@ -28,13 +28,16 @@ export async function POST(request: NextRequest) {
     if (result.success) {
       // Проверяем, существует ли пользователь
       const supabase = await createClient();
-      const formattedPhone = phone.replace(/\D/g, '');
       
-      // Ищем пользователя как с +, так и без +
+      // Форматируем номер: убираем все нецифровые символы, кроме начального +
+      const cleanPhone = phone.replace(/\D/g, '');
+      const formattedPhone = cleanPhone.startsWith('998') ? `+${cleanPhone}` : cleanPhone;
+      
+      // Ищем пользователя в разных форматах
       const { data: existingUser } = await supabase
         .from('users')
         .select('id')
-        .or(`phone.eq.${formattedPhone},phone.eq.+${formattedPhone}`)
+        .or(`phone.eq.${formattedPhone},phone.eq.${cleanPhone},phone.eq.+${cleanPhone}`)
         .single();
 
       if (existingUser) {
@@ -77,13 +80,13 @@ export async function POST(request: NextRequest) {
         // Новый пользователь - требуется регистрация
         console.log('🆕 [verify-otp] Новый пользователь, требуется регистрация');
         
-        // Удаляем использованный OTP
-        await supabase.from('otp_codes').delete().eq('phone', formattedPhone);
+        // Удаляем использованный OTP (пробуем удалить в разных форматах)
+        await supabase.from('otp_codes').delete().or(`phone.eq.${formattedPhone},phone.eq.${cleanPhone}`);
         
         return NextResponse.json({ 
           success: true,
           isNewUser: true,
-          phone: formattedPhone,
+          phone: formattedPhone, // Возвращаем номер с +
       });
       }
     } else {
