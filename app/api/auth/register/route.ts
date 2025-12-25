@@ -169,8 +169,11 @@ export async function POST(request: NextRequest) {
     }
 
       // Создаем нового пользователя
+      // Форматируем номер телефона с плюсом
+      const formattedPhone = phone ? (phone.startsWith('+') ? phone : `+${phone}`) : null;
+      
       const userData: any = {
-        phone: phone || null,
+        phone: formattedPhone,
         email: email || null,
         first_name: firstName,
         last_name: lastName,

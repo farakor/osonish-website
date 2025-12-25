@@ -154,11 +154,14 @@ export function AuthForm({ redirectTo, mode = 'login' }: AuthFormProps) {
     setLoading(true);
 
     try {
+      // Форматируем номер с плюсом для отправки
+      const formattedPhone = phone.startsWith('+') ? phone : `+${phone}`;
+      
       const response = await fetch('/api/auth/send-otp', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
-          phone,
+          phone: formattedPhone,
           skipUserCheck: mode === 'register' // Для регистрации пропускаем проверку
         }),
       });
@@ -185,11 +188,14 @@ export function AuthForm({ redirectTo, mode = 'login' }: AuthFormProps) {
     console.log('🔐 Начинаем верификацию OTP:', { phone, otp });
 
     try {
+      // Форматируем номер с плюсом для отправки
+      const formattedPhone = phone.startsWith('+') ? phone : `+${phone}`;
+      
       const response = await fetch('/api/auth/verify-otp', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
-          phone, 
+          phone: formattedPhone, 
           code: otp,
         }),
       });
