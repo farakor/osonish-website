@@ -23,12 +23,14 @@ export async function POST(request: NextRequest) {
     // Убираем все нецифровые символы включая + для поиска
     const formattedPhone = phone.replace(/\D/g, '');
     
-    // Ищем пользователя как с +, так и без +
-    const { data: existingUser } = await supabase
+    // Ищем пользователя в разных форматах
+    const { data: existingUsers } = await supabase
       .from('users')
       .select('id')
-      .or(`phone.eq.${formattedPhone},phone.eq.+${formattedPhone}`)
-      .single();
+      .or(`phone.eq.${formattedPhone},phone.eq.+${formattedPhone},phone.eq.998${formattedPhone.replace(/^998/, '')},phone.eq.+998${formattedPhone.replace(/^998/, '')}`)
+      .limit(1);
+
+    const existingUser = existingUsers && existingUsers.length > 0 ? existingUsers[0] : null;
 
     const isNewUser = !existingUser;
 
